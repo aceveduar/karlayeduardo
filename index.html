@@ -8,30 +8,43 @@
   <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Montserrat:wght@300;400;500;600&family=Great+Vibes&display=swap" rel="stylesheet"/>
   <style>
-    /* === DESIGN TOKENS === */
+    /* =============================================
+       DESIGN TOKENS
+       ============================================= */
     :root {
       --c-parchment:     #f7f4ee;
       --c-parchment-lt:  #fdfaf5;
       --c-terracotta:    #b76e49;
       --c-terracotta-dk: #9a5c3a;
+      --c-gold:          #c9a96e;
+      --c-gold-lt:       #e8d5a3;
       --c-text-dark:     #2c2c2c;
       --c-text-mid:      #555;
       --c-text-light:    #888;
       --c-border:        #d4c5b0;
       --c-white:         #ffffff;
-      --c-bg-outer:      #8b7355;
+      --c-bg-outer:      #6b5744;
       --f-serif:         'Playfair Display', serif;
       --f-sans:          'Montserrat', sans-serif;
       --f-script:        'Great Vibes', cursive;
       --ease:            all 0.4s ease;
-      --shadow:          0 20px 60px rgba(0,0,0,0.18);
+      --ease-slow:       all 0.7s ease;
+      --shadow-card:     0 30px 80px rgba(0,0,0,0.25), 0 8px 24px rgba(0,0,0,0.12);
+      --shadow-sm:       0 4px 16px rgba(0,0,0,0.08);
     }
 
-    /* === RESET === */
+    /* =============================================
+       RESET & BASE
+       ============================================= */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
+
     body {
       background-color: var(--c-bg-outer);
+      background-image:
+        radial-gradient(ellipse at 20% 50%, rgba(183,110,73,0.15) 0%, transparent 60%),
+        radial-gradient(ellipse at 80% 20%, rgba(107,87,68,0.3) 0%, transparent 50%),
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Crect width='4' height='4' fill='%236b5744'/%3E%3Ccircle cx='1' cy='1' r='0.6' fill='rgba(0,0,0,0.06)'/%3E%3C/svg%3E");
       color: var(--c-text-dark);
       font-family: var(--f-sans);
       font-weight: 300;
@@ -41,17 +54,31 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
-      padding: 2rem 1rem;
+      justify-content: flex-start;
+      padding: 0;
     }
 
-    /* === SCROLL ANIMATION === */
+    /* =============================================
+       SCROLL ANIMATION
+       ============================================= */
     .js-fade {
       opacity: 0;
-      transform: translateY(28px);
-      transition: opacity 0.75s ease, transform 0.75s ease;
+      transform: translateY(24px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
     }
     .js-fade.is-visible { opacity: 1; transform: translateY(0); }
+
+    /* =============================================
+       BLOCK: page-shell  (desktop centering wrapper)
+       ============================================= */
+    .page-shell {
+      width: 100%;
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 0;
+    }
 
     /* =============================================
        BLOCK: invitation
@@ -60,52 +87,119 @@
       width: 100%;
       max-width: 480px;
       background-color: var(--c-parchment);
-      box-shadow: var(--shadow);
+      box-shadow: var(--shadow-card);
       overflow: hidden;
-      border-left: 8px solid rgba(255,255,255,0.5);
-      border-right: 8px solid rgba(255,255,255,0.5);
+      border-left: 6px solid rgba(255,255,255,0.55);
+      border-right: 6px solid rgba(255,255,255,0.55);
+      position: relative;
     }
 
     /* =============================================
        BLOCK: floral-band
        ============================================= */
     .floral-band { width: 100%; overflow: hidden; line-height: 0; }
-    .floral-band--top    { height: 160px; display: flex; align-items: flex-start; justify-content: center; }
-    .floral-band--bottom { height: 160px; display: flex; align-items: flex-end;   justify-content: center; }
-    .floral-band__img { width: 100%; height: auto; display: block; opacity: 0.92; }
-    .floral-band--top    .floral-band__img { margin-top: -3rem; }
-    .floral-band--bottom .floral-band__img { transform: rotate(180deg); margin-bottom: -3rem; }
+    .floral-band--top    { height: 150px; display: flex; align-items: flex-start; justify-content: center; }
+    .floral-band--bottom { height: 150px; display: flex; align-items: flex-end;   justify-content: center; }
+    .floral-band__img    { width: 100%; height: auto; display: block; opacity: 0.9; }
+    .floral-band--top    .floral-band__img { margin-top: -2.5rem; }
+    .floral-band--bottom .floral-band__img { transform: rotate(180deg); margin-bottom: -2.5rem; }
+
+    /* =============================================
+       BLOCK: section-heading  (shared title style)
+       ============================================= */
+    .section-heading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      font-size: 0.65rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      font-weight: 600;
+      color: var(--c-text-mid);
+      margin-bottom: 2.5rem;
+    }
+    .section-heading::before,
+    .section-heading::after {
+      content: '';
+      flex: 1;
+      max-width: 40px;
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--c-gold));
+    }
+    .section-heading::after {
+      background: linear-gradient(to left, transparent, var(--c-gold));
+    }
 
     /* =============================================
        BLOCK: inv-header
        ============================================= */
-    .inv-header { padding: 0 2.25rem 3rem; text-align: center; }
+    .inv-header { padding: 0 2.5rem 3rem; text-align: center; }
     .inv-header__verse {
       font-family: var(--f-serif);
       font-style: italic;
-      font-size: 0.8rem;
+      font-size: 0.82rem;
       color: var(--c-text-mid);
-      line-height: 1.9;
-      margin-bottom: 1.75rem;
+      line-height: 2;
+      margin-bottom: 2rem;
+      padding: 1.5rem;
+      border: 1px solid var(--c-border);
+      background-color: rgba(255,255,255,0.5);
+      position: relative;
     }
+    .inv-header__verse::before,
+    .inv-header__verse::after {
+      content: '"';
+      font-family: var(--f-serif);
+      font-size: 3rem;
+      color: var(--c-gold-lt);
+      position: absolute;
+      line-height: 1;
+    }
+    .inv-header__verse::before { top: -0.3rem; left: 0.5rem; }
+    .inv-header__verse::after  { content: '"'; bottom: -1rem; right: 0.5rem; }
+
     .inv-header__monogram {
       font-family: var(--f-serif);
       font-size: 3rem;
-      letter-spacing: 1rem;
+      letter-spacing: 0.9rem;
       color: var(--c-text-dark);
       margin-bottom: 0.4rem;
+      text-indent: 0.9rem;
     }
     .inv-header__tagline {
-      font-size: 0.6rem;
-      letter-spacing: 0.3em;
+      font-size: 0.58rem;
+      letter-spacing: 0.35em;
       text-transform: uppercase;
       color: var(--c-text-light);
+      margin-bottom: 0.25rem;
+    }
+    .inv-header__divider-line {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      margin: 1rem 0;
+    }
+    .inv-header__divider-line::before,
+    .inv-header__divider-line::after {
+      content: '';
+      height: 1px;
+      width: 40px;
+      background-color: var(--c-gold);
+      opacity: 0.6;
+    }
+    .inv-header__divider-dot {
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background-color: var(--c-gold);
     }
     .inv-header__frame {
-      border: 4px solid var(--c-white);
-      box-shadow: 0 8px 30px rgba(0,0,0,0.12), 0 0 0 1px var(--c-border);
+      border: 5px solid var(--c-white);
+      box-shadow: 0 10px 40px rgba(0,0,0,0.14), 0 0 0 1px var(--c-border);
       margin: 1.75rem auto;
-      width: 80%;
+      width: 78%;
       overflow: hidden;
     }
     .inv-header__photo {
@@ -114,32 +208,56 @@
       display: block;
       aspect-ratio: 3/4;
       object-fit: cover;
-      transition: transform 0.7s ease;
+      transition: transform 0.8s ease;
     }
     .inv-header__frame:hover .inv-header__photo { transform: scale(1.04); }
-    .inv-header__parents { font-size: 0.8rem; color: var(--c-text-mid); line-height: 2; margin: 1.5rem 0; }
+    .inv-header__parents {
+      font-size: 0.8rem;
+      color: var(--c-text-mid);
+      line-height: 2;
+      margin: 1.5rem 0;
+    }
     .inv-header__parents-label { font-weight: 600; font-style: italic; color: var(--c-text-dark); }
     .inv-header__invite-text {
-      font-size: 0.65rem;
-      letter-spacing: 0.25em;
+      font-size: 0.62rem;
+      letter-spacing: 0.3em;
       text-transform: uppercase;
       color: var(--c-text-light);
-      margin: 1rem 0 0.25rem;
+      margin: 1.25rem 0 0.25rem;
+    }
+    .inv-header__honor-text {
+      font-size: 0.78rem;
+      color: var(--c-text-light);
+      margin: 1.25rem 0 0.5rem;
+      line-height: 1.85;
     }
 
     /* =============================================
        BLOCK: ornament-divider
        ============================================= */
     .ornament-divider { display: flex; justify-content: center; margin: 0.5rem 0; }
-    .ornament-divider__img { width: 56px; height: auto; opacity: 0.65; }
+    .ornament-divider__img { width: 52px; height: auto; opacity: 0.6; }
     .ornament-divider--flipped .ornament-divider__img { transform: rotate(180deg); }
 
     /* =============================================
        BLOCK: names-display
        ============================================= */
     .names-display { text-align: center; padding: 0.25rem 0; }
-    .names-display__name { font-family: var(--f-script); font-size: 4.5rem; color: var(--c-text-dark); line-height: 1.1; }
-    .names-display__amp  { font-family: var(--f-serif); font-size: 2rem; color: var(--c-terracotta); font-style: italic; display: block; margin: 0.2rem 0; }
+    .names-display__name {
+      font-family: var(--f-script);
+      font-size: 4.5rem;
+      color: var(--c-text-dark);
+      line-height: 1.1;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+    .names-display__amp {
+      font-family: var(--f-serif);
+      font-size: 2rem;
+      color: var(--c-terracotta);
+      font-style: italic;
+      display: block;
+      margin: 0.15rem 0;
+    }
 
     /* =============================================
        BLOCK: event-date
@@ -148,54 +266,82 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      gap: 1.5rem;
+      gap: 0;
       border-top: 1px solid var(--c-border);
       border-bottom: 1px solid var(--c-border);
-      padding: 1rem 0;
-      margin: 1.75rem auto;
-      width: 72%;
+      padding: 1.25rem 0;
+      margin: 2rem auto;
+      width: 70%;
     }
-    .event-date__label { font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.15em; color: var(--c-text-dark); }
+    .event-date__label { font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.15em; color: var(--c-text-mid); padding: 0 1rem; }
     .event-date__day-col { padding: 0 1.5rem; border-left: 1px solid var(--c-border); border-right: 1px solid var(--c-border); text-align: center; }
-    .event-date__month { display: block; font-size: 0.5rem; text-transform: uppercase; letter-spacing: 0.2em; color: var(--c-text-light); margin-bottom: 0.2rem; }
+    .event-date__month { display: block; font-size: 0.48rem; text-transform: uppercase; letter-spacing: 0.25em; color: var(--c-gold); margin-bottom: 0.15rem; }
     .event-date__number { font-family: var(--f-serif); font-size: 4rem; color: var(--c-terracotta); line-height: 1; }
 
     /* =============================================
        BLOCK: countdown
        ============================================= */
-    .countdown { background-color: var(--c-parchment-lt); padding: 4rem 2rem; text-align: center; }
-    .countdown__label { font-size: 0.6rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--c-text-light); margin-bottom: 1.5rem; }
-    .countdown__timer { display: flex; justify-content: center; align-items: flex-end; gap: 0.4rem; }
-    .countdown__unit { display: flex; flex-direction: column; align-items: center; }
-    .countdown__number { font-family: var(--f-serif); font-size: 3.25rem; line-height: 1; color: var(--c-terracotta); }
-    .countdown__unit-lbl { font-size: 0.5rem; text-transform: uppercase; letter-spacing: 0.15em; color: var(--c-text-light); margin-top: 0.5rem; }
-    .countdown__sep { font-family: var(--f-serif); font-size: 2.25rem; color: var(--c-border); padding-bottom: 0.9rem; }
+    .countdown {
+      background-color: var(--c-parchment-lt);
+      padding: 4rem 2rem;
+      text-align: center;
+      position: relative;
+    }
+    .countdown::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--c-gold), transparent);
+    }
+    .countdown::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--c-gold), transparent);
+    }
+    .countdown__label { font-size: 0.58rem; letter-spacing: 0.35em; text-transform: uppercase; color: var(--c-text-light); margin-bottom: 2rem; }
+    .countdown__timer { display: flex; justify-content: center; align-items: stretch; gap: 0.5rem; }
+    .countdown__unit {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--c-parchment);
+      border: 1px solid var(--c-border);
+      padding: 1rem 1.25rem;
+      min-width: 64px;
+    }
+    .countdown__number { font-family: var(--f-serif); font-size: 2.75rem; line-height: 1; color: var(--c-terracotta); }
+    .countdown__unit-lbl { font-size: 0.48rem; text-transform: uppercase; letter-spacing: 0.2em; color: var(--c-text-light); margin-top: 0.4rem; }
+    .countdown__sep { font-family: var(--f-serif); font-size: 2rem; color: var(--c-border); align-self: center; padding-bottom: 1.2rem; }
 
     /* =============================================
        BLOCK: photo-break
        ============================================= */
-    .photo-break { border-top: 8px solid var(--c-white); border-bottom: 8px solid var(--c-white); overflow: hidden; line-height: 0; }
-    .photo-break__img { width: 100%; height: 260px; object-fit: cover; display: block; transition: transform 0.7s ease; }
-    .photo-break:hover .photo-break__img { transform: scale(1.025); }
+    .photo-break { border-top: 6px solid var(--c-white); border-bottom: 6px solid var(--c-white); overflow: hidden; line-height: 0; position: relative; }
+    .photo-break__img { width: 100%; height: 260px; object-fit: cover; display: block; transition: transform 0.8s ease; }
+    .photo-break:hover .photo-break__img { transform: scale(1.03); }
 
     /* =============================================
        BLOCK: event-info
        ============================================= */
-    .event-info { padding: 4rem 2.25rem; text-align: center; }
-    .event-info__icon { width: 2.5rem; height: 2.5rem; color: var(--c-terracotta); margin: 0 auto 0.75rem; }
-    .event-info__time { font-family: var(--f-serif); font-size: 1.2rem; font-weight: 600; margin-bottom: 0.25rem; }
-    .event-info__type { font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; font-weight: 600; margin-bottom: 1.25rem; }
-    .event-info__venue { font-family: var(--f-serif); font-size: 1.1rem; margin-bottom: 0.5rem; }
-    .event-info__address { font-size: 0.72rem; font-style: italic; color: var(--c-text-light); line-height: 1.7; margin-bottom: 1.75rem; }
+    .event-info { padding: 4rem 2.5rem; text-align: center; }
+    .event-info__icon { width: 2.5rem; height: 2.5rem; color: var(--c-terracotta); margin: 0 auto 1rem; }
+    .event-info__time { font-family: var(--f-serif); font-size: 1.3rem; font-weight: 600; margin-bottom: 0.25rem; }
+    .event-info__type { font-size: 0.68rem; letter-spacing: 0.25em; text-transform: uppercase; font-weight: 600; color: var(--c-terracotta); margin-bottom: 1.5rem; }
+    .event-info__venue { font-family: var(--f-serif); font-size: 1.2rem; margin-bottom: 0.4rem; }
+    .event-info__address { font-size: 0.75rem; font-style: italic; color: var(--c-text-light); line-height: 1.8; margin-bottom: 2rem; }
 
     /* =============================================
        BLOCK: btn
        ============================================= */
     .btn {
       display: inline-block;
-      padding: 0.6rem 2rem;
-      font-size: 0.62rem;
-      letter-spacing: 0.15em;
+      padding: 0.65rem 2.25rem;
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
       text-transform: uppercase;
       text-decoration: none;
       border-radius: 50px;
@@ -206,128 +352,322 @@
       font-weight: 500;
     }
     .btn--primary { background-color: var(--c-terracotta); color: var(--c-white); }
-    .btn--primary:hover { background-color: var(--c-terracotta-dk); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(183,110,73,0.35); }
-    .btn--lg { padding: 0.9rem 3rem; font-size: 0.72rem; letter-spacing: 0.2em; }
+    .btn--primary:hover {
+      background-color: var(--c-terracotta-dk);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px rgba(183,110,73,0.4);
+    }
+    .btn--outline {
+      background-color: transparent;
+      color: var(--c-terracotta);
+      border: 1.5px solid var(--c-terracotta);
+    }
+    .btn--outline:hover {
+      background-color: var(--c-terracotta);
+      color: var(--c-white);
+      transform: translateY(-2px);
+    }
+    .btn--lg { padding: 1rem 3.5rem; font-size: 0.7rem; letter-spacing: 0.22em; }
 
     /* =============================================
        BLOCK: timeline
        ============================================= */
-    .timeline { padding: 4rem 2.25rem; }
-    .timeline__title { text-align: center; font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; font-weight: 600; color: var(--c-text-mid); margin-bottom: 3rem; }
-    .timeline__track { position: relative; max-width: 300px; margin: 0 auto; }
-    .timeline__line { position: absolute; left: 50%; top: 0; bottom: 0; transform: translateX(-50%); width: 1px; background-color: var(--c-terracotta); opacity: 0.35; }
+    .timeline { padding: 4rem 2.5rem; background-color: var(--c-parchment); }
+    .timeline__track { position: relative; max-width: 320px; margin: 0 auto; }
+    .timeline__line { position: absolute; left: 50%; top: 0; bottom: 0; transform: translateX(-50%); width: 1px; background: linear-gradient(to bottom, transparent, var(--c-terracotta) 10%, var(--c-terracotta) 90%, transparent); opacity: 0.3; }
     .timeline__item { position: relative; display: flex; justify-content: space-between; align-items: center; margin-bottom: 3rem; }
     .timeline__item:last-child { margin-bottom: 0; }
     .timeline__side { width: 42%; }
     .timeline__side--left  { text-align: right; padding-right: 1rem; }
     .timeline__side--right { text-align: left;  padding-left:  1rem; }
-    .timeline__name { font-size: 0.62rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; }
-    .timeline__time { font-family: var(--f-serif); font-size: 0.85rem; color: var(--c-terracotta); margin-top: 0.2rem; }
-    .timeline__icon-wrap { width: 16%; display: flex; justify-content: center; position: relative; z-index: 2; background-color: var(--c-parchment); padding: 0.4rem 0; }
+    .timeline__name { font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: var(--c-text-dark); line-height: 1.5; }
+    .timeline__time { font-family: var(--f-serif); font-size: 0.9rem; color: var(--c-terracotta); margin-top: 0.15rem; }
+    .timeline__icon-wrap { width: 16%; display: flex; justify-content: center; position: relative; z-index: 2; background-color: var(--c-parchment); padding: 0.5rem 0; }
     .timeline__icon { width: 2.2rem; height: 2.2rem; color: var(--c-terracotta); }
 
     /* =============================================
        BLOCK: story
        ============================================= */
-    .story { background-color: var(--c-parchment-lt); padding: 4rem 2.25rem; text-align: center; }
-    .story__title { font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; font-weight: 600; color: var(--c-text-mid); margin-bottom: 3rem; }
-    .story__list { display: flex; flex-direction: column; gap: 2.5rem; }
-    .story__item { display: flex; flex-direction: column; align-items: center; gap: 0.75rem; }
+    .story {
+      background-color: var(--c-parchment-lt);
+      padding: 4rem 2.5rem;
+      text-align: center;
+      position: relative;
+    }
+    .story::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--c-gold), transparent);
+    }
+    .story__list { display: flex; flex-direction: column; gap: 0; }
+    .story__item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 2rem 1rem;
+      border-bottom: 1px solid rgba(212,197,176,0.5);
+      transition: background-color 0.3s ease;
+    }
+    .story__item:last-child { border-bottom: none; }
+    .story__item:hover { background-color: rgba(255,255,255,0.6); }
     .story__year { font-family: var(--f-serif); font-size: 2rem; color: var(--c-terracotta); line-height: 1; }
-    .story__bar  { width: 36px; height: 1px; background-color: var(--c-border); }
-    .story__text { font-size: 0.78rem; color: var(--c-text-mid); max-width: 260px; line-height: 1.85; }
+    .story__bar  { width: 28px; height: 1px; background-color: var(--c-gold); opacity: 0.8; }
+    .story__text { font-size: 0.8rem; color: var(--c-text-mid); max-width: 280px; line-height: 1.9; }
 
     /* =============================================
        BLOCK: dresscode
        ============================================= */
-    .dresscode { padding: 4rem 2.25rem; text-align: center; }
-    .dresscode__title { font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; font-weight: 600; color: var(--c-text-mid); margin-bottom: 1rem; }
-    .dresscode__style { font-family: var(--f-serif); font-style: italic; font-size: 1.3rem; margin-bottom: 1.5rem; }
-    .dresscode__palette { display: flex; justify-content: center; gap: 0.5rem; margin-bottom: 1.5rem; }
-    .dresscode__swatch { width: 2rem; height: 2rem; border-radius: 50%; border: 2px solid var(--c-white); box-shadow: 0 2px 8px rgba(0,0,0,0.1); position: relative; }
-    .dresscode__swatch--no { opacity: 0.5; }
-    .dresscode__swatch--no::after { content: '✕'; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); font-size: 0.65rem; color: #c0392b; font-weight: 700; }
-    .dresscode__note { font-size: 0.75rem; color: var(--c-text-light); line-height: 1.85; }
+    .dresscode { padding: 4rem 2.5rem; text-align: center; }
+    .dresscode__style { font-family: var(--f-serif); font-style: italic; font-size: 1.4rem; color: var(--c-text-dark); margin-bottom: 1.75rem; }
+    .dresscode__palette { display: flex; justify-content: center; gap: 0.6rem; margin-bottom: 1.75rem; }
+    .dresscode__swatch { width: 2.25rem; height: 2.25rem; border-radius: 50%; border: 3px solid var(--c-white); box-shadow: 0 3px 10px rgba(0,0,0,0.12); position: relative; transition: transform 0.3s ease; }
+    .dresscode__swatch:hover { transform: scale(1.15); }
+    .dresscode__swatch--no { opacity: 0.45; }
+    .dresscode__swatch--no::after { content: '✕'; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); font-size: 0.7rem; color: #c0392b; font-weight: 700; }
+    .dresscode__note { font-size: 0.77rem; color: var(--c-text-light); line-height: 1.9; }
 
     /* =============================================
        BLOCK: gifts
        ============================================= */
-    .gifts { background-color: var(--c-parchment-lt); padding: 4rem 2.25rem; text-align: center; }
-    .gifts__icon  { width: 2rem; height: 2rem; color: var(--c-terracotta); margin: 0 auto 0.75rem; }
-    .gifts__title { font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; font-weight: 600; color: var(--c-text-mid); margin-bottom: 1rem; }
-    .gifts__desc  { font-size: 0.75rem; color: var(--c-text-light); line-height: 1.85; max-width: 260px; margin: 0 auto 1.5rem; }
-    .gifts__option-lbl { font-size: 0.62rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; margin-bottom: 1rem; }
-    .gifts__account { display: inline-block; background-color: var(--c-parchment); border: 1px solid var(--c-border); padding: 1rem 2.5rem; font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--c-text-mid); line-height: 2.1; }
+    .gifts { background-color: var(--c-parchment-lt); padding: 4rem 2.5rem; text-align: center; }
+    .gifts__icon  { width: 2.25rem; height: 2.25rem; color: var(--c-terracotta); margin: 0 auto 1rem; }
+    .gifts__desc  { font-size: 0.78rem; color: var(--c-text-light); line-height: 1.9; max-width: 280px; margin: 0 auto 2rem; }
+    .gifts__option-lbl { font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.2em; color: var(--c-text-mid); margin-bottom: 1.25rem; }
+    .gifts__account {
+      display: inline-block;
+      background-color: var(--c-parchment);
+      border: 1px solid var(--c-border);
+      border-top: 3px solid var(--c-gold);
+      padding: 1.25rem 3rem;
+      font-size: 0.7rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--c-text-mid);
+      line-height: 2.2;
+      box-shadow: var(--shadow-sm);
+    }
 
     /* =============================================
        BLOCK: rsvp
        ============================================= */
-    .rsvp { padding: 4rem 2.25rem; text-align: center; }
-    .rsvp__icon { width: 2.5rem; height: 2.5rem; color: var(--c-terracotta); margin: 0 auto 1rem; }
-    .rsvp__title { font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase; font-weight: 600; margin-bottom: 0.75rem; }
-    .rsvp__desc { font-size: 0.75rem; color: var(--c-text-light); line-height: 1.85; margin-bottom: 2rem; }
-    .rsvp__deadline { font-family: var(--f-serif); font-style: italic; color: var(--c-terracotta); display: block; margin-top: 0.4rem; }
+    .rsvp {
+      padding: 5rem 2.5rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .rsvp::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Ccircle cx='30' cy='30' r='1.5' fill='rgba(201,169,110,0.12)'/%3E%3C/svg%3E");
+    }
+    .rsvp__inner { position: relative; z-index: 1; }
+    .rsvp__icon { width: 2.75rem; height: 2.75rem; color: var(--c-terracotta); margin: 0 auto 1.25rem; }
+    .rsvp__desc { font-size: 0.78rem; color: var(--c-text-light); line-height: 1.9; margin-bottom: 2.5rem; }
+    .rsvp__deadline { font-family: var(--f-serif); font-style: italic; color: var(--c-terracotta); display: block; margin-top: 0.5rem; font-size: 1rem; }
 
     /* =============================================
        BLOCK: inv-footer
        ============================================= */
-    .inv-footer { padding: 3rem 2rem; text-align: center; }
-    .inv-footer__msg { font-size: 0.6rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--c-text-light); margin-bottom: 1rem; }
-    .inv-footer__thanks { font-family: var(--f-script); font-size: 3.5rem; color: var(--c-text-dark); line-height: 1.2; }
+    .inv-footer { padding: 3rem 2rem 1.5rem; text-align: center; }
+    .inv-footer__msg { font-size: 0.58rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--c-text-light); margin-bottom: 1rem; }
+    .inv-footer__thanks { font-family: var(--f-script); font-size: 3.75rem; color: var(--c-text-dark); line-height: 1.2; }
 
     /* =============================================
        BLOCK: music-player
        ============================================= */
-    .music-player { position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 100; }
+    .music-player { position: fixed; bottom: 1.75rem; right: 1.75rem; z-index: 100; }
     .music-player__tip {
       position: absolute;
-      bottom: 4.25rem;
+      bottom: 4.5rem;
       right: 0;
       background-color: var(--c-parchment);
       color: var(--c-text-dark);
-      font-size: 0.58rem;
-      letter-spacing: 0.1em;
+      font-size: 0.56rem;
+      letter-spacing: 0.12em;
       text-transform: uppercase;
-      padding: 0.4rem 0.9rem;
+      padding: 0.45rem 1rem;
       white-space: nowrap;
       border: 1px solid var(--c-border);
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      box-shadow: var(--shadow-sm);
       opacity: 0;
-      transform: translateY(5px);
+      transform: translateY(6px);
       transition: var(--ease);
       pointer-events: none;
     }
     .music-player:hover .music-player__tip { opacity: 1; transform: translateY(0); }
     .music-player__btn {
-      width: 3.25rem;
-      height: 3.25rem;
+      width: 3.5rem;
+      height: 3.5rem;
       border-radius: 50%;
       background-color: var(--c-terracotta);
       border: 3px solid var(--c-white);
-      box-shadow: 0 4px 20px rgba(183,110,73,0.4);
+      box-shadow: 0 4px 24px rgba(183,110,73,0.45);
       color: var(--c-white);
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
       transition: var(--ease);
-      animation: pulse 2s infinite;
+      animation: pulse 2.5s infinite;
     }
-    .music-player__btn:hover { background-color: var(--c-terracotta-dk); transform: scale(1.1); }
-    .music-player__btn svg { width: 1.3rem; height: 1.3rem; }
+    .music-player__btn:hover { background-color: var(--c-terracotta-dk); transform: scale(1.08); }
+    .music-player__btn svg { width: 1.35rem; height: 1.35rem; }
 
     @keyframes pulse {
-      0%   { box-shadow: 0 0 0 0    rgba(183,110,73,0.45); }
-      70%  { box-shadow: 0 0 0 12px rgba(183,110,73,0); }
+      0%   { box-shadow: 0 0 0 0    rgba(183,110,73,0.5); }
+      70%  { box-shadow: 0 0 0 14px rgba(183,110,73,0); }
       100% { box-shadow: 0 0 0 0    rgba(183,110,73,0); }
     }
 
-    /* === RESPONSIVE === */
-    @media (max-width: 480px) {
-      body { padding: 0; }
-      .invitation { border-left-width: 4px; border-right-width: 4px; }
-      .names-display__name { font-size: 3.5rem; }
-      .countdown__number { font-size: 2.5rem; }
+    /* =============================================
+       RESPONSIVE — TABLET  (≥ 640px)
+       ============================================= */
+    @media (min-width: 640px) {
+      body { padding: 3rem 2rem; justify-content: center; }
+
+      .invitation {
+        max-width: 520px;
+        border-left-width: 8px;
+        border-right-width: 8px;
+      }
+
+      .floral-band--top,
+      .floral-band--bottom { height: 180px; }
+
+      .inv-header { padding: 0 3rem 3.5rem; }
+      .inv-header__monogram { font-size: 3.25rem; }
+      .inv-header__verse { font-size: 0.88rem; }
+      .inv-header__frame { width: 72%; }
+      .inv-header__photo { aspect-ratio: 3/4; }
+
+      .names-display__name { font-size: 5rem; }
+
+      .event-date__number { font-size: 4.5rem; }
+
+      .countdown { padding: 5rem 2.5rem; }
+      .countdown__unit { min-width: 76px; padding: 1.25rem 1.5rem; }
+      .countdown__number { font-size: 3.25rem; }
+
+      .photo-break__img { height: 320px; }
+
+      .event-info { padding: 5rem 3rem; }
+      .event-info__venue { font-size: 1.3rem; }
+
+      .timeline { padding: 5rem 3rem; }
+      .timeline__track { max-width: 360px; }
+
+      /* Story: 2×2 grid on tablet */
+      .story { padding: 5rem 3rem; }
+      .story__list {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0;
+      }
+      .story__item { border-right: 1px solid rgba(212,197,176,0.5); border-bottom: 1px solid rgba(212,197,176,0.5); }
+      .story__item:nth-child(2n) { border-right: none; }
+      .story__item:nth-child(3),
+      .story__item:nth-child(4) { border-bottom: none; }
+
+      .dresscode { padding: 5rem 3rem; }
+      .dresscode__swatch { width: 2.5rem; height: 2.5rem; }
+
+      .gifts { padding: 5rem 3rem; }
+
+      .rsvp { padding: 6rem 3rem; }
+
+      .section-heading { font-size: 0.7rem; }
+      .section-heading::before,
+      .section-heading::after { max-width: 60px; }
+    }
+
+    /* =============================================
+       RESPONSIVE — DESKTOP  (≥ 1024px)
+       ============================================= */
+    @media (min-width: 1024px) {
+      body { padding: 4rem 2rem; }
+
+      .page-shell { gap: 0; }
+
+      .invitation {
+        max-width: 540px;
+        border-left-width: 10px;
+        border-right-width: 10px;
+      }
+
+      /* Decorative side panels flanking the card */
+      .invitation::before,
+      .invitation::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: linear-gradient(to bottom, transparent, rgba(201,169,110,0.4), transparent);
+        z-index: 1;
+      }
+      .invitation::before { left: -14px; }
+      .invitation::after  { right: -14px; }
+
+      .floral-band--top,
+      .floral-band--bottom { height: 200px; }
+
+      .inv-header { padding: 0 3.5rem 4rem; }
+      .inv-header__monogram { font-size: 3.5rem; }
+      .inv-header__verse { font-size: 0.9rem; padding: 2rem; }
+      .inv-header__frame { width: 68%; }
+
+      .names-display__name { font-size: 5.5rem; }
+      .names-display__amp  { font-size: 2.25rem; }
+
+      .event-date { padding: 1.5rem 0; }
+      .event-date__number { font-size: 5rem; }
+
+      .countdown { padding: 5.5rem 3rem; }
+      .countdown__unit { min-width: 82px; padding: 1.5rem 1.75rem; }
+      .countdown__number { font-size: 3.5rem; }
+
+      .photo-break__img { height: 380px; }
+
+      .event-info { padding: 5.5rem 3.5rem; }
+      .event-info__venue { font-size: 1.4rem; }
+      .event-info__address { font-size: 0.8rem; }
+
+      .timeline { padding: 5.5rem 3.5rem; }
+      .timeline__name { font-size: 0.65rem; }
+      .timeline__time { font-size: 1rem; }
+
+      .story { padding: 5.5rem 3.5rem; }
+      .story__text { font-size: 0.82rem; }
+
+      .dresscode { padding: 5.5rem 3.5rem; }
+      .dresscode__style { font-size: 1.5rem; }
+
+      .gifts { padding: 5.5rem 3.5rem; }
+      .gifts__desc { font-size: 0.82rem; }
+
+      .rsvp { padding: 7rem 3.5rem; }
+      .rsvp__desc { font-size: 0.82rem; }
+
+      .inv-footer__thanks { font-size: 4.25rem; }
+
+      .music-player { bottom: 2.5rem; right: 2.5rem; }
+      .music-player__btn { width: 4rem; height: 4rem; }
+    }
+
+    /* =============================================
+       RESPONSIVE — SMALL MOBILE  (< 380px)
+       ============================================= */
+    @media (max-width: 380px) {
+      .names-display__name { font-size: 3.75rem; }
+      .countdown__number   { font-size: 2.25rem; }
+      .countdown__unit     { min-width: 52px; padding: 0.75rem 0.6rem; }
+      .event-date__number  { font-size: 3.25rem; }
+      .inv-header__verse   { font-size: 0.75rem; }
     }
   </style>
 </head>
@@ -347,6 +687,7 @@
     </audio>
   </div>
 
+  <div class="page-shell">
   <!-- MAIN INVITATION -->
   <main class="invitation" role="main">
 
@@ -364,12 +705,14 @@
         vínculo perfecto"<br/>
         <em>Colosenses 3:14</em>
       </p>
+
       <h1 class="inv-header__monogram">K | E</h1>
       <p class="inv-header__tagline">¡Nos Casamos!</p>
+      <div class="inv-header__divider-line"><span class="inv-header__divider-dot"></span></div>
 
       <div class="inv-header__frame">
         <img class="inv-header__photo" alt="Karla y Eduardo"
-          src="https://images.unsplash.com/photo-1519741497674-611481863552?w=600&q=80&auto=format&fit=crop"/>
+          src="https://images.unsplash.com/photo-1519741497674-611481863552?w=800&q=85&auto=format&fit=crop"/>
       </div>
 
       <div class="inv-header__parents js-fade">
@@ -402,7 +745,7 @@
           src="https://lh3.googleusercontent.com/aida/ADBb0uiUws49kBcS7bZlmFuu4wBAGuCzCk8CRYnRPhz_jxrSiNsgJ-XBrrtyj3SF8AIMXprn1ZqtnsQJzjm4PEEMSJGpztAdi9-XWcQ2Upf5dFbwBqCuPYR9s7Fv5Aup9xEA39yD4dzuuO2JSrG1myDtVwgQ82xn2I09L6Hc1-XqC4G1uQuY7BabaTh7IeoXo4uKKyP6ObhEzz6776pM-aUcMqifgFEBow3rPAybK6zg-1wq12mzVBzNOZm2"/>
       </div>
 
-      <p style="font-size:0.75rem;color:var(--c-text-light);margin:1.5rem 0 0.5rem;line-height:1.85;">
+      <p class="inv-header__honor-text">
         Tenemos el honor de invitarte a<br/>celebrar nuestra unión en matrimonio
       </p>
 
@@ -445,14 +788,16 @@
     <!-- PHOTO BREAK 1 -->
     <div class="photo-break">
       <img class="photo-break__img" alt="Pareja caminando entre flores"
-        src="https://images.unsplash.com/photo-1529634806980-85c3dd6d34ac?w=600&q=80&auto=format&fit=crop"/>
+        src="https://images.unsplash.com/photo-1529634806980-85c3dd6d34ac?w=800&q=85&auto=format&fit=crop"/>
     </div>
 
     <!-- EVENT DETAILS -->
     <section class="event-info js-fade">
       <svg class="event-info__icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
-          d="M21 15.546c-.523 0-1.046.151-1.5.454a2.704 2.704 0 01-3 0 2.704 2.704 0 00-3 0 2.704 2.704 0 01-3 0 2.704 2.704 0 00-3 0 2.704 2.704 0 01-3 0 2.701 2.701 0 00-1.5-.454M9 6v2m3-2v2m3-2v2M9 3h.01M12 3h.01M15 3h.01M21 21v-7a2 2 0 00-2-2H5a2 2 0 00-2 2v7h18zm-3-9v-2a2 2 0 00-2-2H8a2 2 0 00-2 2v2h12z"/>
+          d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
+          d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
       </svg>
       <p class="event-info__time">17:00 HRS.</p>
       <p class="event-info__type">Recepción</p>
@@ -462,14 +807,14 @@
         Coatzacoalcos, Veracruz
       </p>
       <!-- TODO: reemplazar href con el link real de Google Maps -->
-      <a class="btn btn--primary" href="#" target="_blank" rel="noopener noreferrer">Ver ubicación</a>
+      <a class="btn btn--outline" href="#" target="_blank" rel="noopener noreferrer">Ver ubicación</a>
     </section>
 
     <!-- ITINERARY -->
     <section class="timeline js-fade">
-      <h3 class="timeline__title">Itinerario de Actividades</h3>
+      <h3 class="section-heading">Itinerario</h3>
 
-      <div class="ornament-divider" style="margin-bottom:2rem;" aria-hidden="true">
+      <div class="ornament-divider" style="margin-bottom:2.25rem;" aria-hidden="true">
         <img class="ornament-divider__img" alt=""
           src="https://lh3.googleusercontent.com/aida/ADBb0uiUws49kBcS7bZlmFuu4wBAGuCzCk8CRYnRPhz_jxrSiNsgJ-XBrrtyj3SF8AIMXprn1ZqtnsQJzjm4PEEMSJGpztAdi9-XWcQ2Upf5dFbwBqCuPYR9s7Fv5Aup9xEA39yD4dzuuO2JSrG1myDtVwgQ82xn2I09L6Hc1-XqC4G1uQuY7BabaTh7IeoXo4uKKyP6ObhEzz6776pM-aUcMqifgFEBow3rPAybK6zg-1wq12mzVBzNOZm2"/>
       </div>
@@ -553,29 +898,29 @@
     <!-- PHOTO BREAK 2 -->
     <div class="photo-break">
       <img class="photo-break__img" alt="Ceremonia de boda al aire libre"
-        src="https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=600&q=80&auto=format&fit=crop"/>
+        src="https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=800&q=85&auto=format&fit=crop"/>
     </div>
 
     <!-- NUESTRA HISTORIA -->
     <section class="story js-fade">
-      <h3 class="story__title">Nuestra Historia</h3>
+      <h3 class="section-heading">Nuestra Historia</h3>
       <div class="story__list">
-        <div class="story__item">
+        <div class="story__item" style="transition-delay:0.1s">
           <span class="story__year">2020</span>
           <div class="story__bar"></div>
           <p class="story__text">El día que nuestros caminos se cruzaron y nuestros corazones comenzaron a latir al unísono.</p>
         </div>
-        <div class="story__item">
+        <div class="story__item" style="transition-delay:0.2s">
           <span class="story__year">2022</span>
           <div class="story__bar"></div>
-          <p class="story__text">Juntos vivimos aventuras, aprendimos el uno del otro y construimos una complicidad única e irremplazable.</p>
+          <p class="story__text">Juntos vivimos aventuras y construimos una complicidad única e irremplazable.</p>
         </div>
-        <div class="story__item">
+        <div class="story__item" style="transition-delay:0.3s">
           <span class="story__year">2024</span>
           <div class="story__bar"></div>
           <p class="story__text">La propuesta llegó en el momento perfecto, sellando nuestra promesa de un futuro juntos.</p>
         </div>
-        <div class="story__item">
+        <div class="story__item" style="transition-delay:0.4s">
           <span class="story__year">2025</span>
           <div class="story__bar"></div>
           <p class="story__text">Hoy, ante Dios y nuestros seres queridos, decimos <em>"Sí, acepto"</em> para siempre.</p>
@@ -585,7 +930,7 @@
 
     <!-- DRESS CODE -->
     <section class="dresscode js-fade">
-      <h3 class="dresscode__title">Código de Vestimenta</h3>
+      <h3 class="section-heading">Código de Vestimenta</h3>
       <p class="dresscode__style">Semi formal</p>
       <div class="dresscode__palette" aria-label="Paleta sugerida y colores a evitar">
         <div class="dresscode__swatch" style="background:#8b7355;" title="Café dorado"></div>
@@ -605,11 +950,11 @@
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
           d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
       </svg>
-      <h3 class="gifts__title">Sugerencia de Regalos</h3>
+      <h3 class="section-heading">Sugerencia de Regalos</h3>
       <p class="gifts__desc">
-        El mejor regalo es tu presencia, pero si<br/>
-        deseas tener un detalle con nosotros,<br/>
-        les dejamos estas opciones:
+        El mejor regalo es tu presencia, pero si deseas<br/>
+        tener un detalle con nosotros, les dejamos<br/>
+        estas opciones:
       </p>
       <p class="gifts__option-lbl">Lluvia de sobres</p>
       <div class="gifts__account">
@@ -622,22 +967,24 @@
 
     <!-- RSVP -->
     <section class="rsvp js-fade">
-      <svg class="rsvp__icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
-          d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-      </svg>
-      <h2 class="rsvp__title">Confirmar Asistencia</h2>
-      <p class="rsvp__desc">
-        Agradecemos que confirmes tu asistencia
-        <span class="rsvp__deadline">antes del 05 de diciembre</span>
-      </p>
-      <!-- TODO: reemplazar href con la URL real de tu evento en Odoo -->
-      <a class="btn btn--primary btn--lg"
-         href="https://tu-empresa.odoo.com/event/boda-karla-eduardo/register"
-         target="_blank"
-         rel="noopener noreferrer">
-        Confirmar mi asistencia
-      </a>
+      <div class="rsvp__inner">
+        <svg class="rsvp__icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
+            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+        </svg>
+        <h3 class="section-heading">Confirmar Asistencia</h3>
+        <p class="rsvp__desc">
+          Agradecemos que confirmes tu asistencia
+          <span class="rsvp__deadline">antes del 05 de diciembre</span>
+        </p>
+        <!-- TODO: reemplazar href con la URL real de tu evento en Odoo -->
+        <a class="btn btn--primary btn--lg"
+           href="https://tu-empresa.odoo.com/event/boda-karla-eduardo/register"
+           target="_blank"
+           rel="noopener noreferrer">
+          Confirmar mi asistencia
+        </a>
+      </div>
     </section>
 
     <!-- FOOTER -->
@@ -664,6 +1011,7 @@
     </footer>
 
   </main>
+  </div><!-- end page-shell -->
 
   <script>
     /* === COUNTDOWN === */
@@ -693,7 +1041,7 @@
         entries.forEach(function (e) {
           if (e.isIntersecting) { e.target.classList.add('is-visible'); io.unobserve(e.target); }
         });
-      }, { threshold: 0.12 });
+      }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
       document.querySelectorAll('.js-fade').forEach(function (el) { io.observe(el); });
     }());
 
