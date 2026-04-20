@@ -313,9 +313,43 @@
       padding: 1rem 1.25rem;
       min-width: 64px;
     }
-    .countdown__number { font-family: var(--f-serif); font-size: 2.75rem; line-height: 1; color: var(--c-terracotta); }
+    .countdown__number {
+      font-family: var(--f-serif);
+      font-size: 2.75rem;
+      line-height: 1;
+      color: var(--c-terracotta);
+      display: block;
+    }
     .countdown__unit-lbl { font-size: 0.48rem; text-transform: uppercase; letter-spacing: 0.2em; color: var(--c-text-light); margin-top: 0.4rem; }
     .countdown__sep { font-family: var(--f-serif); font-size: 2rem; color: var(--c-border); align-self: center; padding-bottom: 1.2rem; }
+
+    @keyframes cd-flip {
+      0%   { opacity: 0; transform: translateY(-10px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    .countdown__number--flip { animation: cd-flip 0.28s ease forwards; }
+
+    .countdown__done {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .countdown__done-script {
+      font-family: var(--f-script);
+      font-size: 3rem;
+      color: var(--c-terracotta);
+      line-height: 1.2;
+    }
+    .countdown__done-date {
+      font-family: var(--f-serif);
+      font-size: 0.75rem;
+      letter-spacing: 0.3em;
+      color: var(--c-text-light);
+    }
+    .countdown--is-done .countdown__timer { display: none; }
+    .countdown--is-done .countdown__done  { display: flex; }
+    .countdown--is-done .countdown__label { display: none; }
 
     /* =============================================
        BLOCK: photo-break
@@ -552,6 +586,7 @@
       .countdown { padding: 5rem 2.5rem; }
       .countdown__unit { min-width: 76px; padding: 1.25rem 1.5rem; }
       .countdown__number { font-size: 3.25rem; }
+      .countdown__done-script { font-size: 3.5rem; }
 
       .photo-break__img { height: 320px; }
 
@@ -752,15 +787,15 @@
       <div class="event-date js-fade">
         <div><span class="event-date__label">Sábado</span></div>
         <div class="event-date__day-col">
-          <span class="event-date__month">Diciembre</span>
-          <span class="event-date__number">20</span>
+          <span class="event-date__month">Noviembre</span>
+          <span class="event-date__number">21</span>
         </div>
-        <div><span class="event-date__label">2025</span></div>
+        <div><span class="event-date__label">2026</span></div>
       </div>
     </section>
 
     <!-- COUNTDOWN -->
-    <section class="countdown js-fade">
+    <section class="countdown js-fade" id="js-countdown">
       <p class="countdown__label">Faltan</p>
       <div class="countdown__timer" role="timer" aria-live="polite">
         <div class="countdown__unit">
@@ -782,6 +817,11 @@
           <span class="countdown__number" id="cd-sec">00</span>
           <span class="countdown__unit-lbl">Seg</span>
         </div>
+      </div>
+      <!-- Estado cuando ya pasó la fecha -->
+      <div class="countdown__done" aria-live="polite">
+        <p class="countdown__done-script">¡Nos Casamos!</p>
+        <p class="countdown__done-date">21 · 11 · 2026</p>
       </div>
     </section>
 
@@ -921,7 +961,7 @@
           <p class="story__text">La propuesta llegó en el momento perfecto, sellando nuestra promesa de un futuro juntos.</p>
         </div>
         <div class="story__item" style="transition-delay:0.4s">
-          <span class="story__year">2025</span>
+          <span class="story__year">2026</span>
           <div class="story__bar"></div>
           <p class="story__text">Hoy, ante Dios y nuestros seres queridos, decimos <em>"Sí, acepto"</em> para siempre.</p>
         </div>
@@ -975,7 +1015,7 @@
         <h3 class="section-heading">Confirmar Asistencia</h3>
         <p class="rsvp__desc">
           Agradecemos que confirmes tu asistencia
-          <span class="rsvp__deadline">antes del 05 de diciembre</span>
+          <span class="rsvp__deadline">antes del 05 de noviembre</span>
         </p>
         <!-- TODO: reemplazar href con la URL real de tu evento en Odoo -->
         <a class="btn btn--primary btn--lg"
@@ -1016,23 +1056,43 @@
   <script>
     /* === COUNTDOWN === */
     (function () {
-      var target = new Date('2025-12-20T17:00:00').getTime();
+      var WEDDING = new Date('2026-11-21T17:00:00').getTime();
+
+      var els = {
+        section: document.getElementById('js-countdown'),
+        days:    document.getElementById('cd-days'),
+        hours:   document.getElementById('cd-hours'),
+        min:     document.getElementById('cd-min'),
+        sec:     document.getElementById('cd-sec')
+      };
+
       function pad(n) { return String(n).padStart(2, '0'); }
+
+      function setVal(el, val) {
+        if (el.textContent === val) return;
+        el.classList.remove('countdown__number--flip');
+        void el.offsetWidth; /* force reflow to restart animation */
+        el.textContent = val;
+        el.classList.add('countdown__number--flip');
+      }
+
       function tick() {
-        var diff = target - Date.now();
+        var diff = WEDDING - Date.now();
+
         if (diff <= 0) {
-          ['cd-days','cd-hours','cd-min','cd-sec'].forEach(function (id) {
-            document.getElementById(id).textContent = '00';
-          });
+          els.section.classList.add('countdown--is-done');
+          clearInterval(timer);
           return;
         }
-        document.getElementById('cd-days').textContent  = pad(Math.floor(diff / 86400000));
-        document.getElementById('cd-hours').textContent = pad(Math.floor((diff % 86400000) / 3600000));
-        document.getElementById('cd-min').textContent   = pad(Math.floor((diff % 3600000) / 60000));
-        document.getElementById('cd-sec').textContent   = pad(Math.floor((diff % 60000) / 1000));
+
+        setVal(els.days,  pad(Math.floor(diff / 86400000)));
+        setVal(els.hours, pad(Math.floor((diff % 86400000) / 3600000)));
+        setVal(els.min,   pad(Math.floor((diff % 3600000) / 60000)));
+        setVal(els.sec,   pad(Math.floor((diff % 60000) / 1000)));
       }
+
       tick();
-      setInterval(tick, 1000);
+      var timer = setInterval(tick, 1000);
     }());
 
     /* === SCROLL ANIMATIONS === */
