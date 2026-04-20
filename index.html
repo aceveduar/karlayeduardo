@@ -1,324 +1,722 @@
 <!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>Invitación de Boda - Karla &amp; Eduardo</title>
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Montserrat:wght@300;400;500;600&family=Great+Vibes&display=swap" rel="stylesheet"/>
+  <style>
+    /* === DESIGN TOKENS === */
+    :root {
+      --c-parchment:     #f7f4ee;
+      --c-parchment-lt:  #fdfaf5;
+      --c-terracotta:    #b76e49;
+      --c-terracotta-dk: #9a5c3a;
+      --c-text-dark:     #2c2c2c;
+      --c-text-mid:      #555;
+      --c-text-light:    #888;
+      --c-border:        #d4c5b0;
+      --c-white:         #ffffff;
+      --c-bg-outer:      #8b7355;
+      --f-serif:         'Playfair Display', serif;
+      --f-sans:          'Montserrat', sans-serif;
+      --f-script:        'Great Vibes', cursive;
+      --ease:            all 0.4s ease;
+      --shadow:          0 20px 60px rgba(0,0,0,0.18);
+    }
 
-<html lang="es"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Invitación de Boda - Karla &amp; Eduardo</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com" rel="preconnect"/>
-<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&amp;family=Montserrat:wght@300;400;500&amp;family=Great+Vibes&amp;display=swap" rel="stylesheet"/>
-<style data-purpose="custom-fonts-and-theme">body {
-    background-color: #f7f4ee;
-    /* Parchment-like background */
-    color: #333;
-    font-family: "Montserrat", sans-serif
+    /* === RESET === */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background-color: var(--c-bg-outer);
+      color: var(--c-text-dark);
+      font-family: var(--f-sans);
+      font-weight: 300;
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
     }
-.font-serif-elegant {
-    font-family: "Playfair Display", serif
+
+    /* === SCROLL ANIMATION === */
+    .js-fade {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.75s ease, transform 0.75s ease;
     }
-.font-script {
-    font-family: "Great Vibes", cursive
+    .js-fade.is-visible { opacity: 1; transform: translateY(0); }
+
+    /* =============================================
+       BLOCK: invitation
+       ============================================= */
+    .invitation {
+      width: 100%;
+      max-width: 480px;
+      background-color: var(--c-parchment);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      border-left: 8px solid rgba(255,255,255,0.5);
+      border-right: 8px solid rgba(255,255,255,0.5);
     }
-.text-terracotta {
-    color: #b76e49
+
+    /* =============================================
+       BLOCK: floral-band
+       ============================================= */
+    .floral-band { width: 100%; overflow: hidden; line-height: 0; }
+    .floral-band--top    { height: 160px; display: flex; align-items: flex-start; justify-content: center; }
+    .floral-band--bottom { height: 160px; display: flex; align-items: flex-end;   justify-content: center; }
+    .floral-band__img { width: 100%; height: auto; display: block; opacity: 0.92; }
+    .floral-band--top    .floral-band__img { margin-top: -3rem; }
+    .floral-band--bottom .floral-band__img { transform: rotate(180deg); margin-bottom: -3rem; }
+
+    /* =============================================
+       BLOCK: inv-header
+       ============================================= */
+    .inv-header { padding: 0 2.25rem 3rem; text-align: center; }
+    .inv-header__verse {
+      font-family: var(--f-serif);
+      font-style: italic;
+      font-size: 0.8rem;
+      color: var(--c-text-mid);
+      line-height: 1.9;
+      margin-bottom: 1.75rem;
     }
-.bg-terracotta {
-    background-color: #b76e49
+    .inv-header__monogram {
+      font-family: var(--f-serif);
+      font-size: 3rem;
+      letter-spacing: 1rem;
+      color: var(--c-text-dark);
+      margin-bottom: 0.4rem;
     }
-.border-terracotta {
-    border-color: #b76e49
+    .inv-header__tagline {
+      font-size: 0.6rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--c-text-light);
     }
-.bg-floral {
-    /* Simplified floral background approach for placeholder */
-    background-image: url(https://lh3.googleusercontent.com/aida-public/AB6AXuAY9QXj8GyyvKx-bEtFEmlfKPsOFzrTrtliCNnyLh0wc-_IwXNkXG31BLvK6ll1pWVgZ5SsLDq5I66ynkg835CVLQDxjpC1TG6SysjYQ8mu1DR77l0bIkein2QLHLsZgtDve0ZzKrMgmG4LtXHrM1qU0fzbjBYp4VJE98aSnZ2K3OemBibm02yzzPXYuAcQTkMBRHLy2NC0bk1FnijH618TMKHiJWVbaReap95_FYSV5EZLvTqyv6XIFhSLiAu11uv3i70X33Qz4g);
-    background-size: cover;
-    background-position: top center;
-    background-repeat: no-repeat
+    .inv-header__frame {
+      border: 4px solid var(--c-white);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.12), 0 0 0 1px var(--c-border);
+      margin: 1.75rem auto;
+      width: 80%;
+      overflow: hidden;
     }
-.bg-floral-bottom {
-    background-image: url(https://lh3.googleusercontent.com/aida-public/AB6AXuCCyB443V3n0dF1o910w3gK7P0jbb4uSVTs3U1GdGy78h0FjEwIaUwC3LKMm9WM9EH5WLMXTS5a4NswJ9EgR0JCt312ocdBmyv1cAkqr2LtEcqun_yAWb0MIig696SXiclh56CDUMid2w0FcRXQgYzcysvAdDMol8ntkh7AZsLi2PFcQdpEiNgeWkGGFmrioYL-66KTsDh2NPSN5V9j6UNxI4sZbFzq_9U-gQJ-xdMjz2ixtUH6ZpSwUQ5x30YRRF6nowg8SZNZfQ);
-    background-size: cover;
-    background-position: bottom center;
-    background-repeat: no-repeat
+    .inv-header__photo {
+      width: 100%;
+      height: auto;
+      display: block;
+      aspect-ratio: 3/4;
+      object-fit: cover;
+      transition: transform 0.7s ease;
     }
-/* Timeline styles */
-.timeline-line {
-    position: absolute;
-    left: 50%;
-    transform: translatex(-50%);
-    width: 1px;
-    height: 100%;
-    background-color: #b76e49;
-    z-index: 0
-    }</style>
+    .inv-header__frame:hover .inv-header__photo { transform: scale(1.04); }
+    .inv-header__parents { font-size: 0.8rem; color: var(--c-text-mid); line-height: 2; margin: 1.5rem 0; }
+    .inv-header__parents-label { font-weight: 600; font-style: italic; color: var(--c-text-dark); }
+    .inv-header__invite-text {
+      font-size: 0.65rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--c-text-light);
+      margin: 1rem 0 0.25rem;
+    }
+
+    /* =============================================
+       BLOCK: ornament-divider
+       ============================================= */
+    .ornament-divider { display: flex; justify-content: center; margin: 0.5rem 0; }
+    .ornament-divider__img { width: 56px; height: auto; opacity: 0.65; }
+    .ornament-divider--flipped .ornament-divider__img { transform: rotate(180deg); }
+
+    /* =============================================
+       BLOCK: names-display
+       ============================================= */
+    .names-display { text-align: center; padding: 0.25rem 0; }
+    .names-display__name { font-family: var(--f-script); font-size: 4.5rem; color: var(--c-text-dark); line-height: 1.1; }
+    .names-display__amp  { font-family: var(--f-serif); font-size: 2rem; color: var(--c-terracotta); font-style: italic; display: block; margin: 0.2rem 0; }
+
+    /* =============================================
+       BLOCK: event-date
+       ============================================= */
+    .event-date {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 1.5rem;
+      border-top: 1px solid var(--c-border);
+      border-bottom: 1px solid var(--c-border);
+      padding: 1rem 0;
+      margin: 1.75rem auto;
+      width: 72%;
+    }
+    .event-date__label { font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.15em; color: var(--c-text-dark); }
+    .event-date__day-col { padding: 0 1.5rem; border-left: 1px solid var(--c-border); border-right: 1px solid var(--c-border); text-align: center; }
+    .event-date__month { display: block; font-size: 0.5rem; text-transform: uppercase; letter-spacing: 0.2em; color: var(--c-text-light); margin-bottom: 0.2rem; }
+    .event-date__number { font-family: var(--f-serif); font-size: 4rem; color: var(--c-terracotta); line-height: 1; }
+
+    /* =============================================
+       BLOCK: countdown
+       ============================================= */
+    .countdown { background-color: var(--c-parchment-lt); padding: 4rem 2rem; text-align: center; }
+    .countdown__label { font-size: 0.6rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--c-text-light); margin-bottom: 1.5rem; }
+    .countdown__timer { display: flex; justify-content: center; align-items: flex-end; gap: 0.4rem; }
+    .countdown__unit { display: flex; flex-direction: column; align-items: center; }
+    .countdown__number { font-family: var(--f-serif); font-size: 3.25rem; line-height: 1; color: var(--c-terracotta); }
+    .countdown__unit-lbl { font-size: 0.5rem; text-transform: uppercase; letter-spacing: 0.15em; color: var(--c-text-light); margin-top: 0.5rem; }
+    .countdown__sep { font-family: var(--f-serif); font-size: 2.25rem; color: var(--c-border); padding-bottom: 0.9rem; }
+
+    /* =============================================
+       BLOCK: photo-break
+       ============================================= */
+    .photo-break { border-top: 8px solid var(--c-white); border-bottom: 8px solid var(--c-white); overflow: hidden; line-height: 0; }
+    .photo-break__img { width: 100%; height: 260px; object-fit: cover; display: block; transition: transform 0.7s ease; }
+    .photo-break:hover .photo-break__img { transform: scale(1.025); }
+
+    /* =============================================
+       BLOCK: event-info
+       ============================================= */
+    .event-info { padding: 4rem 2.25rem; text-align: center; }
+    .event-info__icon { width: 2.5rem; height: 2.5rem; color: var(--c-terracotta); margin: 0 auto 0.75rem; }
+    .event-info__time { font-family: var(--f-serif); font-size: 1.2rem; font-weight: 600; margin-bottom: 0.25rem; }
+    .event-info__type { font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; font-weight: 600; margin-bottom: 1.25rem; }
+    .event-info__venue { font-family: var(--f-serif); font-size: 1.1rem; margin-bottom: 0.5rem; }
+    .event-info__address { font-size: 0.72rem; font-style: italic; color: var(--c-text-light); line-height: 1.7; margin-bottom: 1.75rem; }
+
+    /* =============================================
+       BLOCK: btn
+       ============================================= */
+    .btn {
+      display: inline-block;
+      padding: 0.6rem 2rem;
+      font-size: 0.62rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      text-decoration: none;
+      border-radius: 50px;
+      transition: var(--ease);
+      cursor: pointer;
+      border: none;
+      font-family: var(--f-sans);
+      font-weight: 500;
+    }
+    .btn--primary { background-color: var(--c-terracotta); color: var(--c-white); }
+    .btn--primary:hover { background-color: var(--c-terracotta-dk); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(183,110,73,0.35); }
+    .btn--lg { padding: 0.9rem 3rem; font-size: 0.72rem; letter-spacing: 0.2em; }
+
+    /* =============================================
+       BLOCK: timeline
+       ============================================= */
+    .timeline { padding: 4rem 2.25rem; }
+    .timeline__title { text-align: center; font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; font-weight: 600; color: var(--c-text-mid); margin-bottom: 3rem; }
+    .timeline__track { position: relative; max-width: 300px; margin: 0 auto; }
+    .timeline__line { position: absolute; left: 50%; top: 0; bottom: 0; transform: translateX(-50%); width: 1px; background-color: var(--c-terracotta); opacity: 0.35; }
+    .timeline__item { position: relative; display: flex; justify-content: space-between; align-items: center; margin-bottom: 3rem; }
+    .timeline__item:last-child { margin-bottom: 0; }
+    .timeline__side { width: 42%; }
+    .timeline__side--left  { text-align: right; padding-right: 1rem; }
+    .timeline__side--right { text-align: left;  padding-left:  1rem; }
+    .timeline__name { font-size: 0.62rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; }
+    .timeline__time { font-family: var(--f-serif); font-size: 0.85rem; color: var(--c-terracotta); margin-top: 0.2rem; }
+    .timeline__icon-wrap { width: 16%; display: flex; justify-content: center; position: relative; z-index: 2; background-color: var(--c-parchment); padding: 0.4rem 0; }
+    .timeline__icon { width: 2.2rem; height: 2.2rem; color: var(--c-terracotta); }
+
+    /* =============================================
+       BLOCK: story
+       ============================================= */
+    .story { background-color: var(--c-parchment-lt); padding: 4rem 2.25rem; text-align: center; }
+    .story__title { font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; font-weight: 600; color: var(--c-text-mid); margin-bottom: 3rem; }
+    .story__list { display: flex; flex-direction: column; gap: 2.5rem; }
+    .story__item { display: flex; flex-direction: column; align-items: center; gap: 0.75rem; }
+    .story__year { font-family: var(--f-serif); font-size: 2rem; color: var(--c-terracotta); line-height: 1; }
+    .story__bar  { width: 36px; height: 1px; background-color: var(--c-border); }
+    .story__text { font-size: 0.78rem; color: var(--c-text-mid); max-width: 260px; line-height: 1.85; }
+
+    /* =============================================
+       BLOCK: dresscode
+       ============================================= */
+    .dresscode { padding: 4rem 2.25rem; text-align: center; }
+    .dresscode__title { font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; font-weight: 600; color: var(--c-text-mid); margin-bottom: 1rem; }
+    .dresscode__style { font-family: var(--f-serif); font-style: italic; font-size: 1.3rem; margin-bottom: 1.5rem; }
+    .dresscode__palette { display: flex; justify-content: center; gap: 0.5rem; margin-bottom: 1.5rem; }
+    .dresscode__swatch { width: 2rem; height: 2rem; border-radius: 50%; border: 2px solid var(--c-white); box-shadow: 0 2px 8px rgba(0,0,0,0.1); position: relative; }
+    .dresscode__swatch--no { opacity: 0.5; }
+    .dresscode__swatch--no::after { content: '✕'; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); font-size: 0.65rem; color: #c0392b; font-weight: 700; }
+    .dresscode__note { font-size: 0.75rem; color: var(--c-text-light); line-height: 1.85; }
+
+    /* =============================================
+       BLOCK: gifts
+       ============================================= */
+    .gifts { background-color: var(--c-parchment-lt); padding: 4rem 2.25rem; text-align: center; }
+    .gifts__icon  { width: 2rem; height: 2rem; color: var(--c-terracotta); margin: 0 auto 0.75rem; }
+    .gifts__title { font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; font-weight: 600; color: var(--c-text-mid); margin-bottom: 1rem; }
+    .gifts__desc  { font-size: 0.75rem; color: var(--c-text-light); line-height: 1.85; max-width: 260px; margin: 0 auto 1.5rem; }
+    .gifts__option-lbl { font-size: 0.62rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; margin-bottom: 1rem; }
+    .gifts__account { display: inline-block; background-color: var(--c-parchment); border: 1px solid var(--c-border); padding: 1rem 2.5rem; font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--c-text-mid); line-height: 2.1; }
+
+    /* =============================================
+       BLOCK: rsvp
+       ============================================= */
+    .rsvp { padding: 4rem 2.25rem; text-align: center; }
+    .rsvp__icon { width: 2.5rem; height: 2.5rem; color: var(--c-terracotta); margin: 0 auto 1rem; }
+    .rsvp__title { font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase; font-weight: 600; margin-bottom: 0.75rem; }
+    .rsvp__desc { font-size: 0.75rem; color: var(--c-text-light); line-height: 1.85; margin-bottom: 2rem; }
+    .rsvp__deadline { font-family: var(--f-serif); font-style: italic; color: var(--c-terracotta); display: block; margin-top: 0.4rem; }
+
+    /* =============================================
+       BLOCK: inv-footer
+       ============================================= */
+    .inv-footer { padding: 3rem 2rem; text-align: center; }
+    .inv-footer__msg { font-size: 0.6rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--c-text-light); margin-bottom: 1rem; }
+    .inv-footer__thanks { font-family: var(--f-script); font-size: 3.5rem; color: var(--c-text-dark); line-height: 1.2; }
+
+    /* =============================================
+       BLOCK: music-player
+       ============================================= */
+    .music-player { position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 100; }
+    .music-player__tip {
+      position: absolute;
+      bottom: 4.25rem;
+      right: 0;
+      background-color: var(--c-parchment);
+      color: var(--c-text-dark);
+      font-size: 0.58rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.4rem 0.9rem;
+      white-space: nowrap;
+      border: 1px solid var(--c-border);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      opacity: 0;
+      transform: translateY(5px);
+      transition: var(--ease);
+      pointer-events: none;
+    }
+    .music-player:hover .music-player__tip { opacity: 1; transform: translateY(0); }
+    .music-player__btn {
+      width: 3.25rem;
+      height: 3.25rem;
+      border-radius: 50%;
+      background-color: var(--c-terracotta);
+      border: 3px solid var(--c-white);
+      box-shadow: 0 4px 20px rgba(183,110,73,0.4);
+      color: var(--c-white);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--ease);
+      animation: pulse 2s infinite;
+    }
+    .music-player__btn:hover { background-color: var(--c-terracotta-dk); transform: scale(1.1); }
+    .music-player__btn svg { width: 1.3rem; height: 1.3rem; }
+
+    @keyframes pulse {
+      0%   { box-shadow: 0 0 0 0    rgba(183,110,73,0.45); }
+      70%  { box-shadow: 0 0 0 12px rgba(183,110,73,0); }
+      100% { box-shadow: 0 0 0 0    rgba(183,110,73,0); }
+    }
+
+    /* === RESPONSIVE === */
+    @media (max-width: 480px) {
+      body { padding: 0; }
+      .invitation { border-left-width: 4px; border-right-width: 4px; }
+      .names-display__name { font-size: 3.5rem; }
+      .countdown__number { font-size: 2.5rem; }
+    }
+  </style>
 </head>
-<body class="antialiased min-h-screen flex flex-col items-center justify-center bg-[#8b7355] p-4 md:p-8">
-<!-- Main Container -->
-<main class="w-full max-w-md bg-[#f7f4ee] shadow-2xl overflow-hidden relative border-x-8 border-white/50">
-<!-- BEGIN: Top Floral Decoration -->
-<div class="relative h-40 overflow-hidden w-full flex justify-center items-start"><img alt="Floral Decoration" class="w-full h-auto object-contain -mt-12 opacity-90" src="https://lh3.googleusercontent.com/aida/ADBb0uiUws49kBcS7bZlmFuu4wBAGuCzCk8CRYnRPhz_jxrSiNsgJ-XBrrtyj3SF8AIMXprn1ZqtnsQJzjm4PEEMSJGpztAdi9-XWcQ2Upf5dFbwBqCuPYR9s7Fv5Aup9xEA39yD4dzuuO2JSrG1myDtVwgQ82xn2I09L6Hc1-XqC4G1uQuY7BabaTh7IeoXo4uKKyP6ObhEzz6776pM-aUcMqifgFEBow3rPAybK6zg-1wq12mzVBzNOZm2"/></div>
-<!-- END: Top Floral Decoration -->
-<!-- BEGIN: Header Section -->
-<section class="px-6 text-center pb-12" data-purpose="header">
-<div class="mb-4">
-<p class="font-serif-elegant italic text-sm text-gray-600 mb-2">
-          "Y sobre todas estas cosas,<br/>
-          vístanse de amor, que es el<br/>
-          vínculo perfecto"<br/>
-          Colosenses 3:14
-        </p>
-</div>
-<div class="">
-<h1 class="font-serif-elegant text-5xl tracking-widest mb-2">K | E</h1>
-<p class="text-xs tracking-widest uppercase text-gray-500 mt-4">¡Nos Casamos!</p>
-</div>
-<div class="my-6 relative border-4 border-white shadow-lg mx-auto w-4/5 overflow-hidden">
-<img alt="Carlos y Camila" class="w-full h-auto object-cover object-center aspect-[3/4]" src="https://lh3.googleusercontent.com/aida/ADBb0uh9o-oVaG7HtwMo6ZY_zYRUYcXgl_rRolIpVVDnnSaHH-iepAA2k0boAq3oCuiHKOWxAfaNV_USnAGvNS64exVyQEf0Kv06NeGWgRcj68UrOBJhiuYqZG37TZS1gneEvrGBwo5vKlV0L25ipNHVzpnNvWhqjM-ZnZ6bSqCc6oQA7Ukihv-oMR40kdBsgZw8A2SyIbiCdPcWGEO-DQI8qR8Zz1OBy3I1arOUmtZhkQL-u7YMfPT4U9sd9g"/>
-</div>
-<div class="my-8 text-sm text-gray-700 leading-relaxed">
-<p class="mb-4">Con nuestro amor, la bendición de Dios<br/>y la de nuestros padres:</p>
-<div class="mb-4">
-<p class="font-bold italic">Padres de la novia</p>
-<p>Milena Sanchez Loza</p>
-<p>Pablo Martinez Gomez</p>
-</div>
-<div class="mb-6">
-<p class="font-bold italic">Padres del novio</p>
-<p>Yolanda Suarez Justiniano</p>
-<p>Victor Valverde Antelo</p>
-</div>
-<p class="uppercase text-xs tracking-widest mb-2">Nosotros</p>
-<div class="flex justify-center -mb-8 transform scale-50 opacity-90"><img alt="" class="w-48 h-auto" src="https://lh3.googleusercontent.com/aida/ADBb0uiUws49kBcS7bZlmFuu4wBAGuCzCk8CRYnRPhz_jxrSiNsgJ-XBrrtyj3SF8AIMXprn1ZqtnsQJzjm4PEEMSJGpztAdi9-XWcQ2Upf5dFbwBqCuPYR9s7Fv5Aup9xEA39yD4dzuuO2JSrG1myDtVwgQ82xn2I09L6Hc1-XqC4G1uQuY7BabaTh7IeoXo4uKKyP6ObhEzz6776pM-aUcMqifgFEBow3rPAybK6zg-1wq12mzVBzNOZm2"/></div><h2 class="font-script text-6xl text-gray-800 my-4 leading-none">Karla</h2>
-<span class="font-serif-elegant text-2xl text-terracotta italic">&amp;</span>
-<h2 class="font-script text-6xl text-gray-800 my-4 leading-none">Eduardo</h2><div class="flex justify-center -mt-8 transform scale-50 rotate-180 opacity-90"><img alt="" class="w-48 h-auto" src="https://lh3.googleusercontent.com/aida/ADBb0uiUws49kBcS7bZlmFuu4wBAGuCzCk8CRYnRPhz_jxrSiNsgJ-XBrrtyj3SF8AIMXprn1ZqtnsQJzjm4PEEMSJGpztAdi9-XWcQ2Upf5dFbwBqCuPYR9s7Fv5Aup9xEA39yD4dzuuO2JSrG1myDtVwgQ82xn2I09L6Hc1-XqC4G1uQuY7BabaTh7IeoXo4uKKyP6ObhEzz6776pM-aUcMqifgFEBow3rPAybK6zg-1wq12mzVBzNOZm2"/></div>
-<p class="mt-6 mb-8 text-xs px-4">Tenemos el honor de invitarte a<br/>celebrar nuestra unión en matrimonio</p>
-</div>
-<!-- Date -->
-<div class="my-8 border-y border-gray-300 py-4 flex justify-center items-center space-x-6 w-3/4 mx-auto">
-<div class="text-right">
-<p class="text-xs uppercase tracking-wider">Sábado</p>
-</div>
-<div class="text-center px-4 border-x border-gray-300">
-<p class="text-[0.6rem] uppercase tracking-widest mb-1 text-gray-500">Diciembre</p>
-<p class="font-serif-elegant text-5xl text-terracotta leading-none">20</p>
-</div>
-<div class="text-left">
-<p class="text-xs uppercase tracking-wider">2025</p>
-</div>
-</div>
-</section>
-<!-- END: Header Section -->
-<!-- BEGIN: Countdown Section -->
-<section class="text-center bg-[#fdfaf5] py-16" data-purpose="countdown">
-<p class="uppercase text-xs tracking-[0.2em] mb-4 text-gray-600">Faltan</p>
-<div class="flex justify-center items-end space-x-4 font-serif-elegant text-terracotta">
-<div class="flex flex-col items-center">
-<span class="text-4xl md:text-5xl leading-none" id="days">00</span>
-<span class="text-[0.6rem] uppercase tracking-wider text-gray-500 mt-2 font-sans">Días</span>
-</div>
-<span class="text-3xl pb-4">:</span>
-<div class="flex flex-col items-center">
-<span class="text-4xl md:text-5xl leading-none" id="hours">00</span>
-<span class="text-[0.6rem] uppercase tracking-wider text-gray-500 mt-2 font-sans">Horas</span>
-</div>
-<span class="text-3xl pb-4">:</span>
-<div class="flex flex-col items-center">
-<span class="text-4xl md:text-5xl leading-none" id="minutes">00</span>
-<span class="text-[0.6rem] uppercase tracking-wider text-gray-500 mt-2 font-sans">Min</span>
-</div>
-<span class="text-3xl pb-4">:</span>
-<div class="flex flex-col items-center">
-<span class="text-4xl md:text-5xl leading-none" id="seconds">00</span>
-<span class="text-[0.6rem] uppercase tracking-wider text-gray-500 mt-2 font-sans">Seg</span>
-</div>
-</div>
-</section>
-<!-- END: Countdown Section -->
-<!-- Photo Break -->
-<div class="w-full border-y-8 border-white shadow-sm overflow-hidden my-8">
-<img alt="Couple hugging" class="w-full h-auto object-cover" src="https://lh3.googleusercontent.com/aida/ADBb0uifhACCuD_k7aMsW3IdsNwIwXYcARYISKowyVhzulmLaiIZFXtQy5Z50JsEPSY3qYe7dJcrXhPPmxnRSxyr0yFagK2vgXmvnYFpQzTDieNdw17lVQpHar0H9AH79-DcPqFarKNZ_dxosKy30vfh4GAMGTPOknFrHCMV0XhzhxIUTCjkyRDP2lKYmAszkEJb8RY9GM-Uco8EOGoldUSLac0cA6Rr9IuspP-FZ9N-iv3M7mXGSL09aW9X1w"/>
-</div>
-<!-- BEGIN: Event Details -->
-<section class="px-6 text-center py-16" data-purpose="event-details">
-<div class="mb-4">
-<svg class="w-8 h-8 mx-auto text-terracotta mb-2" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M21 15.546c-.523 0-1.046.151-1.5.454a2.704 2.704 0 01-3 0 2.704 2.704 0 00-3 0 2.704 2.704 0 01-3 0 2.704 2.704 0 00-3 0 2.704 2.704 0 01-3 0 2.701 2.701 0 00-1.5-.454M9 6v2m3-2v2m3-2v2M9 3h.01M12 3h.01M15 3h.01M21 21v-7a2 2 0 00-2-2H5a2 2 0 00-2 2v7h18zm-3-9v-2a2 2 0 00-2-2H8a2 2 0 00-2 2v2h12z" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"></path></svg>
-<h3 class="font-serif-elegant font-bold text-lg mb-1">17:00 HRS.</h3>
-<p class="uppercase tracking-widest text-sm font-semibold mb-2">Recepción</p>
-<p class="font-serif-elegant text-lg mb-1">SALÓN DE EVENTOS JARDÍN</p>
-<p class="text-xs italic text-gray-600">C. Aquiles Serdán 1633, Benito Juárez Nte.<br/>Coatzacoalcos, Veracruz</p>
-</div>
-<a class="inline-block mt-4 px-6 py-2 bg-terracotta text-white text-xs uppercase tracking-wider rounded-full hover:bg-opacity-90 transition duration-300" href="#">
-        Ver ubicación
-      </a>
-</section>
-<!-- END: Event Details -->
-<!-- BEGIN: Itinerary Section -->
-<section class="px-6 py-16" data-purpose="itinerary">
-<h3 class="text-center uppercase tracking-[0.15em] text-sm font-semibold mb-10 text-gray-700">Itinerario de Actividades</h3><div class="flex justify-center mb-4 opacity-80 transform scale-50"><img alt="" class="w-32 h-auto" src="https://lh3.googleusercontent.com/aida/ADBb0uiUws49kBcS7bZlmFuu4wBAGuCzCk8CRYnRPhz_jxrSiNsgJ-XBrrtyj3SF8AIMXprn1ZqtnsQJzjm4PEEMSJGpztAdi9-XWcQ2Upf5dFbwBqCuPYR9s7Fv5Aup9xEA39yD4dzuuO2JSrG1myDtVwgQ82xn2I09L6Hc1-XqC4G1uQuY7BabaTh7IeoXo4uKKyP6ObhEzz6776pM-aUcMqifgFEBow3rPAybK6zg-1wq12mzVBzNOZm2"/></div>
-<div class="relative max-w-xs mx-auto">
-<!-- Vertical Line -->
-<div class="timeline-line"></div>
-<!-- Item 1: Recepción -->
-<div class="relative flex justify-between items-center mb-12 w-full">
-<div class="w-5/12 text-right pr-4">
-<!-- Empty space for layout -->
-</div>
-<div class="w-2/12 flex justify-center relative z-10 bg-[#f7f4ee] py-2">
-<svg class="w-8 h-8 text-terracotta" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg>
-</div>
-<div class="w-5/12 pl-4">
-<h4 class="text-xs font-bold uppercase tracking-wider">Recepción</h4>
-<p class="text-xs font-serif-elegant">17:00</p>
-</div>
-</div>
-<!-- Item 2: Entrada -->
-<div class="relative flex justify-between items-center mb-12 w-full">
-<div class="w-5/12 text-right pr-4">
-<h4 class="text-xs font-bold uppercase tracking-wider">Entrada de<br/>Novios</h4>
-<p class="text-xs font-serif-elegant">17:30</p>
-</div>
-<div class="w-2/12 flex justify-center relative z-10 bg-[#f7f4ee] py-2">
-<svg class="w-8 h-8 text-terracotta" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg>
-</div>
-<div class="w-5/12 pl-4">
-<!-- Empty -->
-</div>
-</div>
-<!-- Item 3: Brindis -->
-<div class="relative flex justify-between items-center mb-12 w-full">
-<div class="w-5/12 text-right pr-4">
-<!-- Empty -->
-</div>
-<div class="w-2/12 flex justify-center relative z-10 bg-[#f7f4ee] py-2">
-<svg class="w-8 h-8 text-terracotta" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M21 15.546c-.523 0-1.046.151-1.5.454a2.704 2.704 0 01-3 0 2.704 2.704 0 00-3 0 2.704 2.704 0 01-3 0 2.704 2.704 0 00-3 0 2.704 2.704 0 01-3 0 2.701 2.701 0 00-1.5-.454M9 6v2m3-2v2m3-2v2M9 3h.01M12 3h.01M15 3h.01M21 21v-7a2 2 0 00-2-2H5a2 2 0 00-2 2v7h18zm-3-9v-2a2 2 0 00-2-2H8a2 2 0 00-2 2v2h12z" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg>
-</div>
-<div class="w-5/12 pl-4">
-<h4 class="text-xs font-bold uppercase tracking-wider">Brindis</h4>
-<p class="text-xs font-serif-elegant">18:00</p>
-</div>
-</div>
-<!-- Item 4: Banquete -->
-<div class="relative flex justify-between items-center mb-12 w-full">
-<div class="w-5/12 text-right pr-4">
-<h4 class="text-xs font-bold uppercase tracking-wider">Banquete</h4>
-<p class="text-xs font-serif-elegant">18:30</p>
-</div>
-<div class="w-2/12 flex justify-center relative z-10 bg-[#f7f4ee] py-2">
-<svg class="w-8 h-8 text-terracotta" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg>
-</div>
-<div class="w-5/12 pl-4">
-<!-- Empty -->
-</div>
-</div>
-<!-- Item 5: Fiesta -->
-<div class="relative flex justify-between items-center w-full">
-<div class="w-5/12 text-right pr-4">
-<!-- Empty -->
-</div>
-<div class="w-2/12 flex justify-center relative z-10 bg-[#f7f4ee] py-2">
-<svg class="w-8 h-8 text-terracotta" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg>
-</div>
-<div class="w-5/12 pl-4">
-<h4 class="text-xs font-bold uppercase tracking-wider">Fiesta</h4>
-<p class="text-xs font-serif-elegant">19:00</p>
-</div>
-</div>
-</div>
-</section>
-<!-- END: Itinerary Section -->
-<!-- Photo Break -->
-<div class="w-full border-y-8 border-white shadow-sm overflow-hidden my-8">
-<img alt="Couple smiling" class="w-full h-auto object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBuDLBtSm3VoosHnOZCyv8kYb3zeQ-2L0KA3WuVuzOLHxcnzUSg3iIRtRMwOK0kRLqrX_d9D8XPgHtbwWyjVGCK5v3UEs7ZmJZcF-nm0-GNrzP2g0gmz95uE-rK7Ypx4WfX76mNhaerZ84kZ4ZBH5yaB3D-ojq5bFPHc57NEN88TgpXgYixcaN2_jfbRKfJXKj5dQ8Nvi5aUK4wfROzSj7UEO2gvCBGxyT2-Zpk-9h03oz-7Uo0q3vHYCNd8qXTexpHfgNuZOqkWA"/>
-</div>
-<!-- BEGIN: Info Section (Dress Code & Gifts) -->
-<section class="px-6 text-center py-16" data-purpose="additional-info">
-<!-- Dress Code -->
-<div class="mb-12">
-<h3 class="uppercase tracking-[0.15em] text-sm font-semibold mb-4 text-gray-700">Código de Vestimenta</h3>
-<p class="font-serif-elegant italic text-lg mb-4">Semi formal</p>
-<div class="flex justify-center mb-4">
-<!-- Simplified icon representation -->
-<svg class="w-12 h-12 text-gray-800" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path clip-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" fill-rule="evenodd"></path></svg>
-</div>
-<p class="text-xs text-gray-600 max-w-xs mx-auto">
-          Con mucho cariño les pedimos evitar<br/>prendas en color blanco y beige.
-        </p>
-</div>
-<!-- Gifts -->
-<div class="mb-12">
-<svg class="w-8 h-8 mx-auto text-terracotta mb-2" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg>
-<h3 class="uppercase tracking-[0.15em] text-sm font-semibold mb-4 text-gray-700">Sugerencia de Regalos</h3>
-<p class="text-xs text-gray-600 mb-6 max-w-xs mx-auto">
-          El mejor regalo es tu presencia, pero si<br/>
-          deseas tener un detalle con nosotros, les<br/>
-          dejamos estas opciones:
-        </p>
-<p class="text-xs font-bold uppercase tracking-widest mb-2">Lluvia de sobres</p>
-<svg class="w-6 h-6 mx-auto text-gray-500 mb-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg>
-<div class="text-[0.65rem] uppercase tracking-wider text-gray-600 leading-relaxed"><p>TRANSFERENCIA</p><p>AAAA BBBBB</p><p>CCCC DDDDD</p><p>EEEEEE</p></div>
-</div>
-</section>
-<!-- END: Info Section -->
-<!-- BEGIN: RSVP Section -->
-<section class="px-6 text-center bg-[#fdfaf5] py-16" data-purpose="rsvp">
-<svg class="w-10 h-10 mx-auto text-terracotta mb-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"></path></svg>
-<h3 class="uppercase tracking-[0.15em] text-sm font-semibold mb-2 text-gray-800">Confirmar Asistencia</h3>
-<p class="text-xs text-gray-600 mb-6">
-        Agradecemos que confirmes tu<br/>asistencia antes del 05 de diciembre
+<body>
+
+  <!-- MUSIC PLAYER -->
+  <div class="music-player">
+    <span class="music-player__tip">Nuestra canción ♪</span>
+    <button class="music-player__btn" id="js-music-btn" aria-label="Reproducir música">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"/>
+      </svg>
+    </button>
+    <audio id="js-audio" loop>
+      <source src="https://www.bensound.com/bensound-music/bensound-romanticserenade.mp3" type="audio/mpeg"/>
+    </audio>
+  </div>
+
+  <!-- MAIN INVITATION -->
+  <main class="invitation" role="main">
+
+    <!-- TOP FLORAL -->
+    <div class="floral-band floral-band--top" aria-hidden="true">
+      <img class="floral-band__img" alt=""
+        src="https://lh3.googleusercontent.com/aida/ADBb0uiUws49kBcS7bZlmFuu4wBAGuCzCk8CRYnRPhz_jxrSiNsgJ-XBrrtyj3SF8AIMXprn1ZqtnsQJzjm4PEEMSJGpztAdi9-XWcQ2Upf5dFbwBqCuPYR9s7Fv5Aup9xEA39yD4dzuuO2JSrG1myDtVwgQ82xn2I09L6Hc1-XqC4G1uQuY7BabaTh7IeoXo4uKKyP6ObhEzz6776pM-aUcMqifgFEBow3rPAybK6zg-1wq12mzVBzNOZm2"/>
+    </div>
+
+    <!-- HEADER -->
+    <section class="inv-header js-fade">
+      <p class="inv-header__verse">
+        "Y sobre todas estas cosas,<br/>
+        vístanse de amor, que es el<br/>
+        vínculo perfecto"<br/>
+        <em>Colosenses 3:14</em>
       </p>
-<div class="flex flex-col space-y-3 items-center">
-<a class="w-48 py-2 bg-terracotta text-white text-xs uppercase tracking-wider rounded-full hover:bg-opacity-90 transition duration-300" href="#">
-          Contacto novia
-        </a>
-<a class="w-48 py-2 bg-terracotta text-white text-xs uppercase tracking-wider rounded-full hover:bg-opacity-90 transition duration-300" href="#">
-          Contacto novio
-        </a>
-</div>
-</section>
-<!-- END: RSVP Section -->
-<!-- BEGIN: Footer -->
-<footer class="py-12 text-center relative" data-purpose="footer">
-<p class="text-xs uppercase tracking-widest text-gray-500 mb-4">Esperamos contar con su presencia</p>
-<div class="flex justify-center -mb-8 transform scale-50 opacity-90"><img alt="" class="w-48 h-auto" src="https://lh3.googleusercontent.com/aida/ADBb0uiUws49kBcS7bZlmFuu4wBAGuCzCk8CRYnRPhz_jxrSiNsgJ-XBrrtyj3SF8AIMXprn1ZqtnsQJzjm4PEEMSJGpztAdi9-XWcQ2Upf5dFbwBqCuPYR9s7Fv5Aup9xEA39yD4dzuuO2JSrG1myDtVwgQ82xn2I09L6Hc1-XqC4G1uQuY7BabaTh7IeoXo4uKKyP6ObhEzz6776pM-aUcMqifgFEBow3rPAybK6zg-1wq12mzVBzNOZm2"/></div><h2 class="font-script text-4xl text-gray-800 mb-8">¡Muchas Gracias!</h2><div class="flex justify-center -mt-8 transform scale-50 rotate-180 opacity-90"><img alt="" class="w-48 h-auto" src="https://lh3.googleusercontent.com/aida/ADBb0uiUws49kBcS7bZlmFuu4wBAGuCzCk8CRYnRPhz_jxrSiNsgJ-XBrrtyj3SF8AIMXprn1ZqtnsQJzjm4PEEMSJGpztAdi9-XWcQ2Upf5dFbwBqCuPYR9s7Fv5Aup9xEA39yD4dzuuO2JSrG1myDtVwgQ82xn2I09L6Hc1-XqC4G1uQuY7BabaTh7IeoXo4uKKyP6ObhEzz6776pM-aUcMqifgFEBow3rPAybK6zg-1wq12mzVBzNOZm2"/></div>
-<!-- Bottom Floral Decoration -->
-<div class="h-40 w-full overflow-hidden flex justify-center items-end"><img alt="Floral Decoration" class="w-full h-auto object-contain transform rotate-180 -mb-12 opacity-90" src="https://lh3.googleusercontent.com/aida/ADBb0uiUws49kBcS7bZlmFuu4wBAGuCzCk8CRYnRPhz_jxrSiNsgJ-XBrrtyj3SF8AIMXprn1ZqtnsQJzjm4PEEMSJGpztAdi9-XWcQ2Upf5dFbwBqCuPYR9s7Fv5Aup9xEA39yD4dzuuO2JSrG1myDtVwgQ82xn2I09L6Hc1-XqC4G1uQuY7BabaTh7IeoXo4uKKyP6ObhEzz6776pM-aUcMqifgFEBow3rPAybK6zg-1wq12mzVBzNOZm2"/></div>
-</footer>
-<!-- END: Footer -->
-</main>
-<script data-purpose="countdown-timer">
-    // Set the date we're counting down to (e.g., Dec 20, 2025)
-    const countDownDate = new Date("Dec 20, 2025 17:00:00").getTime();
+      <h1 class="inv-header__monogram">K | E</h1>
+      <p class="inv-header__tagline">¡Nos Casamos!</p>
 
-    // Update the count down every 1 second
-    const x = setInterval(function() {
+      <div class="inv-header__frame">
+        <img class="inv-header__photo" alt="Karla y Eduardo"
+          src="https://images.unsplash.com/photo-1519741497674-611481863552?w=600&q=80&auto=format&fit=crop"/>
+      </div>
 
-      // Get today's date and time
-      const now = new Date().getTime();
+      <div class="inv-header__parents js-fade">
+        <p>Con nuestro amor, la bendición de Dios<br/>y la de nuestros padres:</p>
+        <br/>
+        <p class="inv-header__parents-label">Padres de la novia</p>
+        <p>Milena Sanchez Loza</p>
+        <p>Pablo Martinez Gomez</p>
+        <br/>
+        <p class="inv-header__parents-label">Padres del novio</p>
+        <p>Yolanda Suarez Justiniano</p>
+        <p>Victor Valverde Antelo</p>
+      </div>
 
-      // Find the distance between now and the count down date
-      const distance = countDownDate - now;
+      <p class="inv-header__invite-text">Nosotros</p>
 
-      // Time calculations for days, hours, minutes and seconds
-      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+      <div class="ornament-divider js-fade" aria-hidden="true">
+        <img class="ornament-divider__img" alt=""
+          src="https://lh3.googleusercontent.com/aida/ADBb0uiUws49kBcS7bZlmFuu4wBAGuCzCk8CRYnRPhz_jxrSiNsgJ-XBrrtyj3SF8AIMXprn1ZqtnsQJzjm4PEEMSJGpztAdi9-XWcQ2Upf5dFbwBqCuPYR9s7Fv5Aup9xEA39yD4dzuuO2JSrG1myDtVwgQ82xn2I09L6Hc1-XqC4G1uQuY7BabaTh7IeoXo4uKKyP6ObhEzz6776pM-aUcMqifgFEBow3rPAybK6zg-1wq12mzVBzNOZm2"/>
+      </div>
 
-      // Display the result in the corresponding elements
-      document.getElementById("days").innerHTML = days < 10 ? '0' + days : days;
-      document.getElementById("hours").innerHTML = hours < 10 ? '0' + hours : hours;
-      document.getElementById("minutes").innerHTML = minutes < 10 ? '0' + minutes : minutes;
-      document.getElementById("seconds").innerHTML = seconds < 10 ? '0' + seconds : seconds;
+      <div class="names-display js-fade">
+        <h2 class="names-display__name">Karla</h2>
+        <span class="names-display__amp">&amp;</span>
+        <h2 class="names-display__name">Eduardo</h2>
+      </div>
 
-      // If the count down is finished, write some text
-      if (distance < 0) {
-        clearInterval(x);
-        document.getElementById("days").innerHTML = "00";
-        document.getElementById("hours").innerHTML = "00";
-        document.getElementById("minutes").innerHTML = "00";
-        document.getElementById("seconds").innerHTML = "00";
+      <div class="ornament-divider ornament-divider--flipped" aria-hidden="true">
+        <img class="ornament-divider__img" alt=""
+          src="https://lh3.googleusercontent.com/aida/ADBb0uiUws49kBcS7bZlmFuu4wBAGuCzCk8CRYnRPhz_jxrSiNsgJ-XBrrtyj3SF8AIMXprn1ZqtnsQJzjm4PEEMSJGpztAdi9-XWcQ2Upf5dFbwBqCuPYR9s7Fv5Aup9xEA39yD4dzuuO2JSrG1myDtVwgQ82xn2I09L6Hc1-XqC4G1uQuY7BabaTh7IeoXo4uKKyP6ObhEzz6776pM-aUcMqifgFEBow3rPAybK6zg-1wq12mzVBzNOZm2"/>
+      </div>
+
+      <p style="font-size:0.75rem;color:var(--c-text-light);margin:1.5rem 0 0.5rem;line-height:1.85;">
+        Tenemos el honor de invitarte a<br/>celebrar nuestra unión en matrimonio
+      </p>
+
+      <div class="event-date js-fade">
+        <div><span class="event-date__label">Sábado</span></div>
+        <div class="event-date__day-col">
+          <span class="event-date__month">Diciembre</span>
+          <span class="event-date__number">20</span>
+        </div>
+        <div><span class="event-date__label">2025</span></div>
+      </div>
+    </section>
+
+    <!-- COUNTDOWN -->
+    <section class="countdown js-fade">
+      <p class="countdown__label">Faltan</p>
+      <div class="countdown__timer" role="timer" aria-live="polite">
+        <div class="countdown__unit">
+          <span class="countdown__number" id="cd-days">00</span>
+          <span class="countdown__unit-lbl">Días</span>
+        </div>
+        <span class="countdown__sep" aria-hidden="true">:</span>
+        <div class="countdown__unit">
+          <span class="countdown__number" id="cd-hours">00</span>
+          <span class="countdown__unit-lbl">Horas</span>
+        </div>
+        <span class="countdown__sep" aria-hidden="true">:</span>
+        <div class="countdown__unit">
+          <span class="countdown__number" id="cd-min">00</span>
+          <span class="countdown__unit-lbl">Min</span>
+        </div>
+        <span class="countdown__sep" aria-hidden="true">:</span>
+        <div class="countdown__unit">
+          <span class="countdown__number" id="cd-sec">00</span>
+          <span class="countdown__unit-lbl">Seg</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- PHOTO BREAK 1 -->
+    <div class="photo-break">
+      <img class="photo-break__img" alt="Pareja caminando entre flores"
+        src="https://images.unsplash.com/photo-1529634806980-85c3dd6d34ac?w=600&q=80&auto=format&fit=crop"/>
+    </div>
+
+    <!-- EVENT DETAILS -->
+    <section class="event-info js-fade">
+      <svg class="event-info__icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
+          d="M21 15.546c-.523 0-1.046.151-1.5.454a2.704 2.704 0 01-3 0 2.704 2.704 0 00-3 0 2.704 2.704 0 01-3 0 2.704 2.704 0 00-3 0 2.704 2.704 0 01-3 0 2.701 2.701 0 00-1.5-.454M9 6v2m3-2v2m3-2v2M9 3h.01M12 3h.01M15 3h.01M21 21v-7a2 2 0 00-2-2H5a2 2 0 00-2 2v7h18zm-3-9v-2a2 2 0 00-2-2H8a2 2 0 00-2 2v2h12z"/>
+      </svg>
+      <p class="event-info__time">17:00 HRS.</p>
+      <p class="event-info__type">Recepción</p>
+      <p class="event-info__venue">Salón de Eventos Jardín</p>
+      <p class="event-info__address">
+        C. Aquiles Serdán 1633, Benito Juárez Nte.<br/>
+        Coatzacoalcos, Veracruz
+      </p>
+      <!-- TODO: reemplazar href con el link real de Google Maps -->
+      <a class="btn btn--primary" href="#" target="_blank" rel="noopener noreferrer">Ver ubicación</a>
+    </section>
+
+    <!-- ITINERARY -->
+    <section class="timeline js-fade">
+      <h3 class="timeline__title">Itinerario de Actividades</h3>
+
+      <div class="ornament-divider" style="margin-bottom:2rem;" aria-hidden="true">
+        <img class="ornament-divider__img" alt=""
+          src="https://lh3.googleusercontent.com/aida/ADBb0uiUws49kBcS7bZlmFuu4wBAGuCzCk8CRYnRPhz_jxrSiNsgJ-XBrrtyj3SF8AIMXprn1ZqtnsQJzjm4PEEMSJGpztAdi9-XWcQ2Upf5dFbwBqCuPYR9s7Fv5Aup9xEA39yD4dzuuO2JSrG1myDtVwgQ82xn2I09L6Hc1-XqC4G1uQuY7BabaTh7IeoXo4uKKyP6ObhEzz6776pM-aUcMqifgFEBow3rPAybK6zg-1wq12mzVBzNOZm2"/>
+      </div>
+
+      <div class="timeline__track">
+        <div class="timeline__line" aria-hidden="true"></div>
+
+        <div class="timeline__item">
+          <div class="timeline__side timeline__side--left"></div>
+          <div class="timeline__icon-wrap">
+            <svg class="timeline__icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+            </svg>
+          </div>
+          <div class="timeline__side timeline__side--right">
+            <p class="timeline__name">Recepción</p>
+            <p class="timeline__time">17:00</p>
+          </div>
+        </div>
+
+        <div class="timeline__item">
+          <div class="timeline__side timeline__side--left">
+            <p class="timeline__name">Entrada de<br/>Novios</p>
+            <p class="timeline__time">17:30</p>
+          </div>
+          <div class="timeline__icon-wrap">
+            <svg class="timeline__icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+            </svg>
+          </div>
+          <div class="timeline__side timeline__side--right"></div>
+        </div>
+
+        <div class="timeline__item">
+          <div class="timeline__side timeline__side--left"></div>
+          <div class="timeline__icon-wrap">
+            <svg class="timeline__icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                d="M21 15.546c-.523 0-1.046.151-1.5.454a2.704 2.704 0 01-3 0 2.704 2.704 0 00-3 0 2.704 2.704 0 01-3 0 2.704 2.704 0 00-3 0 2.704 2.704 0 01-3 0 2.701 2.701 0 00-1.5-.454M9 6v2m3-2v2m3-2v2M9 3h.01M12 3h.01M15 3h.01M21 21v-7a2 2 0 00-2-2H5a2 2 0 00-2 2v7h18zm-3-9v-2a2 2 0 00-2-2H8a2 2 0 00-2 2v2h12z"/>
+            </svg>
+          </div>
+          <div class="timeline__side timeline__side--right">
+            <p class="timeline__name">Brindis</p>
+            <p class="timeline__time">18:00</p>
+          </div>
+        </div>
+
+        <div class="timeline__item">
+          <div class="timeline__side timeline__side--left">
+            <p class="timeline__name">Banquete</p>
+            <p class="timeline__time">18:30</p>
+          </div>
+          <div class="timeline__icon-wrap">
+            <svg class="timeline__icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
+            </svg>
+          </div>
+          <div class="timeline__side timeline__side--right"></div>
+        </div>
+
+        <div class="timeline__item">
+          <div class="timeline__side timeline__side--left"></div>
+          <div class="timeline__icon-wrap">
+            <svg class="timeline__icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+          </div>
+          <div class="timeline__side timeline__side--right">
+            <p class="timeline__name">Fiesta</p>
+            <p class="timeline__time">19:00</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- PHOTO BREAK 2 -->
+    <div class="photo-break">
+      <img class="photo-break__img" alt="Ceremonia de boda al aire libre"
+        src="https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=600&q=80&auto=format&fit=crop"/>
+    </div>
+
+    <!-- NUESTRA HISTORIA -->
+    <section class="story js-fade">
+      <h3 class="story__title">Nuestra Historia</h3>
+      <div class="story__list">
+        <div class="story__item">
+          <span class="story__year">2020</span>
+          <div class="story__bar"></div>
+          <p class="story__text">El día que nuestros caminos se cruzaron y nuestros corazones comenzaron a latir al unísono.</p>
+        </div>
+        <div class="story__item">
+          <span class="story__year">2022</span>
+          <div class="story__bar"></div>
+          <p class="story__text">Juntos vivimos aventuras, aprendimos el uno del otro y construimos una complicidad única e irremplazable.</p>
+        </div>
+        <div class="story__item">
+          <span class="story__year">2024</span>
+          <div class="story__bar"></div>
+          <p class="story__text">La propuesta llegó en el momento perfecto, sellando nuestra promesa de un futuro juntos.</p>
+        </div>
+        <div class="story__item">
+          <span class="story__year">2025</span>
+          <div class="story__bar"></div>
+          <p class="story__text">Hoy, ante Dios y nuestros seres queridos, decimos <em>"Sí, acepto"</em> para siempre.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- DRESS CODE -->
+    <section class="dresscode js-fade">
+      <h3 class="dresscode__title">Código de Vestimenta</h3>
+      <p class="dresscode__style">Semi formal</p>
+      <div class="dresscode__palette" aria-label="Paleta sugerida y colores a evitar">
+        <div class="dresscode__swatch" style="background:#8b7355;" title="Café dorado"></div>
+        <div class="dresscode__swatch" style="background:#b76e49;" title="Terracota"></div>
+        <div class="dresscode__swatch" style="background:#c9a96e;" title="Dorado suave"></div>
+        <div class="dresscode__swatch" style="background:#6b7c5c;" title="Verde salvia"></div>
+        <div class="dresscode__swatch" style="background:#4a3728;" title="Café oscuro"></div>
+        <div class="dresscode__swatch dresscode__swatch--no" style="background:#ffffff;" title="Blanco — evitar"></div>
+        <div class="dresscode__swatch dresscode__swatch--no" style="background:#f0ead6;" title="Beige — evitar"></div>
+      </div>
+      <p class="dresscode__note">Con mucho cariño les pedimos evitar<br/>prendas en color blanco y beige.</p>
+    </section>
+
+    <!-- GIFTS -->
+    <section class="gifts js-fade">
+      <svg class="gifts__icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+          d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+      </svg>
+      <h3 class="gifts__title">Sugerencia de Regalos</h3>
+      <p class="gifts__desc">
+        El mejor regalo es tu presencia, pero si<br/>
+        deseas tener un detalle con nosotros,<br/>
+        les dejamos estas opciones:
+      </p>
+      <p class="gifts__option-lbl">Lluvia de sobres</p>
+      <div class="gifts__account">
+        <p>Transferencia</p>
+        <p>AAAA BBBBB</p>
+        <p>CCCC DDDDD</p>
+        <p>EEEEEE</p>
+      </div>
+    </section>
+
+    <!-- RSVP -->
+    <section class="rsvp js-fade">
+      <svg class="rsvp__icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
+          d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+      </svg>
+      <h2 class="rsvp__title">Confirmar Asistencia</h2>
+      <p class="rsvp__desc">
+        Agradecemos que confirmes tu asistencia
+        <span class="rsvp__deadline">antes del 05 de diciembre</span>
+      </p>
+      <!-- TODO: reemplazar href con la URL real de tu evento en Odoo -->
+      <a class="btn btn--primary btn--lg"
+         href="https://tu-empresa.odoo.com/event/boda-karla-eduardo/register"
+         target="_blank"
+         rel="noopener noreferrer">
+        Confirmar mi asistencia
+      </a>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="inv-footer">
+      <p class="inv-footer__msg">Esperamos contar con su presencia</p>
+
+      <div class="ornament-divider" aria-hidden="true">
+        <img class="ornament-divider__img" alt=""
+          src="https://lh3.googleusercontent.com/aida/ADBb0uiUws49kBcS7bZlmFuu4wBAGuCzCk8CRYnRPhz_jxrSiNsgJ-XBrrtyj3SF8AIMXprn1ZqtnsQJzjm4PEEMSJGpztAdi9-XWcQ2Upf5dFbwBqCuPYR9s7Fv5Aup9xEA39yD4dzuuO2JSrG1myDtVwgQ82xn2I09L6Hc1-XqC4G1uQuY7BabaTh7IeoXo4uKKyP6ObhEzz6776pM-aUcMqifgFEBow3rPAybK6zg-1wq12mzVBzNOZm2"/>
+      </div>
+
+      <p class="inv-footer__thanks">¡Muchas Gracias!</p>
+
+      <div class="ornament-divider ornament-divider--flipped" aria-hidden="true">
+        <img class="ornament-divider__img" alt=""
+          src="https://lh3.googleusercontent.com/aida/ADBb0uiUws49kBcS7bZlmFuu4wBAGuCzCk8CRYnRPhz_jxrSiNsgJ-XBrrtyj3SF8AIMXprn1ZqtnsQJzjm4PEEMSJGpztAdi9-XWcQ2Upf5dFbwBqCuPYR9s7Fv5Aup9xEA39yD4dzuuO2JSrG1myDtVwgQ82xn2I09L6Hc1-XqC4G1uQuY7BabaTh7IeoXo4uKKyP6ObhEzz6776pM-aUcMqifgFEBow3rPAybK6zg-1wq12mzVBzNOZm2"/>
+      </div>
+
+      <!-- BOTTOM FLORAL -->
+      <div class="floral-band floral-band--bottom" aria-hidden="true">
+        <img class="floral-band__img" alt=""
+          src="https://lh3.googleusercontent.com/aida/ADBb0uiUws49kBcS7bZlmFuu4wBAGuCzCk8CRYnRPhz_jxrSiNsgJ-XBrrtyj3SF8AIMXprn1ZqtnsQJzjm4PEEMSJGpztAdi9-XWcQ2Upf5dFbwBqCuPYR9s7Fv5Aup9xEA39yD4dzuuO2JSrG1myDtVwgQ82xn2I09L6Hc1-XqC4G1uQuY7BabaTh7IeoXo4uKKyP6ObhEzz6776pM-aUcMqifgFEBow3rPAybK6zg-1wq12mzVBzNOZm2"/>
+      </div>
+    </footer>
+
+  </main>
+
+  <script>
+    /* === COUNTDOWN === */
+    (function () {
+      var target = new Date('2025-12-20T17:00:00').getTime();
+      function pad(n) { return String(n).padStart(2, '0'); }
+      function tick() {
+        var diff = target - Date.now();
+        if (diff <= 0) {
+          ['cd-days','cd-hours','cd-min','cd-sec'].forEach(function (id) {
+            document.getElementById(id).textContent = '00';
+          });
+          return;
+        }
+        document.getElementById('cd-days').textContent  = pad(Math.floor(diff / 86400000));
+        document.getElementById('cd-hours').textContent = pad(Math.floor((diff % 86400000) / 3600000));
+        document.getElementById('cd-min').textContent   = pad(Math.floor((diff % 3600000) / 60000));
+        document.getElementById('cd-sec').textContent   = pad(Math.floor((diff % 60000) / 1000));
       }
-    }, 1000);
+      tick();
+      setInterval(tick, 1000);
+    }());
+
+    /* === SCROLL ANIMATIONS === */
+    (function () {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (e.isIntersecting) { e.target.classList.add('is-visible'); io.unobserve(e.target); }
+        });
+      }, { threshold: 0.12 });
+      document.querySelectorAll('.js-fade').forEach(function (el) { io.observe(el); });
+    }());
+
+    /* === MUSIC PLAYER === */
+    (function () {
+      var btn   = document.getElementById('js-music-btn');
+      var audio = document.getElementById('js-audio');
+      var on    = false;
+      var svgPlay  = '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"/></svg>';
+      var svgPause = '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>';
+      btn.addEventListener('click', function () {
+        if (on) {
+          audio.pause();
+          btn.innerHTML = svgPlay;
+          btn.setAttribute('aria-label', 'Reproducir música');
+        } else {
+          audio.play().catch(function () {});
+          btn.innerHTML = svgPause;
+          btn.setAttribute('aria-label', 'Pausar música');
+        }
+        on = !on;
+      });
+    }());
   </script>
-</body></html>
+</body>
+</html>
