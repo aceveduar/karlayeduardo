@@ -6,6 +6,38 @@
     <title>Document</title>
 </head>
 <body>
-    <a href="https://karlayeduardo.odoo.com/event/boda-de-karla-y-eduardo-1/register#registro" class="btn btn-primary">¡Regístrate en la boda!</a>
+    <a href="https://karlayeduardo.odoo.com/event/boda-de-karla-y-eduardo-1/register" 
+   id="btn-registro"
+   class="btn btn-primary"
+   target="_blank">
+  ¡Regístrate en la boda!
+</a>
+
+<script>
+  document.getElementById('btn-registro').addEventListener('click', function(e) {
+    e.preventDefault();
+
+    // Abrir la página en una nueva ventana/pestaña
+    const ventana = window.open(
+      'https://karlayeduardo.odoo.com/event/boda-de-karla-y-eduardo-1/register',
+      '_blank'
+    );
+
+    // Esperar a que cargue y luego abrir el modal
+    ventana.addEventListener('load', function() {
+      setTimeout(function() {
+        // El contenido está en un iframe dentro de Odoo
+        const iframes = ventana.document.querySelectorAll('iframe');
+        iframes.forEach(function(frame) {
+          try {
+            const doc = frame.contentDocument;
+            const btn = doc.querySelector('[data-bs-target="#modal_ticket_registration"]');
+            if (btn) btn.click();
+          } catch(e) {}
+        });
+      }, 1500);
+    });
+  });
+</script>
 </body>
 </html>
