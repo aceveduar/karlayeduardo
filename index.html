@@ -2335,7 +2335,7 @@
                         <img
                             class="inv-header__photo"
                             alt="Karla y Eduardo"
-                            src="https://images.unsplash.com/photo-1519741497674-611481863552?w=800&q=85&auto=format&fit=crop"
+                            src="assets/Karla y Froyland/66a86974-0364-43a0-8d70-308a8c0f31ad.jpg"
                         />
                     </div>
 
@@ -2448,7 +2448,7 @@
                     <img
                         class="photo-break__img"
                         alt="Pareja caminando entre flores"
-                        src="https://images.unsplash.com/photo-1529634806980-85c3dd6d34ac?w=800&q=85&auto=format&fit=crop"
+                        src="/assets/Karla y Froyland/1065b92a-3a22-478f-97e3-1376d8f33b1d.jpg"
                     />
                 </div>
 
@@ -4060,6 +4060,12 @@
                                             drawVenueMap(document.getElementById("already-map-canvas"), family.table_number);
                                         }, 300);
                                     }
+                                }
+                                /* Link "Necesito cambiar" → WhatsApp directo a los novios */
+                                var chLink = document.getElementById("rsvp-change-link");
+                                if (chLink) {
+                                    var chMsg = "Hola Karla y Eduardo 👋, necesito hacer un cambio en mi confirmación. Mi código es: *" + family.code + "*";
+                                    chLink.href = "https://wa.me/" + COUPLE_PHONE + "?text=" + encodeURIComponent(chMsg);
                                 }
                                 showStep("already");
                                 return;
