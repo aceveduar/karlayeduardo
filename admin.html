@@ -1092,6 +1092,7 @@
             var GROUP_OPTIONS = ["Familia novia","Familia novio","Amigos novia","Amigos novio","Trabajo / Compañeros","Otros"];
 
             function buildDetailHtml(f) {
+                var rsvp = f.rsvps && f.rsvps[0];
                 return '<td colspan="9"><div class="detail-inner" id="di-' + f.id + '">' +
                     "<div>" +
                         '<p class="detail-field__lbl">Teléfono</p>' +
