@@ -3063,8 +3063,8 @@
                                 ></p>
                                 <canvas
                                     id="already-map-canvas"
-                                    width="520"
-                                    height="340"
+                                    width="600"
+                                    height="380"
                                     style="width: 100%; display: block"
                                 ></canvas>
                             </div>
@@ -3169,8 +3169,8 @@
                                     ></p>
                                     <canvas
                                         id="ticket-map-canvas"
-                                        width="520"
-                                        height="340"
+                                        width="600"
+                                        height="380"
                                         style="
                                             width: 100%;
                                             display: block;
@@ -3273,101 +3273,163 @@
         >
 
         <script>
-            /* === MAPA DEL SALÓN === */
+            /* === MAPA DEL SALÓN (premium) === */
             (function () {
-                /* Posiciones de 18 mesas (layout 5-4-4-5 con pista central) */
+                var R   = 20;  /* radio de cada mesa */
+                var CHR = 3.5; /* radio de cada silla */
+                var N_CHAIRS = 8;
+
+                /* Layout 5-4-4-5 · canvas 600×380 */
                 var POS = [
-                    /* Fila 1 — mesas 1-5 */
-                    {x:51,y:26},{x:105,y:26},{x:159,y:26},{x:213,y:26},{x:267,y:26},
-                    /* Fila 2 — mesas 6-9 (pista en medio) */
-                    {x:51,y:90},{x:105,y:90},{x:213,y:90},{x:267,y:90},
-                    /* Fila 3 — mesas 10-13 */
-                    {x:51,y:154},{x:105,y:154},{x:213,y:154},{x:267,y:154},
-                    /* Fila 4 — mesas 14-18 */
-                    {x:51,y:218},{x:105,y:218},{x:159,y:218},{x:213,y:218},{x:267,y:218},
+                    /* Fila 1 — mesas 1-5 (y=74) */
+                    {x:70,y:74},{x:185,y:74},{x:300,y:74},{x:415,y:74},{x:530,y:74},
+                    /* Fila 2 — mesas 6-9 (y=158, pista al centro) */
+                    {x:70,y:158},{x:185,y:158},{x:415,y:158},{x:530,y:158},
+                    /* Fila 3 — mesas 10-13 (y=242) */
+                    {x:70,y:242},{x:185,y:242},{x:415,y:242},{x:530,y:242},
+                    /* Fila 4 — mesas 14-18 (y=327) */
+                    {x:70,y:327},{x:185,y:327},{x:300,y:327},{x:415,y:327},{x:530,y:327},
                 ];
 
-                var glowPhase = 0;
-                var animId = null;
+                /* Pista de baile */
+                var DF = {x:218, y:116, w:164, h:158};
 
-                window.drawVenueMap = function (canvasEl, highlight) {
-                    if (!canvasEl) return;
+                var phase = 0, animId = null;
+
+                window.drawVenueMap = function (el, highlight) {
+                    if (!el) return;
                     if (animId) cancelAnimationFrame(animId);
+                    var W = el.width, H = el.height;
+                    var ctx = el.getContext("2d");
 
-                    var W = canvasEl.width, H = canvasEl.height;
-                    var ctx = canvasEl.getContext("2d");
-                    var R = 18; /* radio de cada mesa */
+                    function gLine(y1, y2) {
+                        var g = ctx.createLinearGradient(14, 0, W-14, 0);
+                        g.addColorStop(0,"transparent");
+                        g.addColorStop(0.3,"rgba(201,169,110,0.4)");
+                        g.addColorStop(0.7,"rgba(201,169,110,0.4)");
+                        g.addColorStop(1,"transparent");
+                        ctx.strokeStyle = g;
+                        ctx.lineWidth = 0.75;
+                        ctx.beginPath(); ctx.moveTo(14,y1); ctx.lineTo(W-14,y1); ctx.stroke();
+                    }
 
                     function frame() {
-                        glowPhase += 0.06;
-                        ctx.clearRect(0, 0, W, H);
+                        phase += 0.045;
+                        ctx.clearRect(0,0,W,H);
 
-                        /* Fondo */
-                        ctx.fillStyle = "#0f0a08";
-                        ctx.fillRect(0, 0, W, H);
+                        /* ── Fondo con degradado sutil ── */
+                        var bg = ctx.createLinearGradient(0,0,0,H);
+                        bg.addColorStop(0,"#100608"); bg.addColorStop(1,"#0a0305");
+                        ctx.fillStyle = bg; ctx.fillRect(0,0,W,H);
 
-                        /* Borde del salón */
-                        ctx.strokeStyle = "rgba(201,169,110,0.18)";
-                        ctx.lineWidth = 1.5;
-                        ctx.strokeRect(8, 8, W - 16, H - 16);
+                        /* ── Doble borde exterior ── */
+                        ctx.strokeStyle="rgba(201,169,110,0.28)"; ctx.lineWidth=1.5;
+                        ctx.strokeRect(8,8,W-16,H-16);
+                        ctx.strokeStyle="rgba(201,169,110,0.08)"; ctx.lineWidth=0.5;
+                        ctx.strokeRect(12,12,W-24,H-24);
 
-                        /* Etiqueta escenario */
-                        ctx.fillStyle = "rgba(201,169,110,0.12)";
-                        ctx.fillRect(20, 12, W - 40, 10);
-                        ctx.fillStyle = "rgba(201,169,110,0.5)";
-                        ctx.font = "500 9px Montserrat, Arial, sans-serif";
-                        ctx.textAlign = "center";
-                        ctx.fillText("ESCENARIO / MESA DE HONOR", W / 2, 20);
+                        /* ── Escenario / Mesa de honor ── */
+                        var sg = ctx.createLinearGradient(0,8,0,42);
+                        sg.addColorStop(0,"rgba(201,169,110,0.12)");
+                        sg.addColorStop(1,"rgba(201,169,110,0)");
+                        ctx.fillStyle=sg; ctx.fillRect(8,8,W-16,34);
+                        ctx.fillStyle="rgba(201,169,110,0.6)";
+                        ctx.font="500 8px Montserrat, Arial, sans-serif";
+                        ctx.textAlign="center";
+                        ctx.letterSpacing="2px";
+                        ctx.fillText("E S C E N A R I O   ·   M E S A   D E   H O N O R", W/2, 29);
+                        gLine(42);
 
-                        /* Pista de baile */
-                        var dfX = 135, dfY = 78, dfW = 90, dfH = 108;
-                        ctx.fillStyle = "rgba(255,255,255,0.025)";
-                        ctx.fillRect(dfX, dfY, dfW, dfH);
-                        ctx.setLineDash([3, 5]);
-                        ctx.strokeStyle = "rgba(255,255,255,0.08)";
-                        ctx.lineWidth = 1;
-                        ctx.strokeRect(dfX, dfY, dfW, dfH);
+                        /* ── Pista de baile ── */
+                        var dg = ctx.createRadialGradient(
+                            DF.x+DF.w/2, DF.y+DF.h/2, 0,
+                            DF.x+DF.w/2, DF.y+DF.h/2, DF.w*0.7);
+                        dg.addColorStop(0,"rgba(255,255,255,0.05)");
+                        dg.addColorStop(1,"rgba(255,255,255,0)");
+                        ctx.fillStyle=dg; ctx.fillRect(DF.x,DF.y,DF.w,DF.h);
+                        ctx.setLineDash([4,6]);
+                        ctx.strokeStyle="rgba(255,255,255,0.1)"; ctx.lineWidth=0.75;
+                        ctx.strokeRect(DF.x,DF.y,DF.w,DF.h);
                         ctx.setLineDash([]);
-                        ctx.fillStyle = "rgba(255,255,255,0.12)";
-                        ctx.font = "300 8px Arial, sans-serif";
-                        ctx.fillText("PISTA", dfX + dfW / 2, dfY + dfH / 2 + 3);
+                        ctx.fillStyle="rgba(255,255,255,0.16)";
+                        ctx.font="300 8px Montserrat, Arial, sans-serif";
+                        ctx.textAlign="center";
+                        ctx.fillText("P I S T A   D E   B A I L E", DF.x+DF.w/2, DF.y+DF.h/2+3);
 
-                        /* Mesas */
-                        POS.forEach(function (p, i) {
-                            var num = i + 1;
+                        /* ── Línea inferior ── */
+                        gLine(H-14);
+
+                        /* ── Mesas ── */
+                        POS.forEach(function(p, i) {
+                            var num  = i+1;
                             var isHL = num === highlight;
-                            var glow = isHL ? (Math.sin(glowPhase) * 0.5 + 0.5) : 0;
+                            var glow = isHL ? (Math.sin(phase)*0.5+0.5) : 0;
 
-                            if (isHL) {
-                                /* Aura exterior animada */
+                            /* Sillas */
+                            for (var c=0; c<N_CHAIRS; c++) {
+                                var a  = (c/N_CHAIRS)*Math.PI*2 - Math.PI/2;
+                                var cx = p.x + Math.cos(a)*(R+9);
+                                var cy = p.y + Math.sin(a)*(R+9);
                                 ctx.beginPath();
-                                ctx.arc(p.x, p.y, R + 6 + glow * 6, 0, Math.PI * 2);
-                                ctx.fillStyle = "rgba(201,169,110," + (0.08 + glow * 0.12) + ")";
+                                ctx.arc(cx, cy, CHR, 0, Math.PI*2);
+                                ctx.fillStyle = isHL
+                                    ? "rgba(201,169,110,"+(0.45+glow*0.45)+")"
+                                    : "rgba(255,255,255,0.09)";
                                 ctx.fill();
                             }
 
-                            /* Círculo de la mesa */
-                            ctx.beginPath();
-                            ctx.arc(p.x, p.y, R, 0, Math.PI * 2);
+                            /* Aura animada */
                             if (isHL) {
-                                ctx.fillStyle = "#c9a96e";
-                                ctx.shadowColor = "#c9a96e";
-                                ctx.shadowBlur = 14 + glow * 16;
+                                ctx.beginPath();
+                                ctx.arc(p.x, p.y, R+14+glow*10, 0, Math.PI*2);
+                                ctx.fillStyle="rgba(201,169,110,"+(0.04+glow*0.1)+")";
+                                ctx.fill();
+                                ctx.beginPath();
+                                ctx.arc(p.x, p.y, R+6, 0, Math.PI*2);
+                                ctx.fillStyle="rgba(201,169,110,"+(0.1+glow*0.15)+")";
+                                ctx.fill();
+                            }
+
+                            /* Mesa */
+                            ctx.beginPath();
+                            ctx.arc(p.x, p.y, R, 0, Math.PI*2);
+                            if (isHL) {
+                                var tg = ctx.createRadialGradient(
+                                    p.x-R*0.3, p.y-R*0.4, 1,
+                                    p.x, p.y, R);
+                                tg.addColorStop(0,"#f5e8b8");
+                                tg.addColorStop(1,"#b8943c");
+                                ctx.fillStyle = tg;
+                                ctx.shadowColor="#c9a96e";
+                                ctx.shadowBlur = 20+glow*24;
                             } else {
-                                ctx.fillStyle = "rgba(255,255,255,0.06)";
-                                ctx.shadowBlur = 0;
-                                ctx.strokeStyle = "rgba(255,255,255,0.12)";
-                                ctx.lineWidth = 1;
+                                ctx.fillStyle="rgba(255,255,255,0.06)";
+                                ctx.shadowBlur=0;
                             }
                             ctx.fill();
-                            if (!isHL) ctx.stroke();
-                            ctx.shadowBlur = 0;
+                            ctx.shadowBlur=0;
+
+                            /* Borde */
+                            ctx.beginPath();
+                            ctx.arc(p.x, p.y, R, 0, Math.PI*2);
+                            ctx.strokeStyle = isHL
+                                ? "rgba(201,169,110,"+(0.7+glow*0.3)+")"
+                                : "rgba(255,255,255,0.14)";
+                            ctx.lineWidth = isHL ? 1.5 : 0.75;
+                            ctx.stroke();
 
                             /* Número */
-                            ctx.fillStyle = isHL ? "#1e1410" : "rgba(255,255,255,0.28)";
-                            ctx.font = (isHL ? "bold " : "300 ") + "10px Arial, sans-serif";
-                            ctx.textAlign = "center";
-                            ctx.fillText(num, p.x, p.y + 3.5);
+                            ctx.fillStyle = isHL ? "#1e1410" : "rgba(255,255,255,0.32)";
+                            ctx.font = (isHL?"bold 11":"300 10")+"px Arial,sans-serif";
+                            ctx.textAlign="center";
+                            ctx.fillText(num, p.x, p.y+4);
+
+                            /* Etiqueta "Tú" sobre la mesa destacada */
+                            if (isHL) {
+                                ctx.fillStyle="rgba(201,169,110,"+(0.65+glow*0.3)+")";
+                                ctx.font="500 8px Montserrat,Arial,sans-serif";
+                                ctx.fillText("▼  T Ú", p.x, p.y-R-14);
+                            }
                         });
 
                         animId = requestAnimationFrame(frame);
