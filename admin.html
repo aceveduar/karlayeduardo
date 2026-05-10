@@ -692,6 +692,26 @@
                 <p class="panel__sub">
                     Confirmaciones de asistencia &middot; Noviembre 21, 2026
                 </p>
+                <button
+                    onclick="exitPanel()"
+                    style="
+                        margin-top: 1rem;
+                        background: transparent;
+                        border: 1px solid rgba(255,255,255,0.1);
+                        color: rgba(255,255,255,0.28);
+                        font-family: var(--f-sans);
+                        font-size: 0.48rem;
+                        letter-spacing: 0.2em;
+                        text-transform: uppercase;
+                        padding: 0.35rem 1rem;
+                        cursor: pointer;
+                        transition: all 0.25s ease;
+                    "
+                    onmouseover="this.style.borderColor='rgba(255,255,255,0.3)';this.style.color='rgba(255,255,255,0.5)'"
+                    onmouseout="this.style.borderColor='rgba(255,255,255,0.1)';this.style.color='rgba(255,255,255,0.28)'"
+                >
+                    Cerrar sesión
+                </button>
             </div>
 
             <div class="stats">
@@ -907,28 +927,36 @@
             }
 
             /* ── Gate ─────────────────────────────────── */
-            document
-                .getElementById("gate-btn")
-                .addEventListener("click", function () {
-                    if (
-                        document.getElementById("gate-input").value ===
-                        ADMIN_PASSWORD
-                    ) {
-                        document.getElementById("gate").style.display = "none";
-                        document.getElementById("panel").style.display =
-                            "block";
-                        loadData();
-                    } else {
-                        document.getElementById("gate-error").textContent =
-                            "Contraseña incorrecta.";
-                    }
-                });
-            document
-                .getElementById("gate-input")
-                .addEventListener("keydown", function (e) {
-                    if (e.key === "Enter")
-                        document.getElementById("gate-btn").click();
-                });
+            function enterPanel() {
+                sessionStorage.setItem("ke-admin", "1");
+                document.getElementById("gate").style.display = "none";
+                document.getElementById("panel").style.display = "block";
+                loadData();
+            }
+
+            function exitPanel() {
+                sessionStorage.removeItem("ke-admin");
+                document.getElementById("panel").style.display = "none";
+                document.getElementById("gate").style.display = "flex";
+                document.getElementById("gate-input").value = "";
+                document.getElementById("gate-error").textContent = "";
+            }
+
+            /* Auto-login si la sesión ya estaba activa */
+            if (sessionStorage.getItem("ke-admin") === "1") {
+                enterPanel();
+            }
+
+            document.getElementById("gate-btn").addEventListener("click", function () {
+                if (document.getElementById("gate-input").value === ADMIN_PASSWORD) {
+                    enterPanel();
+                } else {
+                    document.getElementById("gate-error").textContent = "Contraseña incorrecta.";
+                }
+            });
+            document.getElementById("gate-input").addEventListener("keydown", function (e) {
+                if (e.key === "Enter") document.getElementById("gate-btn").click();
+            });
 
             /* ── Load data ────────────────────────────── */
             async function loadData() {
