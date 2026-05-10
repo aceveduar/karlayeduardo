@@ -667,19 +667,56 @@
                 background: rgba(37, 211, 102, 0.18);
                 color: #25d366;
             }
+            /* Entrada CTA — desktop oculto, móvil lo muestra arriba */
+            .entrada-cta { display: none; }
+            .entrada-btn {
+                width: 100%;
+                padding: 1rem;
+                background: rgba(201, 169, 110, 0.06);
+                border: 1.5px solid rgba(201, 169, 110, 0.45);
+                color: var(--gold);
+                font-family: var(--f-sans);
+                font-size: 0.65rem;
+                letter-spacing: 0.25em;
+                text-transform: uppercase;
+                cursor: pointer;
+                transition: all 0.3s ease;
+            }
+            .entrada-btn:hover { background: rgba(201, 169, 110, 0.14); }
+
             /* =============================================
                RESPONSIVE — MOBILE (≤ 640px)
                ============================================= */
             @media (max-width: 640px) {
-                #panel { padding: 1.25rem 0.875rem 3rem; }
+                /* ── Reordenar secciones con flexbox ── */
+                #panel {
+                    padding: 1.25rem 0.875rem 3rem;
+                    display: flex;
+                    flex-direction: column;
+                }
+                .panel__header    { order: 1; }
+                .entrada-cta      { order: 2; display: block; margin-bottom: 1.25rem; }
+                .stats            { order: 3; }
+                .progress-section { order: 4; }
+                .reminder-section { order: 5; }
+                .actions          { order: 6; }
+                .group-filter     { order: 7; }
+                .search-wrap      { order: 8; }
+                .table-wrap       { order: 9; }
+                .new-family       { order: 10; margin-top: 1.5rem; }
+                .config-wrap      { order: 11; }
+
+                /* Ocultar Modo Entrada de actions (ya está arriba) */
+                .entrada-action { display: none !important; }
 
                 .panel__header { padding-bottom: 1.25rem; margin-bottom: 1.5rem; }
                 .panel__title  { font-size: 1.35rem; }
 
-                /* Stats 2×2 */
-                .stats { grid-template-columns: 1fr 1fr; gap: 0.65rem; }
-                .stat__num { font-size: 2rem; }
-                .stat__lbl { font-size: 0.44rem; }
+                /* Stats 4 columnas compactas */
+                .stats { grid-template-columns: repeat(4, 1fr); gap: 0.4rem; }
+                .stat { padding: 0.65rem 0.25rem; }
+                .stat__num { font-size: 1.6rem; }
+                .stat__lbl { font-size: 0.36rem; letter-spacing: 0.08em; }
 
                 /* Progress */
                 .progress-val { font-size: 0.8rem; }
@@ -832,6 +869,13 @@
                 </button>
             </div>
 
+            <!-- CTA Modo Entrada (solo visible en móvil, arriba del todo) -->
+            <div class="entrada-cta">
+                <button class="entrada-btn" onclick="openCheckin()">
+                    🚪 &nbsp; Modo Entrada — Día del Evento
+                </button>
+            </div>
+
             <div class="stats">
                 <div class="stat">
                     <p class="stat__num" id="stat-total">—</p>
@@ -959,7 +1003,7 @@
                 <button class="action-btn" id="btn-refresh">↺ Actualizar</button>
                 <button class="action-btn" id="btn-export">↓ CSV</button>
                 <button class="action-btn" onclick="showReminders()">📋 Pendientes</button>
-                <button class="action-btn" onclick="openCheckin()" style="border-color:rgba(201,169,110,0.5);color:rgba(201,169,110,0.8)">🚪 Modo Entrada</button>
+                <button class="action-btn entrada-action" onclick="openCheckin()" style="border-color:rgba(201,169,110,0.5);color:rgba(201,169,110,0.8)">🚪 Modo Entrada</button>
             </div>
 
             <!-- Filtro por grupo -->
@@ -1697,9 +1741,12 @@
             }
 
             /* ── Refresh ──────────────────────────────── */
-            document
-                .getElementById("btn-refresh")
-                .addEventListener("click", loadData);
+            document.getElementById("btn-refresh").addEventListener("click", loadData);
+
+            /* Auto-refresh cada 90 s si la sesión sigue activa */
+            setInterval(function () {
+                if (sessionStorage.getItem("ke-admin") === "1") loadData();
+            }, 90000);
 
             /* ── Search ───────────────────────────────── */
             document.getElementById("search").addEventListener("input", applyFilters);
