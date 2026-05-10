@@ -2993,39 +2993,6 @@
                             </div>
                             </div><!-- /rsvp-counter-section -->
 
-                            <!-- Bebés -->
-                            <div class="rsvp__baby-section">
-                                <span class="rsvp__counter-label">
-                                    ¿Llevan bebés?
-                                    <span class="rsvp__baby-note"
-                                        >0–3 años · no ocupa pase</span
-                                    >
-                                </span>
-                                <div
-                                    class="rsvp__counter rsvp__counter--sm"
-                                >
-                                    <button
-                                        class="rsvp__counter-btn rsvp__counter-btn--sm"
-                                        id="rsvp-baby-minus"
-                                        aria-label="Reducir bebés"
-                                    >
-                                        −
-                                    </button>
-                                    <span
-                                        class="rsvp__counter-num rsvp__counter-num--sm"
-                                        id="rsvp-baby-count"
-                                        >0</span
-                                    >
-                                    <button
-                                        class="rsvp__counter-btn rsvp__counter-btn--sm"
-                                        id="rsvp-baby-plus"
-                                        aria-label="Aumentar bebés"
-                                    >
-                                        +
-                                    </button>
-                                </div>
-                            </div>
-
                             <p
                                 class="rsvp__error-msg"
                                 id="rsvp-form-error"
@@ -3648,7 +3615,6 @@
                 var COUPLE_PHONE = "527721204509";
                 var family = null;
                 var guestCount = 1;
-                var babyCount = 0;
                 var selectedMembers = [];
 
                 var RSVP_DEADLINE = new Date("2026-11-05T23:59:00");
@@ -3776,10 +3742,6 @@
                     btn.style.opacity = guestCount === 0 ? "0.4" : "1";
                 }
 
-                function updateBabyCounter() {
-                    document.getElementById("rsvp-baby-count").textContent = babyCount;
-                    document.getElementById("rsvp-baby-minus").disabled = babyCount <= 0;
-                }
 
                 /* Pre-fill code from URL ?code=GARCIA-01 */
                 var urlCode = new URLSearchParams(
@@ -3856,8 +3818,6 @@
                                 (max === 1
                                     ? " pase disponible"
                                     : " pases disponibles");
-                            babyCount = 0;
-                            updateBabyCounter();
                             var rawNames = (family.guest_names || "")
                                 .split(",")
                                 .map(function (n) { return n.trim(); })
@@ -3899,14 +3859,6 @@
                     if (family && guestCount < family.max_guests) { guestCount++; updateCounter(); }
                 });
 
-                /* ── Contador bebés +/- ───────────────────── */
-                document.getElementById("rsvp-baby-minus").addEventListener("click", function () {
-                    if (babyCount > 0) { babyCount--; updateBabyCounter(); }
-                });
-                document.getElementById("rsvp-baby-plus").addEventListener("click", function () {
-                    babyCount++;
-                    updateBabyCounter();
-                });
 
                 /* ── PASO 2: confirmar asistencia ─────────── */
                 document
@@ -3937,7 +3889,6 @@
                                     family_id: family.id,
                                     contact_name: name,
                                     guest_count: guestCount,
-                                    babies: babyCount,
                                     attending: true,
                                     attending_names: attendingNames,
                                 }),
@@ -3950,9 +3901,7 @@
                             /* Poblar pase digital */
                             document.getElementById("ticket-family-name").textContent =
                                 family.family_name;
-                            var gLabel = guestCount + (guestCount === 1 ? " adulto" : " adultos");
-                            if (babyCount > 0)
-                                gLabel += " · " + babyCount + (babyCount === 1 ? " bebé" : " bebés");
+                            var gLabel = guestCount + (guestCount === 1 ? " persona confirmada" : " personas confirmadas");
                             document.getElementById("ticket-guests-lbl").textContent = gLabel;
                             /* Mostrar nombres confirmados en el ticket si los hay */
                             var ticketNames = document.getElementById("ticket-attending-names");
@@ -3985,8 +3934,8 @@
                                 "✅ Nueva confirmación de asistencia\n\n" +
                                 "*" + family.family_name + "*\n" +
                                 "Confirmó: " + firstName + "\n" +
-                                "👥 " + guestCount + (guestCount === 1 ? " adulto" : " adultos") +
-                                (babyCount > 0 ? " · " + babyCount + (babyCount === 1 ? " bebé" : " bebés") : "") + "\n" +
+                                "👥 " + guestCount + (guestCount === 1 ? " persona" : " personas") + "\n" +
+                                (attendingNames ? "Nombres: " + attendingNames + "\n" : "") +
                                 "🎫 Código: " + family.code;
                             document.getElementById("ticket-wa-btn").href =
                                 "https://wa.me/" + COUPLE_PHONE +
