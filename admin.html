@@ -345,6 +345,65 @@
             .ms-row--pending .ms-icon { color: rgba(255, 255, 255, 0.2); }
             .ms-row--pending .ms-name { color: rgba(255, 255, 255, 0.45); }
 
+            /* Capacity bar dentro de cada card de mesa */
+            .mesa-cap-bar {
+                height: 4px;
+                background: rgba(255,255,255,0.06);
+                border-radius: 2px;
+                margin: 0.35rem 0 0.2rem;
+                overflow: hidden;
+            }
+            .mesa-cap-fill {
+                height: 100%;
+                border-radius: 2px;
+                transition: width 0.6s cubic-bezier(0.22,1,0.36,1);
+            }
+            .mesa-card--over {
+                border-color: rgba(224,136,136,0.45);
+                background: rgba(224,136,136,0.05);
+            }
+            .mesa-card--over .mesa-card__num { color: #e08888; }
+            .mesa-card--over .mesa-card__cap { color: #e08888; }
+
+            /* Alerta mesas excedidas */
+            .mesas-over-banner {
+                display: none;
+                padding: 0.55rem 1.25rem;
+                background: rgba(224,136,136,0.07);
+                border-bottom: 1px solid rgba(224,136,136,0.2);
+                font-size: 0.52rem;
+                letter-spacing: 0.12em;
+                color: #e08888;
+            }
+
+            /* Sin mesa indicator */
+            .sinmesa-row {
+                display: none;
+                align-items: center;
+                justify-content: space-between;
+                padding: 0.55rem 0.85rem;
+                background: rgba(201,169,110,0.06);
+                border: 1px solid rgba(201,169,110,0.22);
+                margin-top: 0.5rem;
+            }
+            .sinmesa-lbl {
+                font-size: 0.5rem;
+                letter-spacing: 0.18em;
+                text-transform: uppercase;
+                color: rgba(201,169,110,0.7);
+            }
+            .sinmesa-num {
+                font-family: var(--f-serif);
+                font-size: 1.1rem;
+                color: var(--gold);
+            }
+            .sinmesa-hint {
+                font-size: 0.46rem;
+                color: rgba(201,169,110,0.45);
+                letter-spacing: 0.05em;
+                margin-top: 0.1rem;
+            }
+
             /* ── Mesas ─────────────────────────────────── */
             .mesa-select {
                 background: rgba(255,255,255,0.04);
@@ -1036,6 +1095,15 @@
                 </div>
             </div>
 
+            <!-- Alerta: familias confirmadas sin mesa -->
+            <div class="sinmesa-row" id="sinmesa-row">
+                <div>
+                    <p class="sinmesa-lbl">Confirmadas sin mesa asignada</p>
+                    <p class="sinmesa-hint">Recuerda asignarles mesa antes del evento</p>
+                </div>
+                <span class="sinmesa-num" id="sinmesa-num">0</span>
+            </div>
+
             <!-- Recordatorios -->
             <div class="reminder-section" id="reminder-section">
                 <div class="reminder-header">
@@ -1127,6 +1195,9 @@
                 <div class="mesas-header-row">
                     <span class="mesas-title">Vista de mesas — 18 mesas · 10 pax c/u</span>
                     <button class="mesas-close" onclick="document.getElementById('mesas-section').style.display='none'">✕</button>
+                </div>
+                <div class="mesas-over-banner" id="mesas-over-banner">
+                    ⚠️  Hay mesas con capacidad excedida — revisa las marcadas en rojo
                 </div>
                 <div class="mesas-grid" id="mesas-grid"></div>
             </div>
@@ -1787,10 +1858,34 @@
             var TOTAL_MESAS = 18;
             var CAP_POR_MESA = 10;
 
-            function buildMesaSelect(id, current) {
-                var opts = '<option value="">—</option>';
+            /* Mapa de capacidad actual por mesa */
+            function buildMesaMap() {
+                var map = {};
                 for (var i = 1; i <= TOTAL_MESAS; i++) {
-                    opts += '<option value="' + i + '"' + (current == i ? " selected" : "") + ">M" + i + "</option>";
+                    map[i] = { pax: 0, names: [], over: false };
+                }
+                allData.forEach(function (f) {
+                    if (!f.table_number || !map[f.table_number]) return;
+                    var rsvp = f.rsvps && f.rsvps[0];
+                    var pax  = rsvp && rsvp.attending ? rsvp.guest_count : 0;
+                    map[f.table_number].pax += pax;
+                    map[f.table_number].names.push(f.family_name.replace(/^Familia\s+/i, ""));
+                });
+                Object.keys(map).forEach(function (k) {
+                    map[k].over = map[k].pax > CAP_POR_MESA;
+                });
+                return map;
+            }
+
+            function buildMesaSelect(id, current) {
+                var mMap = buildMesaMap();
+                var opts = '<option value="">— Sin mesa</option>';
+                for (var i = 1; i <= TOTAL_MESAS; i++) {
+                    var m    = mMap[i];
+                    var cap  = m.pax + "/" + CAP_POR_MESA;
+                    var warn = m.over ? " ⚠" : m.pax === CAP_POR_MESA ? " ✓" : "";
+                    opts += '<option value="' + i + '"' + (current == i ? " selected" : "") + ">" +
+                        "M" + i + "  (" + cap + ")" + warn + "</option>";
                 }
                 return '<select class="mesa-select" onchange="assignTable(\'' + esc(id) + '\',this.value)">' + opts + "</select>";
             }
@@ -1816,32 +1911,43 @@
             }
 
             function renderMesasGrid() {
-                var grid = document.getElementById("mesas-grid");
-                /* Build map: tableNum → {pax, families} */
-                var mesas = {};
-                for (var i = 1; i <= TOTAL_MESAS; i++) mesas[i] = { pax: 0, names: [] };
-                allData.forEach(function (f) {
-                    if (!f.table_number) return;
-                    var rsvp = f.rsvps && f.rsvps[0];
-                    var pax = rsvp && rsvp.attending ? rsvp.guest_count : 0;
-                    if (mesas[f.table_number]) {
-                        mesas[f.table_number].pax += pax;
-                        mesas[f.table_number].names.push(f.family_name.replace(/^Familia\s+/i, ""));
-                    }
-                });
+                var grid    = document.getElementById("mesas-grid");
+                var banner  = document.getElementById("mesas-over-banner");
+                var mMap    = buildMesaMap();
+                var hasOver = false;
                 grid.innerHTML = "";
+
                 for (var n = 1; n <= TOTAL_MESAS; n++) {
-                    var m = mesas[n];
-                    var cls = m.names.length === 0 ? "empty" : m.pax >= CAP_POR_MESA ? "full" : "partial";
-                    var capTxt = m.pax + " / " + CAP_POR_MESA + " pax";
-                    var famTxt = m.names.length ? m.names.join(", ") : "Vacía";
+                    var m    = mMap[n];
+                    var over = m.pax > CAP_POR_MESA;
+                    var full = m.pax === CAP_POR_MESA;
+                    if (over) hasOver = true;
+
+                    var cls = m.names.length === 0 ? "empty"
+                            : over               ? "over"
+                            : full               ? "full"
+                            :                      "partial";
+
+                    var barPct   = Math.min(100, Math.round(m.pax / CAP_POR_MESA * 100));
+                    var barColor = over ? "#e08888"
+                                 : full ? "#7ec8a0"
+                                 :        "#c9a96e";
+
+                    var capTxt = (over ? "⚠ " : "") + m.pax + " / " + CAP_POR_MESA + " pax";
+                    var fams   = m.names.length
+                        ? m.names.slice(0, 4).join(", ") + (m.names.length > 4 ? " +" + (m.names.length-4) : "")
+                        : "Vacía";
+
                     grid.innerHTML +=
                         '<div class="mesa-card mesa-card--' + cls + '">' +
                         '<p class="mesa-card__num">' + n + "</p>" +
+                        '<div class="mesa-cap-bar"><div class="mesa-cap-fill" style="width:' + barPct + "%;background:" + barColor + '"></div></div>' +
                         '<p class="mesa-card__cap">' + capTxt + "</p>" +
-                        '<p class="mesa-card__fams">' + esc(famTxt) + "</p>" +
+                        '<p class="mesa-card__fams">' + esc(fams) + "</p>" +
                         "</div>";
                 }
+
+                if (banner) banner.style.display = hasOver ? "block" : "none";
             }
 
             /* ── Progress bars ────────────────────────── */
@@ -1858,6 +1964,17 @@
                 document.getElementById("prog-guests-val").textContent  = confGuests + " personas";
                 document.getElementById("prog-guests-pct").textContent  = "de " + totalGuests + " inv.";
                 document.getElementById("prog-guests-fill").style.width = guestsPct + "%";
+
+                /* Familias confirmadas sin mesa */
+                var sinMesa = data.filter(function (f) {
+                    return f.confirmed && f.rsvps && f.rsvps[0] && f.rsvps[0].attending && !f.table_number;
+                }).length;
+                var smRow = document.getElementById("sinmesa-row");
+                var smNum = document.getElementById("sinmesa-num");
+                if (smRow && smNum) {
+                    smNum.textContent = sinMesa;
+                    smRow.style.display = sinMesa > 0 ? "flex" : "none";
+                }
             }
 
             /* ── Recordatorios ────────────────────────── */
