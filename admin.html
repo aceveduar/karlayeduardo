@@ -333,6 +333,18 @@
             .ci-btn:disabled { opacity: 0.4; cursor: not-allowed; }
             .ci-done-badge { font-size: 0.5rem; letter-spacing: 0.12em; text-transform: uppercase; color: #7ec8a0; white-space: nowrap; flex-shrink: 0; }
 
+            /* Lista por persona en detalle */
+            .member-status-list { display: flex; flex-direction: column; gap: 0.3rem; margin-top: 0.35rem; }
+            .ms-row { display: flex; align-items: center; gap: 0.6rem; padding: 0.22rem 0; }
+            .ms-icon { font-size: 0.72rem; width: 1.1rem; flex-shrink: 0; text-align: center; }
+            .ms-name { font-size: 0.76rem; }
+            .ms-row--yes .ms-icon { color: #7ec8a0; }
+            .ms-row--yes .ms-name { color: rgba(255, 255, 255, 0.75); }
+            .ms-row--no  .ms-icon { color: #e08888; }
+            .ms-row--no  .ms-name { color: rgba(255, 255, 255, 0.3); text-decoration: line-through; }
+            .ms-row--pending .ms-icon { color: rgba(255, 255, 255, 0.2); }
+            .ms-row--pending .ms-name { color: rgba(255, 255, 255, 0.45); }
+
             /* Fix overflow en flex mobile */
             @media (max-width: 640px) {
                 #panel > * { min-width: 0; max-width: 100%; box-sizing: border-box; }
@@ -1290,7 +1302,11 @@
                         '<td style="text-align:center">' + f.max_guests + "</td>" +
                         '<td><span class="badge badge--' + status + '">' + lbl + "</span></td>" +
                         "<td>" + esc(rsvp ? rsvp.contact_name : "—") + "</td>" +
-                        '<td style="text-align:center">' + (rsvp && rsvp.attending ? rsvp.guest_count : "—") + "</td>" +
+                        '<td style="text-align:center">' + (rsvp && rsvp.attending
+                            ? rsvp.guest_count + (rsvp.guest_count < f.max_guests
+                                ? '<span style="color:rgba(255,255,255,0.22);font-size:0.82em"> / ' + f.max_guests + "</span>"
+                                : "")
+                            : "—") + "</td>" +
                         '<td class="ts">' + date + "</td>" +
                         "<td>" +
                             '<button class="link-btn" onclick="copyLink(\'' + esc(f.code) + "', this)\">Copiar link</button>" +
@@ -1329,16 +1345,45 @@
                         '<p class="detail-field__lbl">Grupo</p>' +
                         '<p class="detail-field__val">' + (f.group_name ? groupBadge(f.group_name) : "—") + "</p>" +
                     "</div>" +
-                    '<div style="grid-column:1/-1">' +
-                        '<p class="detail-field__lbl">Invitados registrados</p>' +
-                        '<p class="detail-field__val">' + (f.guest_names ? esc(f.guest_names) : "—") + "</p>" +
-                    "</div>" +
-                    (rsvp && rsvp.attending_names
-                        ? '<div style="grid-column:1/-1">' +
-                            '<p class="detail-field__lbl" style="color:#7ec8a0">✓ Confirmaron asistencia</p>' +
-                            '<p class="detail-field__val" style="color:rgba(126,200,160,0.8)">' + esc(rsvp.attending_names) + "</p>" +
-                          "</div>"
-                        : "") +
+                    (function () {
+                        var allNames = f.guest_names
+                            ? f.guest_names.split(",").map(function (n) { return n.trim(); }).filter(Boolean)
+                            : [];
+                        var attendingArr = rsvp && rsvp.attending_names
+                            ? rsvp.attending_names.split(",").map(function (n) { return n.trim(); }).filter(Boolean)
+                            : [];
+                        var attendingSet = {};
+                        attendingArr.forEach(function (n) { attendingSet[n] = true; });
+                        var hasConfirmed = rsvp && rsvp.attending !== undefined;
+
+                        if (!allNames.length) {
+                            return attendingArr.length
+                                ? '<div style="grid-column:1/-1"><p class="detail-field__lbl" style="color:#7ec8a0">✓ Confirmaron</p>' +
+                                  '<p class="detail-field__val" style="color:rgba(126,200,160,0.8)">' + esc(rsvp.attending_names) + "</p></div>"
+                                : "";
+                        }
+
+                        var lbl = hasConfirmed
+                            ? (rsvp.attending ? "Asistencia por persona" : "No asistirán")
+                            : "Invitados registrados (pendiente)";
+                        var lblColor = hasConfirmed && rsvp.attending ? "#7ec8a0" : "rgba(255,255,255,0.35)";
+
+                        var rows = allNames.map(function (name) {
+                            var cls = !hasConfirmed
+                                ? "pending"
+                                : attendingSet[name] ? "yes" : "no";
+                            var icon = { pending: "·", yes: "✓", no: "✗" }[cls];
+                            return '<div class="ms-row ms-row--' + cls + '">' +
+                                '<span class="ms-icon">' + icon + "</span>" +
+                                '<span class="ms-name">' + esc(name) + "</span>" +
+                                "</div>";
+                        }).join("");
+
+                        return '<div style="grid-column:1/-1">' +
+                            '<p class="detail-field__lbl" style="color:' + lblColor + '">' + lbl + "</p>" +
+                            '<div class="member-status-list">' + rows + "</div>" +
+                            "</div>";
+                    }()) +
                     '<div style="grid-column:1/-1">' +
                         '<p class="detail-field__lbl">Notas internas</p>' +
                         '<p class="detail-field__val">' + (f.notes ? esc(f.notes) : "—") + "</p>" +
