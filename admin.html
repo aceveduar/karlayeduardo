@@ -735,9 +735,22 @@
                 table th:nth-child(7),
                 table td:nth-child(7) { display: none; }
 
-                /* Botones de envío: ocultar "Copiar" y solo mostrar WhatsApp */
+                /* Botones de envío: ocultar "Copiar", abreviar WhatsApp */
                 .link-btn { display: none; }
-                .wa-btn { font-size: 0.48rem; padding: 0.3rem 0.6rem; }
+                .wa-btn {
+                    font-size: 0;
+                    letter-spacing: 0;
+                    padding: 0.32rem 0.5rem;
+                    min-width: 36px;
+                    text-align: center;
+                }
+                .wa-btn::before {
+                    content: "WA";
+                    font-size: 0.5rem;
+                    letter-spacing: 0.08em;
+                    display: block;
+                }
+                .wa-btn--direct::before { content: "WA ✓"; }
 
                 /* Detail row: columna única */
                 .detail-inner { grid-template-columns: 1fr !important; }
@@ -790,7 +803,7 @@
 
         <!-- ═══ Panel ════════════════════════════════════════════ -->
         <div id="panel">
-            <div class="panel__header">
+            <div class="panel__header" style="position:relative">
                 <p class="panel__title">Karla &amp; Eduardo</p>
                 <p class="panel__sub">
                     Confirmaciones de asistencia &middot; Noviembre 21, 2026
@@ -798,22 +811,24 @@
                 <button
                     onclick="exitPanel()"
                     style="
-                        margin-top: 1rem;
+                        position: absolute;
+                        top: 0;
+                        right: 0;
                         background: transparent;
                         border: 1px solid rgba(255,255,255,0.1);
-                        color: rgba(255,255,255,0.28);
+                        color: rgba(255,255,255,0.25);
                         font-family: var(--f-sans);
-                        font-size: 0.48rem;
-                        letter-spacing: 0.2em;
+                        font-size: 0.46rem;
+                        letter-spacing: 0.18em;
                         text-transform: uppercase;
-                        padding: 0.35rem 1rem;
+                        padding: 0.32rem 0.85rem;
                         cursor: pointer;
                         transition: all 0.25s ease;
                     "
-                    onmouseover="this.style.borderColor='rgba(255,255,255,0.3)';this.style.color='rgba(255,255,255,0.5)'"
-                    onmouseout="this.style.borderColor='rgba(255,255,255,0.1)';this.style.color='rgba(255,255,255,0.28)'"
+                    onmouseover="this.style.borderColor='rgba(255,255,255,0.28)';this.style.color='rgba(255,255,255,0.45)'"
+                    onmouseout="this.style.borderColor='rgba(255,255,255,0.1)';this.style.color='rgba(255,255,255,0.25)'"
                 >
-                    Cerrar sesión
+                    Salir
                 </button>
             </div>
 
@@ -1198,7 +1213,7 @@
                         '<td class="ts">' + date + "</td>" +
                         "<td>" +
                             '<button class="link-btn" onclick="copyLink(\'' + esc(f.code) + "', this)\">Copiar link</button>" +
-                            '<a class="wa-btn" href="' + esc(buildWaUrl(f.family_name, f.code, f.phone)) + '" target="_blank">WhatsApp' + (f.phone ? " ✓" : "") + "</a>" +
+                            '<a class="wa-btn' + (f.phone ? " wa-btn--direct" : "") + '" href="' + esc(buildWaUrl(f.family_name, f.code, f.phone)) + '" target="_blank">WhatsApp' + (f.phone ? " ✓" : "") + "</a>" +
                         "</td>" +
                         "<td>" +
                             '<button class="expand-btn" onclick="toggleDetail(\'' + rowId + '\', this)" title="Ver detalles">▸</button>' +
