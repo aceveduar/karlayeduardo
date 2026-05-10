@@ -345,6 +345,80 @@
             .ms-row--pending .ms-icon { color: rgba(255, 255, 255, 0.2); }
             .ms-row--pending .ms-name { color: rgba(255, 255, 255, 0.45); }
 
+            /* ── Mesas ─────────────────────────────────── */
+            .mesa-select {
+                background: rgba(255,255,255,0.04);
+                border: 1px solid rgba(201,169,110,0.22);
+                color: rgba(255,255,255,0.7);
+                font-family: var(--f-sans);
+                font-size: 0.55rem;
+                letter-spacing: 0.05em;
+                padding: 0.28rem 0.5rem;
+                cursor: pointer;
+                border-radius: 0;
+                -webkit-appearance: none;
+                appearance: none;
+                min-width: 62px;
+                transition: border-color 0.2s ease;
+            }
+            .mesa-select:focus { outline: none; border-color: var(--gold); }
+            .mesa-select option { background: #1e1410; color: #fff; }
+            .mesa-tag {
+                font-family: var(--f-serif);
+                font-size: 0.72rem;
+                color: var(--gold);
+                letter-spacing: 0.06em;
+                white-space: nowrap;
+            }
+
+            /* Vista de mesas */
+            .mesas-section { display: none; margin-bottom: 1.75rem; }
+            .mesas-header-row {
+                display: flex; align-items: center; justify-content: space-between;
+                padding: 0.85rem 1.25rem;
+                border-bottom: 1px solid rgba(255,255,255,0.05);
+            }
+            .mesas-title { font-size: 0.5rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold); }
+            .mesas-close { background: none; border: none; color: rgba(255,255,255,0.3); cursor: pointer; font-size: 1rem; }
+            .mesas-grid {
+                display: grid;
+                grid-template-columns: repeat(6, 1fr);
+                gap: 0.5rem;
+                padding: 1.25rem;
+            }
+            @media (max-width: 640px) { .mesas-grid { grid-template-columns: repeat(3, 1fr); } }
+            .mesa-card {
+                background: rgba(255,255,255,0.03);
+                border: 1px solid rgba(255,255,255,0.07);
+                padding: 0.65rem 0.4rem;
+                text-align: center;
+                transition: border-color 0.25s ease;
+                cursor: default;
+            }
+            .mesa-card--partial { border-color: rgba(201,169,110,0.3); }
+            .mesa-card--full    { border-color: rgba(126,200,160,0.4); }
+            .mesa-card__num {
+                font-family: var(--f-serif);
+                font-size: 1.3rem;
+                color: var(--gold);
+                line-height: 1;
+            }
+            .mesa-card__cap {
+                font-size: 0.42rem;
+                letter-spacing: 0.1em;
+                text-transform: uppercase;
+                margin-top: 0.2rem;
+            }
+            .mesa-card--full    .mesa-card__cap { color: #7ec8a0; }
+            .mesa-card--partial .mesa-card__cap { color: rgba(201,169,110,0.65); }
+            .mesa-card--empty   .mesa-card__cap { color: rgba(255,255,255,0.2); }
+            .mesa-card__fams {
+                font-size: 0.46rem;
+                color: rgba(255,255,255,0.38);
+                line-height: 1.5;
+                margin-top: 0.3rem;
+            }
+
             /* Fix overflow en flex mobile */
             @media (max-width: 640px) {
                 #panel > * { min-width: 0; max-width: 100%; box-sizing: border-box; }
@@ -1048,10 +1122,20 @@
                 </p>
             </div>
 
+            <!-- Vista de mesas -->
+            <div class="mesas-section" id="mesas-section">
+                <div class="mesas-header-row">
+                    <span class="mesas-title">Vista de mesas — 18 mesas · 10 pax c/u</span>
+                    <button class="mesas-close" onclick="document.getElementById('mesas-section').style.display='none'">✕</button>
+                </div>
+                <div class="mesas-grid" id="mesas-grid"></div>
+            </div>
+
             <div class="actions">
                 <button class="action-btn" id="btn-refresh">↺ Actualizar</button>
                 <button class="action-btn" id="btn-export">↓ CSV</button>
                 <button class="action-btn" onclick="showReminders()">📋 Pendientes</button>
+                <button class="action-btn" onclick="showMesasView()" style="border-color:rgba(201,169,110,0.35);color:rgba(201,169,110,0.7)">🪑 Mesas</button>
                 <button class="action-btn entrada-action" onclick="openCheckin()" style="border-color:rgba(201,169,110,0.5);color:rgba(201,169,110,0.8)">🚪 Modo Entrada</button>
             </div>
 
@@ -1083,6 +1167,7 @@
                             <th>Código</th>
                             <th>Familia</th>
                             <th>Pases</th>
+                            <th>Mesa</th>
                             <th>Estado</th>
                             <th>Confirmó</th>
                             <th>Asistentes</th>
@@ -1300,6 +1385,7 @@
                             (f.group_name ? "<br>" + groupBadge(f.group_name) : "") +
                         "</td>" +
                         '<td style="text-align:center">' + f.max_guests + "</td>" +
+                        '<td style="text-align:center">' + buildMesaSelect(f.id, f.table_number) + "</td>" +
                         '<td><span class="badge badge--' + status + '">' + lbl + "</span></td>" +
                         "<td>" + esc(rsvp ? rsvp.contact_name : "—") + "</td>" +
                         '<td style="text-align:center">' + (rsvp && rsvp.attending
@@ -1680,6 +1766,67 @@
                     await loadData();
                 } catch (e) {
                     alert("Error al eliminar.");
+                }
+            }
+
+            /* ── Mesas ────────────────────────────────── */
+            var TOTAL_MESAS = 18;
+            var CAP_POR_MESA = 10;
+
+            function buildMesaSelect(id, current) {
+                var opts = '<option value="">—</option>';
+                for (var i = 1; i <= TOTAL_MESAS; i++) {
+                    opts += '<option value="' + i + '"' + (current == i ? " selected" : "") + ">M" + i + "</option>";
+                }
+                return '<select class="mesa-select" onchange="assignTable(\'' + esc(id) + '\',this.value)">' + opts + "</select>";
+            }
+
+            async function assignTable(id, val) {
+                try {
+                    await fetch(SUPABASE_URL + "/rest/v1/families?id=eq." + id, {
+                        method: "PATCH",
+                        headers: { apikey: SUPABASE_ANON_KEY, Authorization: "Bearer " + SUPABASE_ANON_KEY, "Content-Type": "application/json" },
+                        body: JSON.stringify({ table_number: val ? parseInt(val) : null }),
+                    });
+                    var f = allData.find(function (x) { return x.id === id; });
+                    if (f) f.table_number = val ? parseInt(val) : null;
+                    renderProgress(allData);
+                } catch (e) { console.error(e); }
+            }
+
+            function showMesasView() {
+                var section = document.getElementById("mesas-section");
+                section.style.display = "block";
+                renderMesasGrid();
+                section.scrollIntoView({ behavior: "smooth", block: "nearest" });
+            }
+
+            function renderMesasGrid() {
+                var grid = document.getElementById("mesas-grid");
+                /* Build map: tableNum → {pax, families} */
+                var mesas = {};
+                for (var i = 1; i <= TOTAL_MESAS; i++) mesas[i] = { pax: 0, names: [] };
+                allData.forEach(function (f) {
+                    if (!f.table_number) return;
+                    var rsvp = f.rsvps && f.rsvps[0];
+                    var pax = rsvp && rsvp.attending ? rsvp.guest_count : 0;
+                    if (mesas[f.table_number]) {
+                        mesas[f.table_number].pax += pax;
+                        mesas[f.table_number].names.push(f.family_name.replace(/^Familia\s+/i, ""));
+                    }
+                });
+                grid.innerHTML = "";
+                for (var n = 1; n <= TOTAL_MESAS; n++) {
+                    var m = mesas[n];
+                    var cls = m.names.length === 0 ? "empty" : m.pax >= CAP_POR_MESA ? "full" : "partial";
+                    var capTxt = m.pax + " / " + CAP_POR_MESA + " pax";
+                    var famTxt = m.names.length ? m.names.join(", ") : "Vacía";
+                    grid.innerHTML +=
+                        '<div class="mesa-card mesa-card--' + cls + '">' +
+                        '<p class="mesa-card__num">' + n + "</p>" +
+                        '<p class="mesa-card__cap">' + capTxt + "</p>" +
+                        '<p class="mesa-card__fams">' + esc(famTxt) + "</p>" +
+                        "</div>";
                 }
             }
 

@@ -3034,6 +3034,40 @@
                                 class="rsvp__success-detail"
                                 id="rsvp-already-detail"
                             ></p>
+                            <!-- Mesa asignada (si existe) -->
+                            <div
+                                id="already-map-wrap"
+                                style="display: none; margin-top: 1.5rem"
+                            >
+                                <p
+                                    style="
+                                        font-size: 0.5rem;
+                                        letter-spacing: 0.25em;
+                                        text-transform: uppercase;
+                                        color: rgba(255, 255, 255, 0.3);
+                                        margin-bottom: 0.35rem;
+                                    "
+                                >
+                                    Tu lugar en el salón
+                                </p>
+                                <p
+                                    id="already-mesa-num"
+                                    style="
+                                        font-family: var(--f-script);
+                                        font-size: 2.5rem;
+                                        color: var(--c-gold);
+                                        line-height: 1.1;
+                                        text-shadow: 0 0 24px rgba(201, 169, 110, 0.4);
+                                        margin-bottom: 0.5rem;
+                                    "
+                                ></p>
+                                <canvas
+                                    id="already-map-canvas"
+                                    width="520"
+                                    height="340"
+                                    style="width: 100%; display: block"
+                                ></canvas>
+                            </div>
                             <a
                                 class="rsvp__change-link"
                                 id="rsvp-change-link"
@@ -3102,6 +3136,49 @@
                                         "
                                     ></p>
                                 </div>
+                                <!-- Mapa del salón (visible solo si tiene mesa asignada) -->
+                                <div
+                                    id="ticket-map-wrap"
+                                    style="display: none; padding: 0.75rem 1.5rem 0"
+                                >
+                                    <div class="ticket__divider"></div>
+                                    <p
+                                        style="
+                                            font-size: 0.48rem;
+                                            letter-spacing: 0.22em;
+                                            text-transform: uppercase;
+                                            color: rgba(255, 255, 255, 0.28);
+                                            text-align: center;
+                                            padding-top: 0.85rem;
+                                            margin-bottom: 0.4rem;
+                                        "
+                                    >
+                                        Tu lugar en el salón
+                                    </p>
+                                    <p
+                                        id="ticket-mesa-num"
+                                        style="
+                                            font-family: var(--f-script);
+                                            font-size: 2.5rem;
+                                            color: var(--c-gold);
+                                            text-align: center;
+                                            line-height: 1.1;
+                                            text-shadow: 0 0 24px rgba(201, 169, 110, 0.4);
+                                            margin-bottom: 0.5rem;
+                                        "
+                                    ></p>
+                                    <canvas
+                                        id="ticket-map-canvas"
+                                        width="520"
+                                        height="340"
+                                        style="
+                                            width: 100%;
+                                            display: block;
+                                            border-radius: 2px;
+                                        "
+                                    ></canvas>
+                                </div>
+
                                 <div class="ticket__tear"></div>
                                 <div class="ticket__qr-wrap">
                                     <div class="ticket__qr" id="ticket-qr"></div>
@@ -3196,6 +3273,113 @@
         >
 
         <script>
+            /* === MAPA DEL SALÓN === */
+            (function () {
+                /* Posiciones de 18 mesas (layout 5-4-4-5 con pista central) */
+                var POS = [
+                    /* Fila 1 — mesas 1-5 */
+                    {x:51,y:26},{x:105,y:26},{x:159,y:26},{x:213,y:26},{x:267,y:26},
+                    /* Fila 2 — mesas 6-9 (pista en medio) */
+                    {x:51,y:90},{x:105,y:90},{x:213,y:90},{x:267,y:90},
+                    /* Fila 3 — mesas 10-13 */
+                    {x:51,y:154},{x:105,y:154},{x:213,y:154},{x:267,y:154},
+                    /* Fila 4 — mesas 14-18 */
+                    {x:51,y:218},{x:105,y:218},{x:159,y:218},{x:213,y:218},{x:267,y:218},
+                ];
+
+                var glowPhase = 0;
+                var animId = null;
+
+                window.drawVenueMap = function (canvasEl, highlight) {
+                    if (!canvasEl) return;
+                    if (animId) cancelAnimationFrame(animId);
+
+                    var W = canvasEl.width, H = canvasEl.height;
+                    var ctx = canvasEl.getContext("2d");
+                    var R = 18; /* radio de cada mesa */
+
+                    function frame() {
+                        glowPhase += 0.06;
+                        ctx.clearRect(0, 0, W, H);
+
+                        /* Fondo */
+                        ctx.fillStyle = "#0f0a08";
+                        ctx.fillRect(0, 0, W, H);
+
+                        /* Borde del salón */
+                        ctx.strokeStyle = "rgba(201,169,110,0.18)";
+                        ctx.lineWidth = 1.5;
+                        ctx.strokeRect(8, 8, W - 16, H - 16);
+
+                        /* Etiqueta escenario */
+                        ctx.fillStyle = "rgba(201,169,110,0.12)";
+                        ctx.fillRect(20, 12, W - 40, 10);
+                        ctx.fillStyle = "rgba(201,169,110,0.5)";
+                        ctx.font = "500 9px Montserrat, Arial, sans-serif";
+                        ctx.textAlign = "center";
+                        ctx.fillText("ESCENARIO / MESA DE HONOR", W / 2, 20);
+
+                        /* Pista de baile */
+                        var dfX = 135, dfY = 78, dfW = 90, dfH = 108;
+                        ctx.fillStyle = "rgba(255,255,255,0.025)";
+                        ctx.fillRect(dfX, dfY, dfW, dfH);
+                        ctx.setLineDash([3, 5]);
+                        ctx.strokeStyle = "rgba(255,255,255,0.08)";
+                        ctx.lineWidth = 1;
+                        ctx.strokeRect(dfX, dfY, dfW, dfH);
+                        ctx.setLineDash([]);
+                        ctx.fillStyle = "rgba(255,255,255,0.12)";
+                        ctx.font = "300 8px Arial, sans-serif";
+                        ctx.fillText("PISTA", dfX + dfW / 2, dfY + dfH / 2 + 3);
+
+                        /* Mesas */
+                        POS.forEach(function (p, i) {
+                            var num = i + 1;
+                            var isHL = num === highlight;
+                            var glow = isHL ? (Math.sin(glowPhase) * 0.5 + 0.5) : 0;
+
+                            if (isHL) {
+                                /* Aura exterior animada */
+                                ctx.beginPath();
+                                ctx.arc(p.x, p.y, R + 6 + glow * 6, 0, Math.PI * 2);
+                                ctx.fillStyle = "rgba(201,169,110," + (0.08 + glow * 0.12) + ")";
+                                ctx.fill();
+                            }
+
+                            /* Círculo de la mesa */
+                            ctx.beginPath();
+                            ctx.arc(p.x, p.y, R, 0, Math.PI * 2);
+                            if (isHL) {
+                                ctx.fillStyle = "#c9a96e";
+                                ctx.shadowColor = "#c9a96e";
+                                ctx.shadowBlur = 14 + glow * 16;
+                            } else {
+                                ctx.fillStyle = "rgba(255,255,255,0.06)";
+                                ctx.shadowBlur = 0;
+                                ctx.strokeStyle = "rgba(255,255,255,0.12)";
+                                ctx.lineWidth = 1;
+                            }
+                            ctx.fill();
+                            if (!isHL) ctx.stroke();
+                            ctx.shadowBlur = 0;
+
+                            /* Número */
+                            ctx.fillStyle = isHL ? "#1e1410" : "rgba(255,255,255,0.28)";
+                            ctx.font = (isHL ? "bold " : "300 ") + "10px Arial, sans-serif";
+                            ctx.textAlign = "center";
+                            ctx.fillText(num, p.x, p.y + 3.5);
+                        });
+
+                        animId = requestAnimationFrame(frame);
+                    }
+                    frame();
+                };
+
+                window.stopMapAnim = function () {
+                    if (animId) { cancelAnimationFrame(animId); animId = null; }
+                };
+            })();
+
             /* === GUARDAR IMAGEN DEL PASE (canvas directo, sin librerías) === */
             (function () {
                 document.addEventListener("click", function (e) {
@@ -3803,6 +3987,18 @@
                                               : " lugares") +
                                           " para el 21 de noviembre."
                                         : "Registramos que no podrás asistir. ¡Gracias por avisarnos!";
+                                /* Mesa asignada en "ya confirmaste" */
+                                if (family.table_number) {
+                                    var aw = document.getElementById("already-map-wrap");
+                                    var an = document.getElementById("already-mesa-num");
+                                    if (aw && an) {
+                                        aw.style.display = "block";
+                                        an.textContent = "Mesa " + family.table_number;
+                                        setTimeout(function () {
+                                            drawVenueMap(document.getElementById("already-map-canvas"), family.table_number);
+                                        }, 300);
+                                    }
+                                }
                                 showStep("already");
                                 return;
                             }
@@ -3941,6 +4137,18 @@
                                 "https://wa.me/" + COUPLE_PHONE +
                                 "?text=" + encodeURIComponent(confirmMsg);
 
+                            /* Mapa del salón (si ya tiene mesa asignada) */
+                            if (family.table_number) {
+                                var mw = document.getElementById("ticket-map-wrap");
+                                var mn = document.getElementById("ticket-mesa-num");
+                                if (mw && mn) {
+                                    mw.style.display = "block";
+                                    mn.textContent = "Mesa " + family.table_number;
+                                    setTimeout(function () {
+                                        drawVenueMap(document.getElementById("ticket-map-canvas"), family.table_number);
+                                    }, 300);
+                                }
+                            }
                             showStep("success");
                         } catch (err) {
                             errEl.textContent =
