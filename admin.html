@@ -856,13 +856,13 @@
                 thead th { padding: 0.55rem 0.45rem; font-size: 0.42rem; }
                 tbody td { padding: 0.65rem 0.45rem; }
 
-                /* Ocultar: Código (1), Confirmó (5), Fecha (7) */
+                /* Ocultar: Código (1), Confirmó (6), Fecha (8) — actualizado tras añadir Mesa */
                 table th:nth-child(1),
                 table td:nth-child(1),
-                table th:nth-child(5),
-                table td:nth-child(5),
-                table th:nth-child(7),
-                table td:nth-child(7) { display: none; }
+                table th:nth-child(6),
+                table td:nth-child(6),
+                table th:nth-child(8),
+                table td:nth-child(8) { display: none; }
 
                 /* Botones de envío: ocultar "Copiar", abreviar WhatsApp */
                 .link-btn { display: none; }
@@ -1348,15 +1348,16 @@
                 );
             }
 
-            function buildWaUrl(family, code, phone) {
+            function buildWaUrl(family, code, phone, tableNum) {
                 var link = buildLink(code);
                 var msg =
                     "¡Hola, " + family + "! 🥂\n\n" +
                     "Con mucho cariño les compartimos su invitación a la boda de *Karla & Eduardo*.\n\n" +
                     "📅 Sábado 21 de noviembre de 2026\n" +
                     "🕔 17:00 hrs\n" +
-                    "📍 Hacienda Zerezotla, San Andrés Cholula\n\n" +
-                    "Su invitación personalizada:\n" + link;
+                    "📍 Hacienda Zerezotla, San Andrés Cholula\n" +
+                    (tableNum ? "🪑 Su mesa: *Mesa " + tableNum + "*\n" : "") +
+                    "\nSu invitación personalizada:\n" + link;
                 var cleanPhone = phone ? phone.replace(/\D/g, "") : "";
                 var dest = cleanPhone ? "52" + cleanPhone : "";
                 return "https://wa.me/" + dest + "?text=" + encodeURIComponent(msg);
@@ -1396,7 +1397,7 @@
                         '<td class="ts">' + date + "</td>" +
                         "<td>" +
                             '<button class="link-btn" onclick="copyLink(\'' + esc(f.code) + "', this)\">Copiar link</button>" +
-                            '<a class="wa-btn' + (f.phone ? " wa-btn--direct" : "") + '" href="' + esc(buildWaUrl(f.family_name, f.code, f.phone)) + '" target="_blank">WhatsApp' + (f.phone ? " ✓" : "") + "</a>" +
+                            '<a class="wa-btn' + (f.phone ? " wa-btn--direct" : "") + '" href="' + esc(buildWaUrl(f.family_name, f.code, f.phone, f.table_number)) + '" target="_blank">WhatsApp' + (f.phone ? " ✓" : "") + "</a>" +
                         "</td>" +
                         "<td>" +
                             '<button class="expand-btn" onclick="toggleDetail(\'' + rowId + '\', this)" title="Ver detalles">▸</button>' +
@@ -1430,6 +1431,12 @@
                     "<div>" +
                         '<p class="detail-field__lbl">Grupo</p>' +
                         '<p class="detail-field__val">' + (f.group_name ? groupBadge(f.group_name) : "—") + "</p>" +
+                    "</div>" +
+                    "<div>" +
+                        '<p class="detail-field__lbl">Mesa asignada</p>' +
+                        '<p class="detail-field__val">' + (f.table_number
+                            ? '<span style="font-family:var(--f-serif);font-size:1.1rem;color:var(--gold)">Mesa ' + f.table_number + '</span>'
+                            : '<span style="color:rgba(255,255,255,0.22)">Sin asignar</span>') + "</p>" +
                     "</div>" +
                     (function () {
                         var allNames = f.guest_names
@@ -1647,11 +1654,15 @@
                     syncGuestRows(Math.max(1, parseInt(this.value) || 1));
                 });
 
-                /* Botón "Agregar" extra */
+                /* Botón "Agregar" extra — sincroniza pases automáticamente */
                 document.getElementById("nf-add-guest").addEventListener("click", function () {
                     var container = document.getElementById("nf-guestnames-container");
                     var count = container.querySelectorAll(".guest-name-row").length;
                     container.appendChild(createGuestRow(count + 1, ""));
+                    /* Si hay más nombres que pases, auto-incrementar pases */
+                    if (count + 1 > (parseInt(guestsInput.value) || 1)) {
+                        guestsInput.value = count + 1;
+                    }
                 });
 
                 nameInput.addEventListener("input", function () {
@@ -1695,6 +1706,9 @@
                     var phone  = document.getElementById("nf-phone").value.trim().replace(/\D/g, "");
                     var gnames = collectGuestNames();
                     var notes  = document.getElementById("nf-notes").value.trim();
+                    /* Sincronizar pases: usa el mayor entre el campo y los nombres ingresados */
+                    var nameCount = gnames ? gnames.split(",").filter(function(n){return n.trim();}).length : 0;
+                    guests = Math.max(guests, nameCount);
 
                     self.textContent = "Agregando…";
                     self.disabled = true;
@@ -1857,7 +1871,7 @@
                         return '<div class="reminder-item">' +
                             '<div><span class="reminder-name">' + esc(f.family_name) + '</span>' +
                             '<span class="reminder-code">' + esc(f.code) + (f.phone ? " · " + f.phone : "") + '</span></div>' +
-                            '<a class="wa-btn" href="' + esc(buildWaUrl(f.family_name, f.code, f.phone)) + '" target="_blank">WhatsApp</a>' +
+                            '<a class="wa-btn" href="' + esc(buildWaUrl(f.family_name, f.code, f.phone, f.table_number)) + '" target="_blank">WhatsApp</a>' +
                             '</div>';
                     }).join("");
                 }
@@ -1900,7 +1914,9 @@
                 var sorted = data.slice().sort(function(a, b) { return (a.checked_in ? 1 : 0) - (b.checked_in ? 1 : 0); });
                 document.getElementById("ci-list").innerHTML = sorted.length ? sorted.map(function(f) {
                     var rsvp   = f.rsvps && f.rsvps[0];
-                    var detail = rsvp ? rsvp.guest_count + (rsvp.guest_count === 1 ? " persona" : " personas") + " · " + f.code : f.code;
+                    var detail = (rsvp ? rsvp.guest_count + (rsvp.guest_count === 1 ? " persona" : " personas") : "?") +
+                        (f.table_number ? " · Mesa " + f.table_number : "") +
+                        " · " + f.code;
                     if (f.checked_in) {
                         var t = f.checked_in_at ? new Date(f.checked_in_at).toLocaleTimeString("es-MX", { hour: "2-digit", minute: "2-digit" }) : "";
                         return '<div class="ci-item ci-item--done"><div><p class="ci-item__name">' + esc(f.family_name) + '</p><p class="ci-item__detail">' + detail + '</p></div><span class="ci-done-badge">✓ ' + (t || "Registrado") + '</span></div>';
@@ -1989,6 +2005,7 @@
                             "Código",
                             "Familia",
                             "Pases",
+                            "Mesa",
                             "Estado",
                             "Confirmó",
                             "Asistentes",
@@ -2011,6 +2028,7 @@
                             f.code,
                             f.family_name,
                             f.max_guests,
+                            f.table_number ? "Mesa " + f.table_number : "",
                             status,
                             rsvp ? rsvp.contact_name : "",
                             rsvp && rsvp.attending ? rsvp.guest_count : "",
