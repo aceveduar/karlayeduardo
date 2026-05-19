@@ -328,7 +328,7 @@
                     0 0 0 9px rgba(201, 169, 110, 0.15),
                     0 24px 70px rgba(0, 0, 0, 0.22);
                 margin: 2rem auto;
-                width: 76%;
+                width: 88%;
                 overflow: hidden;
             }
             .inv-header__photo {
@@ -557,11 +557,12 @@
                     0 0 90px rgba(201, 169, 110, 0.1);
             }
             .countdown__unit-lbl {
-                font-size: 0.44rem;
+                font-size: 0.6rem;
                 text-transform: uppercase;
-                letter-spacing: 0.2em;
-                color: rgba(255, 255, 255, 0.35);
-                margin-top: 0.5rem;
+                letter-spacing: 0.18em;
+                color: rgba(255, 255, 255, 0.45);
+                margin-top: 0.55rem;
+                font-weight: 500;
             }
             .countdown__sep {
                 font-family: var(--f-serif);
@@ -1450,6 +1451,36 @@
             }
 
             /* =============================================
+       BLOCK: rsvp progress dots
+       ============================================= */
+            .rsvp__progress {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 0.5rem;
+                margin-bottom: 2rem;
+            }
+            .rsvp__progress-dot {
+                width: 6px;
+                height: 6px;
+                border-radius: 50%;
+                background: rgba(201,169,110,0.2);
+                border: 1px solid rgba(201,169,110,0.3);
+                transition: all 0.35s ease;
+            }
+            .rsvp__progress-dot.is-active {
+                width: 22px;
+                border-radius: 4px;
+                background: var(--c-gold);
+                border-color: var(--c-gold);
+                box-shadow: 0 0 12px rgba(201,169,110,0.45);
+            }
+            .rsvp__progress-dot.is-done {
+                background: rgba(201,169,110,0.55);
+                border-color: rgba(201,169,110,0.55);
+            }
+
+            /* =============================================
        BLOCK: rsvp-form  (multi-step states)
        ============================================= */
             .rsvp-step {
@@ -1870,21 +1901,88 @@
        BLOCK: inv-footer
        ============================================= */
             .inv-footer {
-                padding: 3rem 2rem 1.5rem;
+                padding: 0 0 2rem;
                 text-align: center;
+                background: linear-gradient(180deg, var(--c-dark-mid) 0%, var(--c-dark-bg) 100%);
+                position: relative;
+                overflow: hidden;
+            }
+            .inv-footer::before {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 1px;
+                background: linear-gradient(to right, transparent, rgba(201,169,110,0.4), transparent);
+            }
+            .inv-footer__photo-wrap {
+                position: relative;
+                width: 100%;
+                height: 280px;
+                overflow: hidden;
+            }
+            .inv-footer__photo-wrap::after {
+                content: "";
+                position: absolute;
+                inset: 0;
+                background: linear-gradient(
+                    to bottom,
+                    rgba(30,20,16,0.15) 0%,
+                    rgba(30,20,16,0) 40%,
+                    rgba(30,20,16,0.75) 80%,
+                    rgba(30,20,16,1) 100%
+                );
+            }
+            .inv-footer__couple-photo {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                object-position: center 20%;
+                display: block;
+                filter: brightness(0.82) saturate(0.88);
+                transition: transform 0.9s ease;
+            }
+            .inv-footer__photo-wrap:hover .inv-footer__couple-photo {
+                transform: scale(1.03);
+            }
+            .inv-footer__content {
+                padding: 0 2rem 0.5rem;
+                position: relative;
+                z-index: 1;
             }
             .inv-footer__msg {
-                font-size: 0.58rem;
-                letter-spacing: 0.3em;
+                font-size: 0.52rem;
+                letter-spacing: 0.38em;
                 text-transform: uppercase;
-                color: var(--c-text-light);
-                margin-bottom: 1rem;
+                color: rgba(201,169,110,0.5);
+                margin-bottom: 0.75rem;
+                padding-top: 0.5rem;
             }
             .inv-footer__thanks {
                 font-family: var(--f-script);
                 font-size: 3.75rem;
-                color: var(--c-text-dark);
-                line-height: 1.2;
+                color: var(--c-gold);
+                line-height: 1.15;
+                text-shadow:
+                    0 0 40px rgba(201,169,110,0.45),
+                    0 0 80px rgba(201,169,110,0.2);
+                animation: glow-pulse 3s ease-in-out infinite;
+            }
+            .inv-footer__names {
+                font-family: var(--f-script);
+                font-size: 2rem;
+                color: rgba(255,255,255,0.6);
+                line-height: 1.3;
+                margin-top: 0.35rem;
+            }
+            .inv-footer__date-line {
+                font-family: var(--f-serif);
+                font-size: 0.62rem;
+                letter-spacing: 0.38em;
+                color: rgba(201,169,110,0.38);
+                margin-top: 0.6rem;
+                font-style: italic;
             }
 
             /* =============================================
@@ -2251,6 +2349,231 @@
                     font-size: 0.75rem;
                 }
             }
+
+            /* =============================================
+               BLOCK: how-to-get — ¿Cómo llegar?
+               ============================================= */
+            .how-to-get {
+                padding: 4rem 2.5rem;
+                background: var(--c-parchment-lt);
+                text-align: center;
+                position: relative;
+            }
+            .how-to-get::before {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: 10%;
+                right: 10%;
+                height: 1px;
+                background: var(--gold-line);
+            }
+            .how-to-get__cards {
+                display: flex;
+                flex-direction: column;
+                gap: 1rem;
+                margin-top: 2rem;
+                text-align: left;
+            }
+            .how-to-get__card {
+                background: var(--c-white);
+                border: 1px solid var(--c-border);
+                border-top: 3px solid var(--c-gold);
+                padding: 1.5rem;
+                box-shadow: var(--shadow-sm);
+                transition: transform 0.3s ease, box-shadow 0.3s ease;
+            }
+            .how-to-get__card:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 12px 40px rgba(0, 0, 0, 0.1);
+            }
+            .how-to-get__badge {
+                display: inline-block;
+                font-size: 0.45rem;
+                letter-spacing: 0.3em;
+                text-transform: uppercase;
+                color: var(--c-gold);
+                border: 1px solid rgba(201, 169, 110, 0.35);
+                padding: 0.15rem 0.6rem;
+                margin-bottom: 0.65rem;
+            }
+            .how-to-get__card-title {
+                font-family: var(--f-serif);
+                font-size: 1rem;
+                color: var(--c-text-dark);
+                margin-bottom: 0.5rem;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+            .how-to-get__card-icon {
+                width: 1.2rem;
+                height: 1.2rem;
+                color: var(--c-terracotta);
+                flex-shrink: 0;
+            }
+            .how-to-get__card-text {
+                font-size: 0.75rem;
+                color: var(--c-text-light);
+                line-height: 1.85;
+            }
+            .how-to-get__card-text strong {
+                color: var(--c-text-mid);
+                font-weight: 600;
+            }
+
+            /* =============================================
+               BLOCK: gallery — Galería de fotos
+               ============================================= */
+            .gallery {
+                padding: 4rem 2.5rem;
+                background: var(--c-parchment);
+                text-align: center;
+                position: relative;
+            }
+            .gallery::before {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: 10%;
+                right: 10%;
+                height: 1px;
+                background: var(--gold-line);
+            }
+            .gallery__grid {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.5rem;
+                margin-top: 2rem;
+            }
+            .gallery__item {
+                position: relative;
+                overflow: hidden;
+                cursor: pointer;
+                aspect-ratio: 3/4;
+                background: var(--c-border);
+            }
+            .gallery__item--wide {
+                grid-column: span 2;
+                aspect-ratio: 16/9;
+            }
+            .gallery__img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                object-position: center top;
+                transition: transform 0.7s ease;
+                display: block;
+            }
+            .gallery__item:hover .gallery__img {
+                transform: scale(1.06);
+            }
+            .gallery__overlay {
+                position: absolute;
+                inset: 0;
+                background: rgba(30, 20, 16, 0);
+                transition: background 0.4s ease;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .gallery__item:hover .gallery__overlay {
+                background: rgba(30, 20, 16, 0.28);
+            }
+            .gallery__zoom-icon {
+                opacity: 0;
+                color: rgba(201, 169, 110, 0.9);
+                transform: scale(0.6);
+                transition: opacity 0.35s ease, transform 0.35s ease;
+                width: 2rem;
+                height: 2rem;
+            }
+            .gallery__item:hover .gallery__zoom-icon {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            /* Lightbox */
+            .gallery-lightbox {
+                display: none;
+                position: fixed;
+                inset: 0;
+                background: rgba(15, 8, 4, 0.97);
+                z-index: 9999;
+                align-items: center;
+                justify-content: center;
+                padding: 1.5rem;
+            }
+            .gallery-lightbox.is-open {
+                display: flex;
+            }
+            .gallery-lightbox__img {
+                max-width: 100%;
+                max-height: 85vh;
+                object-fit: contain;
+                border: 1px solid rgba(201, 169, 110, 0.12);
+                box-shadow: 0 20px 80px rgba(0, 0, 0, 0.6);
+                transition: opacity 0.25s ease;
+            }
+            .gallery-lightbox__img.is-loading {
+                opacity: 0;
+            }
+            .gallery-lightbox__close {
+                position: absolute;
+                top: 1.25rem;
+                right: 1.25rem;
+                background: none;
+                border: 1px solid rgba(201, 169, 110, 0.35);
+                color: var(--c-gold);
+                width: 2.5rem;
+                height: 2.5rem;
+                border-radius: 50%;
+                cursor: pointer;
+                font-size: 1.1rem;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: background 0.3s ease;
+                z-index: 2;
+                line-height: 1;
+            }
+            .gallery-lightbox__close:hover {
+                background: rgba(201, 169, 110, 0.15);
+            }
+            .gallery-lightbox__nav {
+                position: absolute;
+                top: 50%;
+                transform: translateY(-50%);
+                background: none;
+                border: 1px solid rgba(201, 169, 110, 0.25);
+                color: var(--c-gold);
+                width: 3rem;
+                height: 3rem;
+                border-radius: 50%;
+                cursor: pointer;
+                font-size: 1.5rem;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: background 0.3s ease;
+                line-height: 1;
+            }
+            .gallery-lightbox__nav--prev { left: 0.75rem; }
+            .gallery-lightbox__nav--next { right: 0.75rem; }
+            .gallery-lightbox__nav:hover {
+                background: rgba(201, 169, 110, 0.15);
+            }
+            .gallery-lightbox__counter {
+                position: absolute;
+                bottom: 1.5rem;
+                left: 50%;
+                transform: translateX(-50%);
+                font-family: var(--f-serif);
+                font-style: italic;
+                font-size: 0.75rem;
+                color: rgba(201, 169, 110, 0.45);
+                letter-spacing: 0.15em;
+            }
         </style>
     </head>
     <body>
@@ -2287,10 +2610,7 @@
                 </svg>
             </button>
             <audio id="js-audio" loop>
-                <source
-                    src="https://www.bensound.com/bensound-music/bensound-romanticserenade.mp3"
-                    type="audio/mpeg"
-                />
+                <source src="fondo.mp3" type="audio/mpeg" />
             </audio>
         </div>
 
@@ -2335,7 +2655,7 @@
                         <img
                             class="inv-header__photo"
                             alt="Karla y Eduardo"
-                            src="assets/Karla y Froyland/66a86974-0364-43a0-8d70-308a8c0f31ad.jpg"
+                            src="assets/Karla y Froyland/novios.jpg"
                         />
                     </div>
 
@@ -2481,14 +2801,20 @@
                         Xixitla<br />
                         San Andrés Cholula, Puebla
                     </p>
-                    <!-- TODO: reemplazar href con el link real de Google Maps -->
                     <div class="event-info__btns">
                         <a
                             class="btn btn--outline"
                             href="https://maps.app.goo.gl/3gJYesHg56eQsEJZ8?g_st=iw"
                             target="_blank"
                             rel="noopener noreferrer"
-                            >Ver ubicación</a
+                            >Google Maps</a
+                        >
+                        <a
+                            class="btn btn--outline"
+                            href="https://www.waze.com/ul?q=Hacienda+Zerezotla+Calle+15+Poniente+1531+San+Andres+Cholula+Puebla&navigate=yes"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            >Waze</a
                         >
                         <button
                             class="btn btn--outline"
@@ -2496,6 +2822,64 @@
                         >
                             + Calendario
                         </button>
+                    </div>
+                </section>
+
+                <!-- CÓMO LLEGAR -->
+                <section class="how-to-get js-fade">
+                    <h3 class="section-heading">¿Cómo Llegar?</h3>
+                    <div class="how-to-get__cards">
+
+                        <!-- HOTEL -->
+                        <div class="how-to-get__card">
+                            <span class="how-to-get__badge">Hospedaje</span>
+                            <p class="how-to-get__card-title">
+                                <svg class="how-to-get__card-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                                </svg>
+                                Hoteles Recomendados
+                            </p>
+                            <p class="how-to-get__card-text">
+                                A pocos minutos de la hacienda encontrarás varias opciones de hospedaje en San Andrés Cholula y Puebla centro.<br><br>
+                                <strong>Zona recomendada:</strong> San Andrés Cholula / Corredor Angelópolis<br>
+                                Busca disponibilidad con tiempo, los fines de semana se agotan rápido.
+                            </p>
+                        </div>
+
+                        <!-- ESTACIONAMIENTO -->
+                        <div class="how-to-get__card">
+                            <span class="how-to-get__badge">Estacionamiento</span>
+                            <p class="how-to-get__card-title">
+                                <svg class="how-to-get__card-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z"/>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10l2 2h10l2-2"/>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 6l4 4m0 0l2 2m-2-2v6"/>
+                                </svg>
+                                Estacionamiento en el Venue
+                            </p>
+                            <p class="how-to-get__card-text">
+                                Hacienda Zerezotla cuenta con estacionamiento propio. Si planeas consumir alcohol, te recomendamos considerar un servicio de transporte.<br><br>
+                                <strong>Tip:</strong> Llega con 10–15 min de anticipación para apartar lugar cómodamente.
+                            </p>
+                        </div>
+
+                        <!-- TRANSPORTE -->
+                        <div class="how-to-get__card">
+                            <span class="how-to-get__badge">Transporte</span>
+                            <p class="how-to-get__card-title">
+                                <svg class="how-to-get__card-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+                                </svg>
+                                Cómo Llegar
+                            </p>
+                            <p class="how-to-get__card-text">
+                                <strong>Desde Puebla centro:</strong> ~20 min en auto o taxi<br>
+                                <strong>Desde CDMX:</strong> ~2 hrs por la autopista México–Puebla (150D)<br>
+                                <strong>Uber / DiDi:</strong> Disponibles en la zona, muy recomendados para la noche<br><br>
+                                Usa Google Maps o Waze buscando <em>"Hacienda Zerezotla, San Andrés Cholula"</em> para la ruta más actualizada.
+                            </p>
+                        </div>
+
                     </div>
                 </section>
 
@@ -2699,6 +3083,124 @@
                     </div>
                 </section>
 
+                <!-- GALERÍA -->
+                <section class="gallery js-fade">
+                    <h3 class="section-heading">Nuestra Galería</h3>
+                    <p style="font-family:var(--f-serif);font-style:italic;font-size:0.85rem;color:var(--c-text-light);margin:-1.25rem 0 2rem;line-height:1.8;">Momentos que atesoran nuestro amor</p>
+
+                    <div class="gallery__grid">
+
+                        <!-- Foto principal — ancho completo -->
+                        <div class="gallery__item gallery__item--wide" data-gallery-index="0">
+                            <img
+                                class="gallery__img"
+                                src="assets/Karla y Froyland/novios.jpg"
+                                alt="Karla y Eduardo"
+                                loading="lazy"
+                            />
+                            <div class="gallery__overlay">
+                                <svg class="gallery__zoom-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"/>
+                                </svg>
+                            </div>
+                        </div>
+
+                        <!-- Fila 2 -->
+                        <div class="gallery__item" data-gallery-index="1">
+                            <img
+                                class="gallery__img"
+                                src="assets/Karla y Froyland/kye-1.jpg"
+                                alt="Karla y Eduardo"
+                                loading="lazy"
+                            />
+                            <div class="gallery__overlay">
+                                <svg class="gallery__zoom-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="gallery__item" data-gallery-index="2">
+                            <img
+                                class="gallery__img"
+                                src="assets/Karla y Froyland/kye-2.jpg"
+                                alt="Karla y Eduardo"
+                                loading="lazy"
+                            />
+                            <div class="gallery__overlay">
+                                <svg class="gallery__zoom-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"/>
+                                </svg>
+                            </div>
+                        </div>
+
+                        <!-- Fila 3 -->
+                        <div class="gallery__item" data-gallery-index="3">
+                            <img
+                                class="gallery__img"
+                                src="assets/Karla y Froyland/brazos.jpg"
+                                alt="Karla y Eduardo"
+                                loading="lazy"
+                            />
+                            <div class="gallery__overlay">
+                                <svg class="gallery__zoom-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="gallery__item" data-gallery-index="4">
+                            <img
+                                class="gallery__img"
+                                src="assets/Karla y Froyland/anillo.jpg"
+                                alt="El anillo"
+                                loading="lazy"
+                            />
+                            <div class="gallery__overlay">
+                                <svg class="gallery__zoom-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"/>
+                                </svg>
+                            </div>
+                        </div>
+
+                        <!-- Fila 4 — retratos individuales -->
+                        <div class="gallery__item" data-gallery-index="5">
+                            <img
+                                class="gallery__img"
+                                src="assets/Karla y Froyland/1-karla.jpg"
+                                alt="Karla"
+                                loading="lazy"
+                            />
+                            <div class="gallery__overlay">
+                                <svg class="gallery__zoom-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="gallery__item" data-gallery-index="6">
+                            <img
+                                class="gallery__img"
+                                src="assets/Karla y Froyland/eduardo.jpg"
+                                alt="Eduardo"
+                                loading="lazy"
+                            />
+                            <div class="gallery__overlay">
+                                <svg class="gallery__zoom-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"/>
+                                </svg>
+                            </div>
+                        </div>
+
+                    </div>
+                </section>
+
+                <!-- LIGHTBOX -->
+                <div class="gallery-lightbox" id="gallery-lightbox" role="dialog" aria-modal="true" aria-label="Galería de fotos">
+                    <button class="gallery-lightbox__close" id="lightbox-close" aria-label="Cerrar">&#x2715;</button>
+                    <button class="gallery-lightbox__nav gallery-lightbox__nav--prev" id="lightbox-prev" aria-label="Foto anterior">&#x2039;</button>
+                    <img class="gallery-lightbox__img" id="lightbox-img" src="" alt="" />
+                    <button class="gallery-lightbox__nav gallery-lightbox__nav--next" id="lightbox-next" aria-label="Foto siguiente">&#x203A;</button>
+                    <span class="gallery-lightbox__counter" id="lightbox-counter"></span>
+                </div>
+
                 <!-- DRESS CODE -->
                 <section class="dresscode js-fade">
                     <h3 class="section-heading">Código de Vestimenta</h3>
@@ -2829,6 +3331,12 @@
                         <h3 class="section-heading section-heading--light">
                             Confirmar Asistencia
                         </h3>
+                        <!-- Dots de progreso (visibles en pasos 1–3) -->
+                        <div class="rsvp__progress" id="rsvp-progress" style="display:none;">
+                            <span class="rsvp__progress-dot" id="rsvp-dot-1"></span>
+                            <span class="rsvp__progress-dot" id="rsvp-dot-2"></span>
+                            <span class="rsvp__progress-dot" id="rsvp-dot-3"></span>
+                        </div>
                         <p class="rsvp__desc">
                             Agradecemos que confirmes tu asistencia
                             <span class="rsvp__deadline"
@@ -3211,35 +3719,38 @@
 
                 <!-- FOOTER -->
                 <footer class="inv-footer">
-                    <p class="inv-footer__msg">
-                        Esperamos contar con su presencia
-                    </p>
-
-                    <div class="ornament-divider" aria-hidden="true">
+                    <!-- Foto de pareja con fade a oscuro -->
+                    <div class="inv-footer__photo-wrap">
                         <img
-                            class="ornament-divider__img"
-                            alt=""
-                            src="../karlayeduardo/assets/floral.png"
+                            class="inv-footer__couple-photo"
+                            src="assets/Karla y Froyland/novios.jpg"
+                            alt="Karla y Eduardo"
+                            loading="lazy"
                         />
                     </div>
 
-                    <p class="inv-footer__thanks">¡Muchas Gracias!</p>
+                    <div class="inv-footer__content">
+                        <p class="inv-footer__msg">Esperamos contar con su presencia</p>
 
-                    <div
-                        class="ornament-divider ornament-divider--flipped"
-                        aria-hidden="true"
-                    >
-                        <img
-                            class="ornament-divider__img"
-                            alt=""
-                            src="../karlayeduardo/assets/floral.png"
-                        />
+                        <div class="ornament-divider" aria-hidden="true">
+                            <img
+                                class="ornament-divider__img"
+                                alt=""
+                                src="../karlayeduardo/assets/floral.png"
+                                style="opacity:0.45;"
+                            />
+                        </div>
+
+                        <p class="inv-footer__thanks">¡Muchas Gracias!</p>
+                        <p class="inv-footer__names">Karla &amp; Eduardo</p>
+                        <p class="inv-footer__date-line">21 · Noviembre · 2026</p>
                     </div>
 
                     <!-- BOTTOM FLORAL -->
                     <div
                         class="floral-band floral-band--bottom"
                         aria-hidden="true"
+                        style="opacity:0.5;"
                     >
                         <img
                             class="floral-band__img"
@@ -3880,6 +4391,19 @@
                             "rsvp-step" +
                             (s === id ? " rsvp-step--active" : "");
                     });
+                    /* dots de progreso */
+                    var progressWrap = document.getElementById("rsvp-progress");
+                    var stepMap = { code: 1, form: 2, success: 3, already: 3 };
+                    var dot1 = document.getElementById("rsvp-dot-1");
+                    var dot2 = document.getElementById("rsvp-dot-2");
+                    var dot3 = document.getElementById("rsvp-dot-3");
+                    if (progressWrap && dot1 && dot2 && dot3) {
+                        var step = stepMap[id] || 0;
+                        progressWrap.style.display = step > 0 ? "flex" : "none";
+                        dot1.className = "rsvp__progress-dot" + (step === 1 ? " is-active" : step > 1 ? " is-done" : "");
+                        dot2.className = "rsvp__progress-dot" + (step === 2 ? " is-active" : step > 2 ? " is-done" : "");
+                        dot3.className = "rsvp__progress-dot" + (step === 3 ? " is-active" : "");
+                    }
                 }
 
                 function api(path, opts) {
@@ -4261,6 +4785,82 @@
                             self.disabled = false;
                         }
                     });
+            })();
+
+            /* === GALLERY LIGHTBOX === */
+            (function () {
+                var galleryPhotos = [
+                    "assets/Karla y Froyland/novios.jpg",
+                    "assets/Karla y Froyland/kye-1.jpg",
+                    "assets/Karla y Froyland/kye-2.jpg",
+                    "assets/Karla y Froyland/brazos.jpg",
+                    "assets/Karla y Froyland/anillo.jpg",
+                    "assets/Karla y Froyland/1-karla.jpg",
+                    "assets/Karla y Froyland/eduardo.jpg"
+                ];
+                var currentIndex = 0;
+                var lightbox = document.getElementById("gallery-lightbox");
+                var lightboxImg = document.getElementById("lightbox-img");
+                var counter = document.getElementById("lightbox-counter");
+
+                function openLightbox(index) {
+                    currentIndex = index;
+                    lightbox.classList.add("is-open");
+                    showPhoto(currentIndex);
+                    document.body.style.overflow = "hidden";
+                }
+
+                function closeLightbox() {
+                    lightbox.classList.remove("is-open");
+                    document.body.style.overflow = "";
+                }
+
+                function showPhoto(index) {
+                    lightboxImg.classList.add("is-loading");
+                    var src = galleryPhotos[index];
+                    var tmp = new Image();
+                    tmp.onload = function () {
+                        lightboxImg.src = src;
+                        lightboxImg.classList.remove("is-loading");
+                    };
+                    tmp.src = src;
+                    counter.textContent = (index + 1) + " / " + galleryPhotos.length;
+                }
+
+                document.querySelectorAll("[data-gallery-index]").forEach(function (el) {
+                    el.addEventListener("click", function () {
+                        openLightbox(parseInt(el.getAttribute("data-gallery-index"), 10));
+                    });
+                });
+
+                document.getElementById("lightbox-close").addEventListener("click", closeLightbox);
+
+                document.getElementById("lightbox-prev").addEventListener("click", function () {
+                    currentIndex = (currentIndex - 1 + galleryPhotos.length) % galleryPhotos.length;
+                    showPhoto(currentIndex);
+                });
+
+                document.getElementById("lightbox-next").addEventListener("click", function () {
+                    currentIndex = (currentIndex + 1) % galleryPhotos.length;
+                    showPhoto(currentIndex);
+                });
+
+                lightbox.addEventListener("click", function (e) {
+                    if (e.target === lightbox) closeLightbox();
+                });
+
+                document.addEventListener("keydown", function (e) {
+                    if (!lightbox.classList.contains("is-open")) return;
+                    if (e.key === "Escape") closeLightbox();
+                    if (e.key === "ArrowLeft") {
+                        currentIndex = (currentIndex - 1 + galleryPhotos.length) % galleryPhotos.length;
+                        showPhoto(currentIndex);
+                    }
+                    if (e.key === "ArrowRight") {
+                        currentIndex = (currentIndex + 1) % galleryPhotos.length;
+                        showPhoto(currentIndex);
+                    }
+                });
             })();
 
             /* === MUSIC PLAYER === */
