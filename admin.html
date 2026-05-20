@@ -106,17 +106,335 @@
                 min-height: 1rem;
             }
 
-            /* ── Panel ──────────────────────────────────── */
+            /* ── App Shell ─────────────────────────────── */
             #panel {
                 display: none;
-                padding: 2.5rem 1.25rem 4rem;
-                max-width: 960px;
-                margin: 0 auto;
             }
+            #panel.is-visible {
+                display: flex;
+                flex-direction: column;
+                position: fixed;
+                inset: 0;
+                overflow: hidden;
+                z-index: 10;
+                background: linear-gradient(160deg, var(--dark) 0%, var(--dark-mid) 100%);
+            }
+
+            /* ── App Header ─────────────────────────────── */
+            .app-header {
+                flex-shrink: 0;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 0 1.25rem;
+                height: 56px;
+                border-bottom: 1px solid rgba(201,169,110,0.18);
+                background: rgba(30,20,16,0.95);
+                backdrop-filter: blur(8px);
+                gap: 0.75rem;
+            }
+            .app-header__action {
+                background: none;
+                border: none;
+                color: rgba(255,255,255,0.38);
+                font-family: var(--f-sans);
+                font-size: 0.62rem;
+                letter-spacing: 0.15em;
+                text-transform: uppercase;
+                cursor: pointer;
+                padding: 0.4rem 0.5rem;
+                transition: color 0.2s ease;
+                text-decoration: none;
+                white-space: nowrap;
+                flex-shrink: 0;
+            }
+            .app-header__action:hover { color: rgba(255,255,255,0.65); }
+            .app-header__center {
+                text-align: center;
+                flex: 1;
+                min-width: 0;
+            }
+            .app-header__title {
+                font-family: var(--f-serif);
+                font-style: italic;
+                font-size: 1.2rem;
+                color: var(--gold);
+                line-height: 1;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            .app-header__subtitle {
+                font-size: 0.52rem;
+                letter-spacing: 0.18em;
+                text-transform: uppercase;
+                color: rgba(255,255,255,0.35);
+                margin-top: 0.15rem;
+            }
+            .app-header__settings {
+                background: none;
+                border: 1px solid rgba(255,255,255,0.1);
+                color: rgba(255,255,255,0.45);
+                width: 2rem;
+                height: 2rem;
+                border-radius: 50%;
+                cursor: pointer;
+                font-size: 1rem;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: all 0.2s ease;
+                flex-shrink: 0;
+            }
+            .app-header__settings:hover {
+                border-color: var(--gold);
+                color: var(--gold);
+            }
+
+            /* ── Tab content area ───────────────────────── */
+            .tab-content {
+                flex: 1;
+                overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
+                overscroll-behavior: contain;
+            }
+            .tab-panel {
+                display: none;
+                padding: 1.25rem;
+                padding-bottom: 1.5rem;
+                min-height: 100%;
+            }
+            .tab-panel.is-active { display: block; }
+
+            /* ── Bottom navigation ──────────────────────── */
+            .bottom-nav {
+                flex-shrink: 0;
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                height: 62px;
+                border-top: 1px solid rgba(201,169,110,0.15);
+                background: rgba(20,13,9,0.98);
+            }
+            .bottom-nav__item {
+                background: none;
+                border: none;
+                cursor: pointer;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                gap: 0.2rem;
+                padding: 0.4rem 0;
+                color: rgba(255,255,255,0.32);
+                transition: color 0.2s ease;
+                position: relative;
+                font-family: var(--f-sans);
+            }
+            .bottom-nav__item::after {
+                content: "";
+                position: absolute;
+                top: 0; left: 20%; right: 20%;
+                height: 2px;
+                background: var(--gold);
+                transform: scaleX(0);
+                transition: transform 0.25s ease;
+                border-radius: 0 0 2px 2px;
+            }
+            .bottom-nav__item.is-active {
+                color: var(--gold);
+            }
+            .bottom-nav__item.is-active::after {
+                transform: scaleX(1);
+            }
+            .bottom-nav__icon {
+                width: 1.35rem;
+                height: 1.35rem;
+                flex-shrink: 0;
+            }
+            .bottom-nav__lbl {
+                font-size: 0.52rem;
+                letter-spacing: 0.08em;
+                text-transform: uppercase;
+                font-weight: 500;
+            }
+            .bottom-nav__badge {
+                position: absolute;
+                top: 4px;
+                right: calc(50% - 14px);
+                background: #e08888;
+                color: white;
+                font-size: 0.45rem;
+                font-weight: 700;
+                min-width: 14px;
+                height: 14px;
+                border-radius: 7px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 0 3px;
+                display: none;
+            }
+            .bottom-nav__badge.is-visible { display: flex; }
+
+            /* ── Tab: Resumen ────────────────────────────── */
+            .resumen-hero {
+                background: linear-gradient(135deg, rgba(201,169,110,0.08) 0%, rgba(183,110,73,0.05) 100%);
+                border: 1px solid rgba(201,169,110,0.2);
+                border-radius: 2px;
+                padding: 1.1rem 1.25rem;
+                margin-bottom: 1rem;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 1rem;
+            }
+            .resumen-hero__text {
+                font-size: 0.68rem;
+                color: rgba(201,169,110,0.75);
+                letter-spacing: 0.08em;
+            }
+            .resumen-hero__date {
+                font-family: var(--f-serif);
+                font-size: 1.25rem;
+                color: var(--gold);
+                font-style: italic;
+            }
+            .resumen-hero__days {
+                font-family: var(--f-serif);
+                font-size: 2rem;
+                color: var(--gold);
+                line-height: 1;
+                text-align: right;
+            }
+            .resumen-hero__days-lbl {
+                font-size: 0.55rem;
+                letter-spacing: 0.1em;
+                text-transform: uppercase;
+                color: rgba(201,169,110,0.5);
+                text-align: right;
+            }
+            .resumen-section-title {
+                font-size: 0.58rem;
+                letter-spacing: 0.2em;
+                text-transform: uppercase;
+                color: rgba(255,255,255,0.3);
+                margin: 1.25rem 0 0.65rem;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+            .resumen-section-title::after {
+                content: "";
+                flex: 1;
+                height: 1px;
+                background: rgba(255,255,255,0.06);
+            }
+
+            /* ── Tab: Familias (toolbar) ──────────────────── */
+            .fam-toolbar {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                margin-bottom: 0.85rem;
+            }
+            .fam-toolbar__btn {
+                background: transparent;
+                border: 1px solid rgba(201,169,110,0.25);
+                color: rgba(201,169,110,0.65);
+                font-family: var(--f-sans);
+                font-size: 0.62rem;
+                letter-spacing: 0.1em;
+                text-transform: uppercase;
+                padding: 0.55rem 0.75rem;
+                cursor: pointer;
+                transition: all 0.2s ease;
+                white-space: nowrap;
+                display: flex;
+                align-items: center;
+                gap: 0.35rem;
+            }
+            .fam-toolbar__btn:hover {
+                border-color: var(--gold);
+                color: var(--gold);
+            }
+            .fam-toolbar__btn--primary {
+                background: rgba(201,169,110,0.1);
+                border-color: rgba(201,169,110,0.5);
+                color: var(--gold);
+            }
+            .fam-toolbar__spacer { flex: 1; }
+
+            /* ── Tab: Mesas (standalone) ──────────────────── */
+            .mesas-tab-header {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                margin-bottom: 1rem;
+            }
+            .mesas-tab-title {
+                font-family: var(--f-serif);
+                font-style: italic;
+                font-size: 1rem;
+                color: var(--gold);
+            }
+            .mesas-legend {
+                display: flex;
+                gap: 0.85rem;
+                margin-bottom: 1rem;
+                flex-wrap: wrap;
+            }
+            .mesas-legend__item {
+                display: flex;
+                align-items: center;
+                gap: 0.3rem;
+                font-size: 0.58rem;
+                color: rgba(255,255,255,0.42);
+                letter-spacing: 0.05em;
+            }
+            .mesas-legend__dot {
+                width: 8px; height: 8px;
+                border-radius: 2px;
+                flex-shrink: 0;
+            }
+
+            /* ── Settings modal ───────────────────────────── */
+            .settings-overlay {
+                display: none;
+                position: fixed;
+                inset: 0;
+                background: rgba(10,6,4,0.88);
+                z-index: 900;
+                align-items: center;
+                justify-content: center;
+                padding: 1rem;
+            }
+            .settings-overlay.is-open { display: flex; }
+            .settings-modal {
+                background: linear-gradient(160deg, #2c1f14 0%, #1e1410 100%);
+                border: 1px solid rgba(201,169,110,0.28);
+                border-top: 3px solid rgba(201,169,110,0.6);
+                width: 100%;
+                max-width: 420px;
+                box-shadow: 0 30px 80px rgba(0,0,0,0.7);
+            }
+            .settings-modal__header {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 1rem 1.25rem;
+                border-bottom: 1px solid rgba(201,169,110,0.12);
+            }
+            .settings-modal__title {
+                font-family: var(--f-serif);
+                font-style: italic;
+                font-size: 1rem;
+                color: var(--gold);
+            }
+            .settings-modal__body { padding: 1.25rem; }
             .panel__header {
                 text-align: center;
-                padding-bottom: 2rem;
-                margin-bottom: 2.5rem;
+                padding-bottom: 1.5rem;
+                margin-bottom: 2rem;
                 border-bottom: 1px solid rgba(201, 169, 110, 0.18);
             }
             .panel__title {
@@ -124,36 +442,35 @@
                 font-style: italic;
                 font-size: 1.75rem;
                 color: var(--gold);
-                margin-bottom: 0.25rem;
+                margin-bottom: 0.3rem;
             }
             .panel__sub {
-                font-size: 0.56rem;
-                letter-spacing: 0.3em;
+                font-size: 0.64rem;
+                letter-spacing: 0.18em;
                 text-transform: uppercase;
-                color: rgba(255, 255, 255, 0.32);
+                color: rgba(255, 255, 255, 0.45);
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
             }
 
             /* Stats */
             .stats {
                 display: grid;
-                grid-template-columns: repeat(2, 1fr);
-                gap: 0.85rem;
-                margin-bottom: 2.5rem;
-            }
-            @media (min-width: 580px) {
-                .stats {
-                    grid-template-columns: repeat(4, 1fr);
-                }
+                grid-template-columns: repeat(4, 1fr);
+                gap: 0.6rem;
+                margin-bottom: 2rem;
             }
             .stat {
                 background: rgba(255, 255, 255, 0.04);
                 border: 1px solid rgba(201, 169, 110, 0.15);
-                padding: 1.25rem 0.75rem;
+                border-top: 2px solid rgba(201, 169, 110, 0.45);
+                padding: 1rem 0.5rem;
                 text-align: center;
             }
             .stat__num {
                 font-family: var(--f-serif);
-                font-size: 2.75rem;
+                font-size: 2.25rem;
                 color: var(--gold);
                 line-height: 1;
                 text-shadow: 0 0 20px rgba(201, 169, 110, 0.3);
@@ -172,58 +489,87 @@
 
             /* Actions */
             .actions {
-                display: flex;
-                gap: 0.75rem;
-                justify-content: flex-end;
-                margin-bottom: 1rem;
-                flex-wrap: wrap;
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                gap: 0.6rem;
+                margin-bottom: 1.25rem;
             }
             .action-btn {
                 background: transparent;
-                border: 1px solid rgba(201, 169, 110, 0.3);
-                color: rgba(201, 169, 110, 0.72);
+                border: 1px solid rgba(201, 169, 110, 0.28);
+                color: rgba(201, 169, 110, 0.75);
                 font-family: var(--f-sans);
                 font-size: 0.68rem;
-                letter-spacing: 0.16em;
+                letter-spacing: 0.12em;
                 text-transform: uppercase;
-                padding: 0.65rem 1.4rem;
+                padding: 0.7rem 0.5rem;
                 cursor: pointer;
-                transition: all 0.3s ease;
+                transition: all 0.25s ease;
+                text-align: center;
+                white-space: nowrap;
             }
             .action-btn:hover {
                 border-color: var(--gold);
                 color: var(--gold);
+                background: rgba(201,169,110,0.06);
             }
 
             /* Search */
             .search-wrap {
                 margin-bottom: 1rem;
+                position: relative;
+            }
+            .search-wrap::before {
+                content: "";
+                position: absolute;
+                left: 0.85rem;
+                top: 50%;
+                transform: translateY(-50%);
+                width: 1rem;
+                height: 1rem;
+                background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' stroke='rgba(201,169,110,0.45)' viewBox='0 0 24 24'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'/%3E%3C/svg%3E");
+                background-repeat: no-repeat;
+                background-size: contain;
+                pointer-events: none;
             }
             .search-input {
-                background: rgba(255, 255, 255, 0.04);
-                border: 1px solid rgba(255, 255, 255, 0.1);
+                background: rgba(255, 255, 255, 0.05);
+                border: 1px solid rgba(255, 255, 255, 0.12);
                 color: var(--white);
                 font-family: var(--f-sans);
-                font-size: 0.8rem;
-                padding: 0.65rem 1rem;
+                font-size: 0.85rem;
+                padding: 0.72rem 1rem 0.72rem 2.5rem;
                 outline: none;
                 width: 100%;
-                max-width: 320px;
+                max-width: 100%;
                 border-radius: 0;
-                transition: border-color 0.3s ease;
+                transition: border-color 0.3s ease, background 0.3s ease;
                 -webkit-appearance: none;
                 appearance: none;
             }
             .search-input::placeholder {
-                color: rgba(255, 255, 255, 0.2);
+                color: rgba(255, 255, 255, 0.28);
             }
             .search-input:focus {
-                border-color: rgba(201, 169, 110, 0.4);
+                border-color: rgba(201, 169, 110, 0.5);
+                background: rgba(255, 255, 255, 0.07);
             }
 
             /* Table */
             .table-wrap {
                 overflow-x: auto;
+                border: 1px solid rgba(255,255,255,0.05);
+            }
+            /* Nombre con ellipsis para evitar wrapping */
+            .td-name {
+                max-width: 130px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+            /* Centrar columnas numéricas */
+            .td-center {
+                text-align: center;
             }
             .loading {
                 text-align: center;
@@ -757,10 +1103,10 @@
                 border: 1px solid rgba(201, 169, 110, 0.14);
             }
             .config-label {
-                font-size: 0.5rem;
-                letter-spacing: 0.22em;
+                font-size: 0.65rem;
+                letter-spacing: 0.18em;
                 text-transform: uppercase;
-                color: rgba(255, 255, 255, 0.35);
+                color: rgba(255, 255, 255, 0.48);
                 margin-bottom: 0.75rem;
             }
             .config-row {
@@ -791,11 +1137,23 @@
                 border-color: var(--gold);
             }
             .config-hint {
-                font-size: 0.55rem;
-                color: rgba(255, 255, 255, 0.22);
+                font-size: 0.68rem;
+                color: rgba(255, 255, 255, 0.38);
                 margin-top: 0.5rem;
-                letter-spacing: 0.04em;
+                letter-spacing: 0.03em;
             }
+            .config-warning {
+                display: none;
+                margin-top: 0.6rem;
+                padding: 0.55rem 0.85rem;
+                background: rgba(224, 136, 136, 0.08);
+                border: 1px solid rgba(224, 136, 136, 0.3);
+                border-left: 3px solid #e08888;
+                font-size: 0.7rem;
+                color: #e08888;
+                line-height: 1.5;
+            }
+            .config-warning.is-visible { display: block; }
 
             /* Link & WhatsApp buttons per row */
             .link-btn {
@@ -859,23 +1217,25 @@
                RESPONSIVE — MOBILE (≤ 640px)
                ============================================= */
             @media (max-width: 640px) {
-                /* ── Reordenar secciones con flexbox ── */
-                #panel {
-                    padding: 1.25rem 0.875rem 3rem;
+                /* ── Panel visible en mobile: flex para reordenar ── */
+                #panel.is-visible {
                     display: flex;
                     flex-direction: column;
+                    padding: 1.25rem 0.875rem 3rem;
                 }
                 .panel__header    { order: 1; }
                 .entrada-cta      { order: 2; display: block; margin-bottom: 1.25rem; }
                 .stats            { order: 3; }
                 .progress-section { order: 4; }
+                .sinmesa-row      { order: 5; }
                 .reminder-section { order: 5; }
-                .actions          { order: 6; }
-                .group-filter     { order: 7; }
-                .search-wrap      { order: 8; }
-                .table-wrap       { order: 9; }
-                .new-family       { order: 10; margin-top: 1.5rem; }
-                .config-wrap      { order: 11; }
+                .mesas-section    { order: 6; }
+                .actions          { order: 7; }
+                .group-filter-wrap{ order: 8; }
+                .search-wrap      { order: 9; }
+                .table-wrap       { order: 10; }
+                .new-family       { order: 11; margin-top: 1.5rem; }
+                .config-wrap      { order: 12; }
 
                 /* Ocultar Modo Entrada de actions (ya está arriba) */
                 .entrada-action { display: none !important; }
@@ -884,10 +1244,10 @@
                 .panel__title  { font-size: 1.35rem; }
 
                 /* Stats 4 columnas compactas */
-                .stats { grid-template-columns: repeat(4, 1fr); gap: 0.4rem; }
+                .stats { gap: 0.35rem; }
                 .stat { padding: 0.65rem 0.25rem; }
-                .stat__num { font-size: 1.6rem; }
-                .stat__lbl { font-size: 0.55rem; letter-spacing: 0.08em; }
+                .stat__num { font-size: 1.75rem; }
+                .stat__lbl { font-size: 0.55rem; letter-spacing: 0.06em; }
 
                 /* Progress */
                 .progress-val { font-size: 0.8rem; }
@@ -905,14 +1265,15 @@
                 .config-row { flex-direction: column; }
                 .config-input { min-width: unset; width: 100%; }
 
-                /* Botones de acción: se envuelven */
-                .actions { flex-wrap: wrap; gap: 0.45rem; }
+                /* Acciones en 2×2 en mobile */
+                .actions {
+                    grid-template-columns: repeat(2, 1fr);
+                    gap: 0.45rem;
+                }
                 .action-btn {
-                    flex: 1 1 auto;
-                    min-width: 70px;
                     font-size: 0.60rem;
-                    padding: 0.55rem 0.75rem;
-                    text-align: center;
+                    padding: 0.65rem 0.5rem;
+                    letter-spacing: 0.08em;
                 }
 
                 /* Filtros de grupo: scroll horizontal sin scrollbar visible */
@@ -935,13 +1296,13 @@
                 thead th { padding: 0.55rem 0.45rem; font-size: 0.58rem; }
                 tbody td { padding: 0.65rem 0.45rem; }
 
-                /* Ocultar: Código (1), Confirmó (6), Fecha (8) — actualizado tras añadir Mesa */
-                table th:nth-child(1),
-                table td:nth-child(1),
-                table th:nth-child(6),
-                table td:nth-child(6),
-                table th:nth-child(8),
-                table td:nth-child(8) { display: none; }
+                /* Mobile: mostrar solo Familia(2), Pases(3), Mesa(4), Estado(5), expand(10) */
+                /* Ocultar: Código(1), Confirmó(6), Conf/Pases(7), Fecha(8), Enviar(9) */
+                table th:nth-child(1), table td:nth-child(1),
+                table th:nth-child(6), table td:nth-child(6),
+                table th:nth-child(7), table td:nth-child(7),
+                table th:nth-child(8), table td:nth-child(8),
+                table th:nth-child(9), table td:nth-child(9) { display: none; }
 
                 /* Botones de envío: ocultar "Copiar", abreviar WhatsApp */
                 .link-btn { display: none; }
@@ -990,6 +1351,73 @@
                 .ci-stats { gap: 0.3rem; }
                 .ci-stat  { padding: 0.5rem 0.4rem; }
                 .ci-stat__num { font-size: 1.3rem; }
+            }
+
+            /* ── Modal nueva familia ──────────────────── */
+            .nf-modal-overlay {
+                display: none;
+                position: fixed;
+                inset: 0;
+                background: rgba(10, 6, 4, 0.88);
+                z-index: 800;
+                align-items: center;
+                justify-content: center;
+                padding: 1rem;
+                backdrop-filter: blur(3px);
+            }
+            .nf-modal-overlay.is-open {
+                display: flex;
+            }
+            .nf-modal {
+                background: linear-gradient(160deg, #2c1f14 0%, #1e1410 100%);
+                border: 1px solid rgba(201, 169, 110, 0.28);
+                border-top: 3px solid rgba(201, 169, 110, 0.6);
+                width: 100%;
+                max-width: 480px;
+                max-height: 90vh;
+                overflow-y: auto;
+                box-shadow: 0 30px 80px rgba(0, 0, 0, 0.7);
+            }
+            .nf-modal__header {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 1.1rem 1.5rem;
+                border-bottom: 1px solid rgba(201, 169, 110, 0.14);
+            }
+            .nf-modal__title {
+                font-family: var(--f-serif);
+                font-style: italic;
+                font-size: 1.1rem;
+                color: var(--gold);
+            }
+            .nf-modal__close {
+                background: none;
+                border: 1px solid rgba(255,255,255,0.12);
+                color: rgba(255,255,255,0.45);
+                width: 2rem;
+                height: 2rem;
+                border-radius: 50%;
+                cursor: pointer;
+                font-size: 0.9rem;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: all 0.2s ease;
+                flex-shrink: 0;
+            }
+            .nf-modal__close:hover {
+                border-color: var(--gold);
+                color: var(--gold);
+            }
+            .nf-modal__body {
+                padding: 1.25rem 1.5rem 1.5rem;
+            }
+            .nf-code-auto {
+                font-size: 0.6rem;
+                color: rgba(201,169,110,0.65);
+                margin-top: 0.3rem;
+                letter-spacing: 0.06em;
             }
         </style>
     </head>
@@ -1133,84 +1561,7 @@
                 <div class="reminder-list" id="reminder-list"></div>
             </div>
 
-            <!-- Nueva familia -->
-            <div class="new-family">
-                <button class="new-family__toggle" id="btn-toggle-form">
-                    + Nueva familia
-                </button>
-                <div class="new-family__form" id="new-family-form">
-                    <!-- Fila 1: nombre, código, pases -->
-                    <div class="nf-grid">
-                        <div>
-                            <label class="nf-label" for="nf-name">Nombre de familia</label>
-                            <input class="config-input" type="text" id="nf-name" placeholder="Familia García" autocomplete="off" autocapitalize="words" />
-                        </div>
-                        <div>
-                            <label class="nf-label" for="nf-code">Código único</label>
-                            <input class="config-input" type="text" id="nf-code" placeholder="GARCIA-01" autocomplete="off" style="text-transform:uppercase" />
-                        </div>
-                        <div>
-                            <label class="nf-label" for="nf-guests">Pases</label>
-                            <input class="config-input" type="number" id="nf-guests" min="1" max="20" value="2" />
-                        </div>
-                    </div>
-                    <!-- Fila 2: parentesco, teléfono -->
-                    <div class="nf-grid-2">
-                        <div>
-                            <label class="nf-label" for="nf-group">Parentesco / Grupo</label>
-                            <select class="config-input" id="nf-group">
-                                <option value="">Sin grupo</option>
-                                <option value="Familia novia">Familia novia</option>
-                                <option value="Familia novio">Familia novio</option>
-                                <option value="Amigos novia">Amigos novia</option>
-                                <option value="Amigos novio">Amigos novio</option>
-                                <option value="Trabajo / Compañeros">Trabajo / Compañeros</option>
-                                <option value="Otros">Otros</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="nf-label" for="nf-phone">Teléfono WhatsApp</label>
-                            <input class="config-input" type="tel" id="nf-phone" placeholder="2221234567" autocomplete="off" />
-                        </div>
-                    </div>
-                    <!-- Fila 3: nombres individuales -->
-                    <div class="nf-full">
-                        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.5rem">
-                            <label class="nf-label" style="margin:0">Nombres de los invitados</label>
-                            <button type="button" class="gn-add-btn" id="nf-add-guest">+ Agregar</button>
-                        </div>
-                        <div class="guest-names-list" id="nf-guestnames-container"></div>
-                    </div>
-                    <!-- Fila 4: notas -->
-                    <div class="nf-full">
-                        <label class="nf-label" for="nf-notes">Notas internas</label>
-                        <textarea class="config-textarea" id="nf-notes" placeholder="Mesa VIP, necesita silla de ruedas, vegetariano…"></textarea>
-                    </div>
-                    <div class="nf-footer">
-                        <button class="action-btn" id="btn-add-family">Agregar familia</button>
-                    </div>
-                    <p class="nf-error" id="nf-error"></p>
-                </div>
-            </div>
-
-            <!-- URL del sitio para generar links personalizados -->
-            <div class="config-wrap">
-                <p class="config-label">URL del sitio (para generar links personalizados)</p>
-                <div class="config-row">
-                    <input
-                        class="config-input"
-                        type="url"
-                        id="site-url"
-                        placeholder="https://tuusuario.github.io/karlayeduardo"
-                    />
-                    <button class="action-btn" id="btn-save-url">Guardar</button>
-                </div>
-                <p class="config-hint">
-                    Cada familia tendrá su link: URL + ?code=CODIGO
-                </p>
-            </div>
-
-            <!-- Vista de mesas -->
+            <!-- Vista de mesas (aparece al hacer clic en Mesas) -->
             <div class="mesas-section" id="mesas-section">
                 <div class="mesas-header-row">
                     <span class="mesas-title">Vista de mesas — 18 mesas · 10 pax c/u</span>
@@ -1222,6 +1573,7 @@
                 <div class="mesas-grid" id="mesas-grid"></div>
             </div>
 
+            <!-- Acciones principales -->
             <div class="actions">
                 <button class="action-btn" id="btn-refresh">↺ Actualizar</button>
                 <button class="action-btn" id="btn-export">↓ CSV</button>
@@ -1243,6 +1595,7 @@
             </div>
             </div>
 
+            <!-- Búsqueda -->
             <div class="search-wrap">
                 <input
                     class="search-input"
@@ -1252,6 +1605,7 @@
                 />
             </div>
 
+            <!-- Tabla de familias -->
             <div class="table-wrap">
                 <p class="loading" id="loading">Cargando datos…</p>
                 <table id="tbl" style="display: none">
@@ -1271,6 +1625,105 @@
                     </thead>
                     <tbody id="tbody"></tbody>
                 </table>
+            </div>
+
+            <!-- Botón nueva familia → abre modal -->
+            <div class="new-family" style="margin-top:1.25rem;">
+                <button class="new-family__toggle" id="btn-toggle-form" onclick="openNfModal()">
+                    + Nueva familia
+                </button>
+            </div>
+
+            <!-- URL Config (configuración inicial — al fondo) -->
+            <div class="config-wrap">
+                <p class="config-label">🔗 URL del sitio — para links de invitación</p>
+                <div class="config-row">
+                    <input
+                        class="config-input"
+                        type="url"
+                        id="site-url"
+                        placeholder="https://tuusuario.github.io/karlayeduardo"
+                    />
+                    <button class="action-btn" id="btn-save-url">Guardar</button>
+                </div>
+                <p class="config-hint">Cada invitado recibe: URL + ?code=CODIGO</p>
+                <p class="config-warning" id="url-warning">
+                    ⚠️ Esta URL es local (file://) y no funcionará en WhatsApp.<br />
+                    Despliega el sitio en GitHub Pages, Netlify o similar y pega la URL pública aquí.
+                </p>
+            </div>
+        </div>
+
+        <!-- Modal: Nueva Familia -->
+        <div class="nf-modal-overlay" id="nf-modal-overlay" onclick="closeNfModalIfBackdrop(event)">
+            <div class="nf-modal" role="dialog" aria-modal="true" aria-label="Nueva familia">
+                <div class="nf-modal__header">
+                    <span class="nf-modal__title">Nueva Familia</span>
+                    <button class="nf-modal__close" onclick="closeNfModal()" aria-label="Cerrar">✕</button>
+                </div>
+                <div class="nf-modal__body">
+                    <!-- Nombre -->
+                    <div style="margin-bottom:0.75rem;">
+                        <label class="nf-label" for="nf-name">Nombre de familia</label>
+                        <input class="config-input" type="text" id="nf-name"
+                               placeholder="Familia García" autocomplete="off" autocapitalize="words"
+                               oninput="autoGenerateCode(this.value)" style="width:100%;" />
+                    </div>
+                    <!-- Código + Pases -->
+                    <div class="nf-grid" style="margin-bottom:0.75rem;">
+                        <div>
+                            <label class="nf-label" for="nf-code">Código único</label>
+                            <input class="config-input" type="text" id="nf-code"
+                                   placeholder="GARCIA-01" autocomplete="off"
+                                   style="text-transform:uppercase;width:100%;" />
+                            <p class="nf-code-auto" id="nf-code-hint"></p>
+                        </div>
+                        <div>
+                            <label class="nf-label" for="nf-guests">Pases</label>
+                            <input class="config-input" type="number" id="nf-guests"
+                                   min="1" max="20" value="2" style="width:100%;" />
+                        </div>
+                    </div>
+                    <!-- Grupo + Teléfono -->
+                    <div class="nf-grid-2" style="margin-bottom:0.75rem;">
+                        <div>
+                            <label class="nf-label" for="nf-group">Grupo</label>
+                            <select class="config-input" id="nf-group" style="width:100%;">
+                                <option value="">Sin grupo</option>
+                                <option value="Familia novia">Familia novia</option>
+                                <option value="Familia novio">Familia novio</option>
+                                <option value="Amigos novia">Amigos novia</option>
+                                <option value="Amigos novio">Amigos novio</option>
+                                <option value="Trabajo / Compañeros">Trabajo / Compañeros</option>
+                                <option value="Otros">Otros</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="nf-label" for="nf-phone">WhatsApp</label>
+                            <input class="config-input" type="tel" id="nf-phone"
+                                   placeholder="2221234567" autocomplete="off" style="width:100%;" />
+                        </div>
+                    </div>
+                    <!-- Nombres de invitados -->
+                    <div style="margin-bottom:0.75rem;">
+                        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.5rem;">
+                            <label class="nf-label" style="margin:0;">Nombres de invitados</label>
+                            <button type="button" class="gn-add-btn" id="nf-add-guest">+ Agregar</button>
+                        </div>
+                        <div class="guest-names-list" id="nf-guestnames-container"></div>
+                    </div>
+                    <!-- Notas -->
+                    <div style="margin-bottom:1rem;">
+                        <label class="nf-label" for="nf-notes">Notas internas</label>
+                        <textarea class="config-textarea" id="nf-notes"
+                                  placeholder="Mesa VIP, necesita silla de ruedas, vegetariano…"
+                                  style="width:100%;"></textarea>
+                    </div>
+                    <button class="action-btn" id="btn-add-family" style="width:100%;padding:0.85rem;font-size:0.72rem;letter-spacing:0.18em;border-color:rgba(201,169,110,0.55);color:var(--gold);">
+                        Agregar familia
+                    </button>
+                    <p class="nf-error" id="nf-error" style="text-align:center;"></p>
+                </div>
             </div>
         </div>
 
@@ -1317,22 +1770,22 @@
 
             /* ── Gate ─────────────────────────────────── */
             function enterPanel() {
-                sessionStorage.setItem("ke-admin", "1");
+                localStorage.setItem("ke-admin", "1");
                 document.getElementById("gate").style.display = "none";
-                document.getElementById("panel").style.display = "block";
+                document.getElementById("panel").classList.add("is-visible");
                 loadData();
             }
 
             function exitPanel() {
-                sessionStorage.removeItem("ke-admin");
-                document.getElementById("panel").style.display = "none";
+                localStorage.removeItem("ke-admin");
+                document.getElementById("panel").classList.remove("is-visible");
                 document.getElementById("gate").style.display = "flex";
                 document.getElementById("gate-input").value = "";
                 document.getElementById("gate-error").textContent = "";
             }
 
-            /* Auto-login si la sesión ya estaba activa */
-            if (sessionStorage.getItem("ke-admin") === "1") {
+            /* Auto-login persistente con localStorage */
+            if (localStorage.getItem("ke-admin") === "1") {
                 enterPanel();
             }
 
@@ -1480,15 +1933,15 @@
                     var tr = document.createElement("tr");
                     tr.innerHTML =
                         '<td class="code-cell">' + esc(f.code) + "</td>" +
-                        "<td>" +
+                        '<td class="td-name" title="' + esc(f.family_name) + '">' +
                             esc(f.family_name) +
                             (f.group_name ? "<br>" + groupBadge(f.group_name) : "") +
                         "</td>" +
-                        '<td style="text-align:center">' + f.max_guests + "</td>" +
-                        '<td style="text-align:center">' + buildMesaSelect(f.id, f.table_number) + "</td>" +
+                        '<td class="td-center">' + f.max_guests + "</td>" +
+                        '<td class="td-center">' + buildMesaSelect(f.id, f.table_number) + "</td>" +
                         '<td><span class="badge badge--' + status + '">' + lbl + "</span></td>" +
                         "<td>" + esc(rsvp ? rsvp.contact_name : "—") + "</td>" +
-                        '<td style="text-align:center">' + (rsvp && rsvp.attending
+                        '<td class="td-center">' + (rsvp && rsvp.attending
                             ? rsvp.guest_count + (rsvp.guest_count < f.max_guests
                                 ? '<span style="color:rgba(255,255,255,0.22);font-size:0.82em"> / ' + f.max_guests + "</span>"
                                 : "")
@@ -1667,24 +2120,13 @@
                 btn.textContent = open ? "▸" : "▾";
             }
 
-            /* ── Nueva familia ────────────────────────── */
+            /* ── Nueva familia (modal) ────────────────── */
             (function () {
-                var toggleBtn = document.getElementById("btn-toggle-form");
-                var form = document.getElementById("new-family-form");
                 var nameInput = document.getElementById("nf-name");
                 var codeInput = document.getElementById("nf-code");
                 var guestsInput = document.getElementById("nf-guests");
                 var addBtn = document.getElementById("btn-add-family");
                 var errEl = document.getElementById("nf-error");
-
-                toggleBtn.addEventListener("click", function () {
-                    var open = form.style.display === "block";
-                    form.style.display = open ? "none" : "block";
-                    this.textContent = open
-                        ? "+ Nueva familia"
-                        : "− Nueva familia";
-                    this.classList.toggle("is-open", !open);
-                });
 
                 /* ── Helpers de nombres ── */
                 function createGuestRow(num, val) {
@@ -1767,16 +2209,7 @@
                 });
 
                 nameInput.addEventListener("input", function () {
-                    var raw = this.value
-                        .replace(/^familia\s+/i, "")
-                        .trim()
-                        .split(" ")[0]
-                        .normalize("NFD")
-                        .replace(/[̀-ͯ]/g, "")
-                        .replace(/[^A-Z0-9]/gi, "")
-                        .toUpperCase()
-                        .substring(0, 8);
-                    if (raw) codeInput.value = raw + "-01";
+                    autoGenerateCode(this.value);
                 });
 
                 codeInput.addEventListener("input", function () {
@@ -1838,19 +2271,16 @@
                         });
                         if (!res.ok) {
                             var err = await res.json();
-                            errEl.textContent =
-                                err.code === "23505"
-                                    ? 'El código "' + code + '" ya existe. Cambia el número al final.'
-                                    : "Error al agregar. Intenta nuevamente.";
+                            if (err.code === "23505") {
+                                /* Código duplicado: auto-regenerar */
+                                autoGenerateCode(nameInput.value);
+                                errEl.textContent = "Ese código ya existía — se generó uno nuevo, intenta de nuevo.";
+                            } else {
+                                errEl.textContent = "Error al agregar. Intenta nuevamente.";
+                            }
                             return;
                         }
-                        nameInput.value = "";
-                        codeInput.value = "";
-                        guestsInput.value = "2";
-                        document.getElementById("nf-group").value = "";
-                        document.getElementById("nf-phone").value = "";
-                        clearGuestRows();
-                        document.getElementById("nf-notes").value = "";
+                        closeNfModal();
                         await loadData();
                     } catch (e) {
                         errEl.textContent = "Error de conexión.";
@@ -2119,30 +2549,41 @@
             /* ── Guardar URL del sitio ───────────────── */
             (function () {
                 var input = document.getElementById("site-url");
+                var warning = document.getElementById("url-warning");
+
+                function checkUrl(url) {
+                    if (!url) { warning.classList.remove("is-visible"); return; }
+                    var isLocal = /^file:|localhost|127\.0\.0\.1/.test(url);
+                    warning.classList.toggle("is-visible", isLocal);
+                }
+
                 var saved = localStorage.getItem("ke-site-url");
                 if (saved) {
                     input.value = saved;
+                    checkUrl(saved);
                 } else {
-                    /* Auto-detect: usa la URL actual sin admin.html */
                     var autoUrl = window.location.href
                         .replace(/admin\.html.*$/, "index.html")
                         .replace(/\?.*$/, "");
                     if (autoUrl && autoUrl !== window.location.href) {
                         input.value = autoUrl;
                         localStorage.setItem("ke-site-url", autoUrl);
+                        checkUrl(autoUrl);
                     }
                 }
+
+                input.addEventListener("input", function () { checkUrl(this.value); });
+
                 document
                     .getElementById("btn-save-url")
                     .addEventListener("click", function () {
                         var url = input.value.trim().replace(/\/$/, "");
                         if (!url) return;
                         localStorage.setItem("ke-site-url", url);
+                        checkUrl(url);
                         this.textContent = "✓ Guardado";
                         var self = this;
-                        setTimeout(function () {
-                            self.textContent = "Guardar";
-                        }, 2000);
+                        setTimeout(function () { self.textContent = "Guardar"; }, 2000);
                         renderTable(allData);
                     });
             })();
@@ -2262,6 +2703,68 @@
                         URL.revokeObjectURL(url);
                     }, 200);
                 });
+
+            /* ── Modal Nueva Familia ───────────────────────── */
+            function openNfModal() {
+                document.getElementById("nf-modal-overlay").classList.add("is-open");
+                document.getElementById("nf-name").focus();
+                document.body.style.overflow = "hidden";
+            }
+            function closeNfModal() {
+                document.getElementById("nf-modal-overlay").classList.remove("is-open");
+                document.body.style.overflow = "";
+                /* Limpiar campos */
+                ["nf-name","nf-code","nf-phone","nf-notes"].forEach(function(id) {
+                    var el = document.getElementById(id);
+                    if (el) el.value = "";
+                });
+                document.getElementById("nf-guests").value = "2";
+                document.getElementById("nf-group").value = "";
+                document.getElementById("nf-guestnames-container").innerHTML = "";
+                document.getElementById("nf-code-hint").textContent = "";
+                document.getElementById("nf-error").textContent = "";
+            }
+            function closeNfModalIfBackdrop(e) {
+                if (e.target === document.getElementById("nf-modal-overlay")) closeNfModal();
+            }
+            /* Cerrar con ESC */
+            document.addEventListener("keydown", function(e) {
+                if (e.key === "Escape") closeNfModal();
+            });
+
+            /* ── Auto-generar código desde nombre ──────────── */
+            function autoGenerateCode(name) {
+                if (!name || !name.trim()) {
+                    document.getElementById("nf-code").value = "";
+                    document.getElementById("nf-code-hint").textContent = "";
+                    return;
+                }
+                /* Normalizar: quitar acentos, "Familia", espacios → base */
+                var base = name
+                    .replace(/[áàä]/gi, "A").replace(/[éèë]/gi, "E")
+                    .replace(/[íìï]/gi, "I").replace(/[óòö]/gi, "O")
+                    .replace(/[úùü]/gi, "U").replace(/ñ/gi, "N")
+                    .replace(/^familia\s+/i, "")
+                    .trim().split(/\s+/)[0]
+                    .toUpperCase()
+                    .replace(/[^A-Z0-9]/g, "");
+                if (!base) return;
+
+                /* Buscar códigos existentes con ese base */
+                var existing = allData.map(function(f) {
+                    return (f.code || "").toUpperCase();
+                });
+                var n = 1;
+                var candidate;
+                do {
+                    candidate = base + "-" + (n < 10 ? "0" : "") + n;
+                    n++;
+                } while (existing.indexOf(candidate) !== -1 && n < 100);
+
+                document.getElementById("nf-code").value = candidate;
+                document.getElementById("nf-code-hint").textContent =
+                    "Generado automáticamente · puedes editarlo";
+            }
         </script>
     </body>
 </html>
