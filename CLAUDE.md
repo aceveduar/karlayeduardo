@@ -28,7 +28,7 @@ Sistema completo de invitación digital premium para la boda de **Karla y Eduard
 ### Variables de entorno expuestas (JS público)
 ```
 SUPABASE_URL    = https://kdpgdgulrekryxqtewtr.supabase.co
-SUPABASE_ANON_KEY = sb_publishable_7qv3hB-J6RqLsJZyMcpTgA_9bQorv4O
+SUPABASE_ANON_KEY = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtkcGdkZ3VscmVrcnl4cXRld3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgzNTI0NDEsImV4cCI6MjA5MzkyODQ0MX0.T6_iQjxOWX82QQHPuBI5cewOoT3UWsOQ7bvjX9GP82E
 ADMIN_PASSWORD  = KarlaEduardo2026
 COUPLE_PHONE    = 527721204509
 ```
@@ -43,6 +43,7 @@ COUPLE_PHONE    = 527721204509
 | `admin.html` | Dashboard de gestión (~2,180 líneas) |
 | `assets/` | Imágenes, logos, fotos de pareja |
 | `familias.csv` | Seed/export de familias (eliminado en working tree) |
+| `.github/workflows/keep-alive.yml` | GitHub Action que hace ping a Supabase cada 3 días para evitar pausa por inactividad |
 
 ---
 
@@ -212,6 +213,7 @@ Sistemas analizados: **Zola, The Knot, Joy (withjoy.com), RSVPify, Paperless Pos
 - El sistema se usa principalmente desde **WhatsApp en móvil**
 - Eduardo gestiona el admin; los invitados solo ven index.html
 - No hay servidor propio — todo es estático + Supabase
+- **Supabase Free tier pausa proyectos sin actividad por 7 días.** El GitHub Action `keep-alive.yml` hace ping cada 3 días para evitarlo. Si alguna vez el admin muestra "Error de conexión", verificar primero si el proyecto está pausado en supabase.com.
 
 ---
 
