@@ -1615,7 +1615,7 @@
                     notes: document.getElementById("ef-notes-" + id).value.trim(),
                 };
                 try {
-                    await fetch(SUPABASE_URL + "/rest/v1/families?id=eq." + id, {
+                    var r = await fetch(SUPABASE_URL + "/rest/v1/families?id=eq." + id, {
                         method: "PATCH",
                         headers: {
                             apikey: SUPABASE_ANON_KEY,
@@ -1624,10 +1624,12 @@
                         },
                         body: JSON.stringify(payload),
                     });
+                    if (!r.ok) throw new Error("HTTP " + r.status);
                     await loadData();
                 } catch (e) {
                     btn.textContent = "Guardar cambios";
                     btn.disabled = false;
+                    showToast("⚠ Error al guardar. Intenta nuevamente.");
                 }
             }
 
@@ -1776,6 +1778,10 @@
 
                     var group  = document.getElementById("nf-group").value;
                     var phone  = document.getElementById("nf-phone").value.trim().replace(/\D/g, "");
+                    if (phone && phone.length < 10) {
+                        errEl.textContent = "El teléfono debe tener al menos 10 dígitos.";
+                        return;
+                    }
                     var gnames = collectGuestNames();
                     var notes  = document.getElementById("nf-notes").value.trim();
                     /* Sincronizar pases: usa el mayor entre el campo y los nombres ingresados */
@@ -1838,7 +1844,7 @@
                 if (!confirm('¿Eliminar a "' + name + '"?\nEsta acción no se puede deshacer.'))
                     return;
                 try {
-                    await fetch(
+                    var dr = await fetch(
                         SUPABASE_URL + "/rest/v1/families?id=eq." + id,
                         {
                             method: "DELETE",
@@ -1848,9 +1854,10 @@
                             },
                         },
                     );
+                    if (!dr.ok) throw new Error("HTTP " + dr.status);
                     await loadData();
                 } catch (e) {
-                    alert("Error al eliminar. Intenta nuevamente.");
+                    showToast("⚠ Error al eliminar. Intenta nuevamente.");
                 }
             }
 
@@ -1904,15 +1911,21 @@
                     }
                 }
                 try {
-                    await fetch(SUPABASE_URL + "/rest/v1/families?id=eq." + id, {
+                    var tr = await fetch(SUPABASE_URL + "/rest/v1/families?id=eq." + id, {
                         method: "PATCH",
                         headers: { apikey: SUPABASE_ANON_KEY, Authorization: "Bearer " + SUPABASE_ANON_KEY, "Content-Type": "application/json" },
                         body: JSON.stringify({ table_number: val ? parseInt(val) : null }),
                     });
+                    if (!tr.ok) throw new Error("HTTP " + tr.status);
                     var f = allData.find(function (x) { return x.id === id; });
                     if (f) f.table_number = val ? parseInt(val) : null;
                     renderProgress(allData);
-                } catch (e) { console.error(e); }
+                } catch (e) {
+                    showToast("⚠ Error al asignar mesa. Intenta nuevamente.");
+                    var f = allData.find(function (x) { return x.id === id; });
+                    var sel = document.getElementById("mesa-sel-" + id);
+                    if (sel && f) sel.value = f.table_number || "";
+                }
             }
 
             function showMesasView() {
@@ -2059,11 +2072,12 @@
                 var btn = row && row.querySelector(".ci-btn");
                 if (btn) { btn.textContent = "…"; btn.disabled = true; }
                 try {
-                    await fetch(SUPABASE_URL + "/rest/v1/families?id=eq." + id, {
+                    var cr = await fetch(SUPABASE_URL + "/rest/v1/families?id=eq." + id, {
                         method: "PATCH",
                         headers: { apikey: SUPABASE_ANON_KEY, Authorization: "Bearer " + SUPABASE_ANON_KEY, "Content-Type": "application/json" },
                         body: JSON.stringify({ checked_in: true, checked_in_at: new Date().toISOString() }),
                     });
+                    if (!cr.ok) throw new Error("HTTP " + cr.status);
                     [ciData, allData].forEach(function(arr) {
                         var f = arr.find(function(x) { return x.id === id; });
                         if (f) { f.checked_in = true; f.checked_in_at = new Date().toISOString(); }
@@ -2071,6 +2085,7 @@
                     renderCheckin(ciData, true);
                 } catch (e) {
                     if (btn) { btn.textContent = "✓ Llegó"; btn.disabled = false; }
+                    showToast("⚠ Error al registrar entrada. Intenta nuevamente.");
                 }
             }
 
@@ -2133,7 +2148,7 @@
                 await loadData();
                 var newCount = allData.filter(function(f) { return f.confirmed; }).length;
                 if (prevCount > 0 && newCount > prevCount) {
-                    showToast("🎉 " + (newCount - prevCount) + " nueva" + (newCount - prevCount > 1 ? "s confirmaciones" : " confirmación"));
+                    showToast("🎉 " + (newCount - prevCount) + " " + (newCount - prevCount > 1 ? "nuevas confirmaciones" : "nueva confirmación"));
                 }
                 lastConfirmedCount = newCount;
             }, 60000);
