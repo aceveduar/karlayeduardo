@@ -51,6 +51,9 @@ lista-invitados.csv
 *.xlsx
 *.xls
 
+# Carpetas de archivos personales/descargados (pueden contener tokens o credenciales)
+assets/Karla y Froyland/Downloads/
+
 # Archivos de caché del navegador (si guardas localmente)
 .service-worker
 *.cache
