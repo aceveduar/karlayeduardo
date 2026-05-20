@@ -313,6 +313,60 @@
                 color: rgba(201,169,110,0.5);
                 text-align: right;
             }
+            /* Alertas contextuales del Resumen */
+            .resumen-alerts { display: flex; flex-direction: column; gap: 0.45rem; margin-bottom: 1.25rem; }
+            .resumen-alert {
+                display: flex; align-items: center; gap: 0.75rem;
+                padding: 0.65rem 0.9rem;
+                border-left: 3px solid; border: 1px solid rgba(255,255,255,0.06);
+                border-left-width: 3px;
+            }
+            .resumen-alert--ok   { border-left-color: rgba(126,200,160,0.5); background: rgba(126,200,160,0.04); }
+            .resumen-alert--warn { border-left-color: rgba(224,184,136,0.6); background: rgba(224,184,136,0.04); }
+            .resumen-alert--gold { border-left-color: rgba(201,169,110,0.55); background: rgba(201,169,110,0.04); }
+            .resumen-alert--red  { border-left-color: rgba(224,136,136,0.55); background: rgba(224,136,136,0.04); }
+            .resumen-alert__body { flex: 1; }
+            .resumen-alert__main { font-size: 0.78rem; color: rgba(255,255,255,0.78); line-height: 1.3; }
+            .resumen-alert--ok .resumen-alert__main { color: #7ec8a0; }
+            .resumen-alert__sub  { font-size: 0.56rem; color: rgba(255,255,255,0.3); margin-top: 0.1rem; }
+            .resumen-alert__cta  {
+                background: none; border: 1px solid rgba(255,255,255,0.12);
+                color: rgba(255,255,255,0.45); font-family: var(--f-sans);
+                font-size: 0.5rem; letter-spacing: 0.12em; text-transform: uppercase;
+                padding: 0.3rem 0.7rem; cursor: pointer; white-space: nowrap;
+                transition: all 0.2s ease; flex-shrink: 0;
+            }
+            .resumen-alert__cta:hover { border-color: var(--gold); color: var(--gold); }
+
+            /* Check-in CTA mejorado */
+            .ci-cta-btn {
+                width: 100%;
+                display: flex; align-items: center; gap: 1rem;
+                padding: 1rem 1.25rem;
+                background: linear-gradient(135deg, rgba(126,200,160,0.08) 0%, rgba(126,200,160,0.04) 100%);
+                border: 1.5px solid rgba(126,200,160,0.3);
+                cursor: pointer; transition: all 0.25s ease; text-align: left;
+            }
+            .ci-cta-btn:hover { background: rgba(126,200,160,0.12); border-color: rgba(126,200,160,0.5); }
+            .ci-cta-icon {
+                width: 2.5rem; height: 2.5rem; flex-shrink: 0;
+                display: flex; align-items: center; justify-content: center;
+                background: rgba(126,200,160,0.12); border: 1px solid rgba(126,200,160,0.25);
+                color: #7ec8a0;
+            }
+            .ci-cta-body { flex: 1; }
+            .ci-cta-title { font-family: var(--f-serif); font-style: italic; font-size: 1.05rem; color: #7ec8a0; line-height: 1.2; }
+            .ci-cta-sub   { font-size: 0.56rem; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(126,200,160,0.55); margin-top: 0.2rem; }
+            .ci-cta-chev  { color: rgba(126,200,160,0.4); flex-shrink: 0; }
+
+            /* Check-in overlay: barra de progreso */
+            .ci-progress { margin: 0.75rem 0; }
+            .ci-progress__header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.35rem; }
+            .ci-progress__lbl    { font-size: 0.55rem; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.35); }
+            .ci-progress__pct    { font-family: var(--f-serif); font-size: 1rem; color: #7ec8a0; }
+            .ci-progress__track  { height: 6px; background: rgba(255,255,255,0.06); border-radius: 3px; overflow: hidden; }
+            .ci-progress__fill   { height: 100%; border-radius: 3px; background: linear-gradient(to right, #7ec8a0, #a8e6c8); transition: width 0.9s cubic-bezier(0.22,1,0.36,1); width: 0%; }
+
             .resumen-section-title {
                 font-size: 0.58rem;
                 letter-spacing: 0.2em;
@@ -552,7 +606,23 @@
                 font-size: 1rem;
                 color: var(--gold);
             }
-            .settings-modal__body { padding: 1.25rem; }
+            .settings-modal__body { padding: 1.25rem; max-height: 80vh; overflow-y: auto; }
+            /* Simulación */
+            .sim-divider { border: none; border-top: 1px solid rgba(255,255,255,0.06); margin: 1.25rem 0; }
+            .sim-section-lbl { font-size: 0.46rem; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255,255,255,0.28); margin-bottom: 0.85rem; display: flex; align-items: center; gap: 0.5rem; }
+            .sim-section-lbl::after { content: ""; flex: 1; height: 1px; background: rgba(255,255,255,0.06); }
+            .sim-card { border: 1px solid rgba(255,255,255,0.06); margin-bottom: 0.6rem; overflow: hidden; }
+            .sim-card__header { padding: 0.65rem 0.9rem 0.4rem; }
+            .sim-card__title { font-size: 0.75rem; color: rgba(255,255,255,0.72); margin-bottom: 0.18rem; }
+            .sim-card__desc  { font-size: 0.58rem; color: rgba(255,255,255,0.3); line-height: 1.5; }
+            .sim-card__actions { display: flex; gap: 0.4rem; padding: 0.5rem 0.9rem 0.7rem; flex-wrap: wrap; }
+            .sim-btn { font-family: var(--f-sans); font-size: 0.52rem; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.42rem 0.85rem; border: 1px solid; cursor: pointer; transition: all 0.2s ease; background: none; }
+            .sim-btn--gold  { color: var(--gold); border-color: rgba(201,169,110,0.35); }
+            .sim-btn--gold:hover  { background: rgba(201,169,110,0.1); }
+            .sim-btn--green { color: #7ec8a0; border-color: rgba(126,200,160,0.35); }
+            .sim-btn--green:hover { background: rgba(126,200,160,0.08); }
+            .sim-btn--red   { color: #e08888; border-color: rgba(224,136,136,0.3); }
+            .sim-btn--red:hover   { background: rgba(224,136,136,0.07); }
             .panel__header {
                 text-align: center;
                 padding-bottom: 1.5rem;
@@ -601,6 +671,9 @@
             .stat--good { border-color: rgba(126,200,160,0.2); background: rgba(126,200,160,0.04); }
             .stat--warn .stat__num { color: #e0b888; text-shadow: 0 0 20px rgba(224,184,136,0.3); }
             .stat--warn { border-color: rgba(224,184,136,0.2); background: rgba(224,184,136,0.04); }
+            .stat__icon { display: block; margin: 0 auto 0.4rem; opacity: 0.28; color: var(--gold); }
+            .stat--good .stat__icon { opacity: 0.45; color: #7ec8a0; }
+            .stat--warn .stat__icon { opacity: 0.45; color: #e0b888; }
             .stat__lbl {
                 font-size: 0.65rem;
                 letter-spacing: 0.14em;
@@ -1838,22 +1911,29 @@
                         </div>
                     </div>
 
+                    <!-- Alertas contextuales -->
+                    <div class="resumen-alerts" id="resumen-alerts"></div>
+
                     <!-- Stats -->
                     <p class="resumen-section-title">Asistencia</p>
                     <div class="stats">
                         <div class="stat">
+                            <svg class="stat__icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
                             <p class="stat__num" id="stat-total">—</p>
                             <p class="stat__lbl">Familias</p>
                         </div>
                         <div class="stat">
+                            <svg class="stat__icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                             <p class="stat__num" id="stat-confirmed">—</p>
                             <p class="stat__lbl">Confirmadas</p>
                         </div>
                         <div class="stat">
+                            <svg class="stat__icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                             <p class="stat__num" id="stat-pending">—</p>
                             <p class="stat__lbl">Pendientes</p>
                         </div>
                         <div class="stat">
+                            <svg class="stat__icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
                             <p class="stat__num" id="stat-guests">—</p>
                             <p class="stat__lbl">Invitados</p>
                         </div>
@@ -1910,9 +1990,15 @@
 
                     <!-- Modo Check-in -->
                     <p class="resumen-section-title">Día del Evento</p>
-                    <button class="entrada-btn" style="width:100%;border-radius:0;" onclick="openCheckin()">
-                        <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="display:inline;vertical-align:middle;margin-right:6px;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
-                        Modo Check-in — Día del Evento
+                    <button class="ci-cta-btn" onclick="openCheckin()">
+                        <div class="ci-cta-icon">
+                            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+                        </div>
+                        <div class="ci-cta-body">
+                            <p class="ci-cta-title">Modo Check-in</p>
+                            <p class="ci-cta-sub">21 · Nov · 2026 · Escanea QR · Registra llegadas</p>
+                        </div>
+                        <svg class="ci-cta-chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
                     </button>
 
                     <!-- Salir sesión -->
@@ -2072,6 +2158,60 @@
                         ⚠️ Esta URL es local (file://) y no funcionará en WhatsApp.<br />
                         Despliega en GitHub Pages, Netlify o similar y pega la URL pública.
                     </p>
+
+                    <hr class="sim-divider" />
+                    <p class="sim-section-lbl">⚗ Modo Simulación</p>
+
+                    <!-- Sembrar datos -->
+                    <div class="sim-card">
+                        <div class="sim-card__header">
+                            <p class="sim-card__title">Sembrar datos de prueba</p>
+                            <p class="sim-card__desc">Crea 8 familias TEST-01…08 con diferentes estados: confirmadas, pendiente, declinada, con y sin mesa.</p>
+                        </div>
+                        <div class="sim-card__actions">
+                            <button class="sim-btn sim-btn--gold" onclick="seedTestFamilies()">+ Crear TEST-01…08</button>
+                        </div>
+                    </div>
+
+                    <!-- Simular día -->
+                    <div class="sim-card">
+                        <div class="sim-card__header">
+                            <p class="sim-card__title">Simular día del evento</p>
+                            <p class="sim-card__desc">Marca todas las familias confirmadas como llegadas para probar el check-in al 100%.</p>
+                        </div>
+                        <div class="sim-card__actions">
+                            <button class="sim-btn sim-btn--green" onclick="simulateFullCheckIn()">✓ Simular llegadas</button>
+                            <button class="sim-btn sim-btn--gold" onclick="resetAllCheckIn()">↺ Resetear check-in</button>
+                        </div>
+                    </div>
+
+                    <!-- Simular RSVP -->
+                    <div class="sim-card">
+                        <div class="sim-card__header">
+                            <p class="sim-card__title">Simular RSVP individual</p>
+                            <p class="sim-card__desc">Confirma o declina una familia pendiente sin abrir el link de invitación.</p>
+                        </div>
+                        <div class="sim-card__actions" style="flex-direction:column;gap:0.5rem;">
+                            <select class="mesa-assign-select" id="sim-family-sel" style="width:100%;font-size:0.72rem;">
+                                <option value="">— Selecciona una familia —</option>
+                            </select>
+                            <div style="display:flex;gap:0.4rem;">
+                                <button class="sim-btn sim-btn--green" style="flex:1;" onclick="simRsvp(true)">✓ Confirmar asistencia</button>
+                                <button class="sim-btn sim-btn--red"  style="flex:1;" onclick="simRsvp(false)">✕ Declinar</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Limpiar -->
+                    <div class="sim-card">
+                        <div class="sim-card__header">
+                            <p class="sim-card__title">Limpiar datos de prueba</p>
+                            <p class="sim-card__desc">Elimina todas las familias con código TEST-* de Supabase.</p>
+                        </div>
+                        <div class="sim-card__actions">
+                            <button class="sim-btn sim-btn--red" onclick="cleanupTestData()">🗑 Eliminar TEST-*</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -2159,6 +2299,13 @@
                 <div class="ci-stat"><p class="ci-stat__num" id="ci-n-checked">0</p><p class="ci-stat__lbl">Llegaron</p></div>
                 <div class="ci-stat"><p class="ci-stat__num" id="ci-n-total">0</p><p class="ci-stat__lbl">Confirmadas</p></div>
                 <div class="ci-stat"><p class="ci-stat__num" id="ci-n-guests">0</p><p class="ci-stat__lbl">Personas</p></div>
+            </div>
+            <div class="ci-progress">
+                <div class="ci-progress__header">
+                    <span class="ci-progress__lbl">Progreso de llegadas</span>
+                    <span class="ci-progress__pct" id="ci-progress-pct">0%</span>
+                </div>
+                <div class="ci-progress__track"><div class="ci-progress__fill" id="ci-progress-fill"></div></div>
             </div>
 
             <!-- QR Scanner -->
@@ -2297,6 +2444,40 @@
                 var cardPending   = document.getElementById("stat-pending").closest(".stat");
                 if (cardConfirmed) cardConfirmed.className = "stat" + (confirmed > 0 ? " stat--good" : "");
                 if (cardPending)   cardPending.className   = "stat" + (pending === 0 ? " stat--good" : (pending > 5 ? " stat--warn" : ""));
+
+                /* Alertas contextuales */
+                var alertsEl = document.getElementById("resumen-alerts");
+                if (alertsEl) {
+                    var sinMesaCount = data.filter(function(f) {
+                        return f.confirmed && f.rsvps && f.rsvps[0] && f.rsvps[0].attending && !f.table_number;
+                    }).length;
+                    var mMap = typeof buildMesaMap === "function" ? buildMesaMap() : {};
+                    var overCount = Object.keys(mMap).filter(function(k) { return mMap[k] && mMap[k].over; }).length;
+                    var items = [];
+                    if (pending > 0) {
+                        showReminders();
+                        items.push(
+                        '<div class="resumen-alert resumen-alert--warn">' +
+                        '<div class="resumen-alert__body"><p class="resumen-alert__main">' + pending + ' familia' + (pending > 1 ? 's' : '') + ' sin confirmar asistencia</p>' +
+                        '<p class="resumen-alert__sub">Envíales WhatsApp individualmente desde la lista de abajo</p></div>' +
+                        '<button class="resumen-alert__cta" onclick="showReminders()">Ver lista</button></div>');
+                    }
+                    if (sinMesaCount > 0) items.push(
+                        '<div class="resumen-alert resumen-alert--gold">' +
+                        '<div class="resumen-alert__body"><p class="resumen-alert__main">' + sinMesaCount + ' familia' + (sinMesaCount > 1 ? 's confirmadas' : ' confirmada') + ' sin mesa asignada</p>' +
+                        '<p class="resumen-alert__sub">Asígnalas antes del evento</p></div>' +
+                        '<button class="resumen-alert__cta" onclick="switchTab(\'mesas\')">Asignar →</button></div>');
+                    if (overCount > 0) items.push(
+                        '<div class="resumen-alert resumen-alert--red">' +
+                        '<div class="resumen-alert__body"><p class="resumen-alert__main">' + overCount + ' mesa' + (overCount > 1 ? 's' : '') + ' con capacidad excedida</p>' +
+                        '<p class="resumen-alert__sub">Redistribuye las familias afectadas</p></div>' +
+                        '<button class="resumen-alert__cta" onclick="switchTab(\'mesas\')">Ver →</button></div>');
+                    if (items.length === 0) items.push(
+                        '<div class="resumen-alert resumen-alert--ok">' +
+                        '<div class="resumen-alert__body"><p class="resumen-alert__main">✓ Todo en orden</p>' +
+                        '<p class="resumen-alert__sub">Sin acciones urgentes pendientes</p></div></div>');
+                    alertsEl.innerHTML = items.join("");
+                }
                 /* Badge en el nav tab de Resumen */
                 updatePendingBadge(pending);
             }
@@ -3183,6 +3364,12 @@
                 document.getElementById("ci-n-checked").textContent = nChecked;
                 document.getElementById("ci-n-total").textContent   = ciData.length;
                 document.getElementById("ci-n-guests").textContent  = nGuests;
+                /* Barra de progreso */
+                var pct  = ciData.length > 0 ? Math.round(nChecked / ciData.length * 100) : 0;
+                var fill = document.getElementById("ci-progress-fill");
+                var pctEl= document.getElementById("ci-progress-pct");
+                if (fill)  fill.style.width = pct + "%";
+                if (pctEl) pctEl.textContent = pct + "%";
 
                 var sorted = data.slice().sort(function(a, b) { return (a.checked_in ? 1 : 0) - (b.checked_in ? 1 : 0); });
                 document.getElementById("ci-list").innerHTML = sorted.length ? sorted.map(function(f) {
@@ -3219,6 +3406,121 @@
                     showToast("⚠ Error al registrar entrada. Intenta nuevamente.");
                 }
             }
+
+            /* ── Modo Simulación ────────────────────────── */
+            var SIM_FAMILIES = [
+                { code:"TEST-01", family_name:"Familia Test Confirmada A", max_guests:4, group_name:"Amigos novia",         phone:"5512345678", table_number:2,  confirmed:true,  attending:true,  pax:4  },
+                { code:"TEST-02", family_name:"Familia Test Pendiente",    max_guests:3, group_name:"Amigos novio",         phone:null,         table_number:null,confirmed:false, attending:null,  pax:0  },
+                { code:"TEST-03", family_name:"Familia Test Declinó",      max_guests:2, group_name:"Familia novia",        phone:"5587654321", table_number:null,confirmed:true,  attending:false, pax:0  },
+                { code:"TEST-04", family_name:"Familia Test Sin Mesa",     max_guests:5, group_name:"Trabajo / Compañeros", phone:"5511112222", table_number:null,confirmed:true,  attending:true,  pax:5  },
+                { code:"TEST-05", family_name:"Familia Test Parcial",      max_guests:6, group_name:"Familia novio",        phone:"5533334444", table_number:3,   confirmed:true,  attending:true,  pax:4  },
+                { code:"TEST-06", family_name:"Familia Test Individual",   max_guests:1, group_name:"Otros",                phone:null,         table_number:4,   confirmed:true,  attending:true,  pax:1  },
+                { code:"TEST-07", family_name:"Familia Test Grande",       max_guests:10,group_name:"Amigos novia",         phone:"5555556666", table_number:5,   confirmed:true,  attending:true,  pax:8  },
+                { code:"TEST-08", family_name:"Familia Test Sin Teléfono", max_guests:2, group_name:"Familia novia",        phone:null,         table_number:null,confirmed:false, attending:null,  pax:0  },
+            ];
+
+            async function seedTestFamilies() {
+                var existing = allData.filter(function(f){ return f.code.startsWith("TEST-"); });
+                if (existing.length) { showToast("⚠ Ya existen " + existing.length + " familias TEST. Límpielas primero."); return; }
+                if (!confirm("¿Crear 8 familias de prueba (TEST-01 a TEST-08)?")) return;
+                showToast("Creando datos de prueba…");
+                try {
+                    for (var i = 0; i < SIM_FAMILIES.length; i++) {
+                        var t = SIM_FAMILIES[i];
+                        var res = await fetch(SUPABASE_URL + "/rest/v1/families", {
+                            method: "POST",
+                            headers: { apikey: SUPABASE_ANON_KEY, Authorization: "Bearer " + SUPABASE_ANON_KEY, "Content-Type": "application/json", Prefer: "return=representation" },
+                            body: JSON.stringify({ code: t.code, family_name: t.family_name, max_guests: t.max_guests, group_name: t.group_name, phone: t.phone, table_number: t.table_number, confirmed: t.confirmed, guest_names: t.family_name + " 1," + t.family_name + " 2" })
+                        });
+                        if (!res.ok) throw new Error(t.code);
+                        if (t.attending !== null) {
+                            var fam = await res.json();
+                            await fetch(SUPABASE_URL + "/rest/v1/rsvps", {
+                                method: "POST",
+                                headers: { apikey: SUPABASE_ANON_KEY, Authorization: "Bearer " + SUPABASE_ANON_KEY, "Content-Type": "application/json" },
+                                body: JSON.stringify({ family_id: fam[0].id, contact_name: "Simulado", guest_count: t.pax, attending: t.attending, attending_names: t.attending ? t.family_name + " 1" : null })
+                            });
+                        }
+                    }
+                    closeSettings();
+                    await loadData();
+                    showToast("✓ 8 familias TEST creadas correctamente");
+                } catch(e) { showToast("⚠ Error: " + e.message); }
+            }
+
+            async function simulateFullCheckIn() {
+                var targets = allData.filter(function(f){ return f.confirmed && f.rsvps && f.rsvps[0] && f.rsvps[0].attending; });
+                if (!targets.length) { showToast("No hay familias confirmadas"); return; }
+                if (!confirm("¿Marcar " + targets.length + " familias como llegadas?")) return;
+                try {
+                    await Promise.all(targets.map(function(f) {
+                        return fetch(SUPABASE_URL + "/rest/v1/families?id=eq." + f.id, {
+                            method: "PATCH",
+                            headers: { apikey: SUPABASE_ANON_KEY, Authorization: "Bearer " + SUPABASE_ANON_KEY, "Content-Type": "application/json" },
+                            body: JSON.stringify({ checked_in: true, checked_in_at: new Date().toISOString() })
+                        });
+                    }));
+                    closeSettings();
+                    await loadData();
+                    showToast("✓ " + targets.length + " familias marcadas como llegadas");
+                } catch(e) { showToast("⚠ Error al simular check-in"); }
+            }
+
+            async function resetAllCheckIn() {
+                if (!confirm("¿Resetear check-in de TODAS las familias?")) return;
+                try {
+                    await fetch(SUPABASE_URL + "/rest/v1/families?confirmed=eq.true", {
+                        method: "PATCH",
+                        headers: { apikey: SUPABASE_ANON_KEY, Authorization: "Bearer " + SUPABASE_ANON_KEY, "Content-Type": "application/json" },
+                        body: JSON.stringify({ checked_in: false, checked_in_at: null })
+                    });
+                    closeSettings();
+                    await loadData();
+                    showToast("✓ Check-in reseteado");
+                } catch(e) { showToast("⚠ Error al resetear"); }
+            }
+
+            async function simRsvp(attending) {
+                var sel = document.getElementById("sim-family-sel");
+                var id  = sel && sel.value;
+                if (!id) { showToast("Selecciona una familia primero"); return; }
+                var f = allData.find(function(x){ return x.id === id; });
+                if (!f) return;
+                var pax = attending ? f.max_guests : 0;
+                try {
+                    await fetch(SUPABASE_URL + "/rest/v1/families?id=eq." + id, {
+                        method: "PATCH",
+                        headers: { apikey: SUPABASE_ANON_KEY, Authorization: "Bearer " + SUPABASE_ANON_KEY, "Content-Type": "application/json" },
+                        body: JSON.stringify({ confirmed: true })
+                    });
+                    await fetch(SUPABASE_URL + "/rest/v1/rsvps", {
+                        method: "POST",
+                        headers: { apikey: SUPABASE_ANON_KEY, Authorization: "Bearer " + SUPABASE_ANON_KEY, "Content-Type": "application/json" },
+                        body: JSON.stringify({ family_id: id, contact_name: "Simulado", guest_count: pax, attending: attending, attending_names: attending ? f.family_name : null })
+                    });
+                    closeSettings();
+                    await loadData();
+                    showToast("✓ RSVP simulado para " + f.family_name);
+                } catch(e) { showToast("⚠ Error al simular RSVP"); }
+            }
+
+            async function cleanupTestData() {
+                var test = allData.filter(function(f){ return f.code.startsWith("TEST-"); });
+                if (!test.length) { showToast("No hay familias TEST para eliminar"); return; }
+                if (!confirm("¿Eliminar " + test.length + " familias TEST-*? Esta acción no se puede deshacer.")) return;
+                try {
+                    await fetch(SUPABASE_URL + "/rest/v1/families?code=like.TEST-%25", {
+                        method: "DELETE",
+                        headers: { apikey: SUPABASE_ANON_KEY, Authorization: "Bearer " + SUPABASE_ANON_KEY }
+                    });
+                    closeSettings();
+                    await loadData();
+                    showToast("✓ Datos de prueba eliminados");
+                } catch(e) { showToast("⚠ Error al limpiar datos"); }
+            }
+
+            /* Poblar dropdown del sim-RSVP al abrir settings */
+            var _origOpenSettings = typeof openSettings === "function" ? openSettings : null;
 
             /* ── QR Scanner ─────────────────────────────── */
             var _qrStream = null;
@@ -3537,6 +3839,15 @@
             /* ── Settings modal ─────────────────────────────── */
             function openSettings() {
                 document.getElementById("settings-overlay").classList.add("is-open");
+                /* Pobla el dropdown de RSVP simulado con familias no confirmadas */
+                var sel = document.getElementById("sim-family-sel");
+                if (sel && allData.length) {
+                    var pending = allData.filter(function(f){ return !f.confirmed; });
+                    sel.innerHTML = pending.length
+                        ? '<option value="">— Selecciona una familia —</option>' +
+                          pending.map(function(f){ return '<option value="' + f.id + '">' + esc(f.family_name) + ' (' + f.max_guests + ' pases)</option>'; }).join("")
+                        : '<option value="">✓ Todas las familias han confirmado</option>';
+                }
             }
             function closeSettings() {
                 document.getElementById("settings-overlay").classList.remove("is-open");
