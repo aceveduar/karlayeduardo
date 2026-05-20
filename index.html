@@ -3349,14 +3349,7 @@
                     </div>
                 </section>
 
-                <!-- LIGHTBOX -->
-                <div class="gallery-lightbox" id="gallery-lightbox" role="dialog" aria-modal="true" aria-label="Galería de fotos">
-                    <button class="gallery-lightbox__close" id="lightbox-close" aria-label="Cerrar">&#x2715;</button>
-                    <button class="gallery-lightbox__nav gallery-lightbox__nav--prev" id="lightbox-prev" aria-label="Foto anterior">&#x2039;</button>
-                    <img class="gallery-lightbox__img" id="lightbox-img" src="" alt="" />
-                    <button class="gallery-lightbox__nav gallery-lightbox__nav--next" id="lightbox-next" aria-label="Foto siguiente">&#x203A;</button>
-                    <span class="gallery-lightbox__counter" id="lightbox-counter"></span>
-                </div>
+                <!-- LIGHTBOX movido a <body> — ver abajo del </main> -->
 
                 <!-- DRESS CODE -->
                 <section class="dresscode js-fade" style="position:relative; overflow:hidden;">
@@ -3943,6 +3936,15 @@
             </main>
         </div>
         <!-- end page-shell -->
+
+        <!-- LIGHTBOX — fuera de .invitation para evitar containment por transform -->
+        <div class="gallery-lightbox" id="gallery-lightbox" role="dialog" aria-modal="true" aria-label="Galería de fotos">
+            <button class="gallery-lightbox__close" id="lightbox-close" aria-label="Cerrar">&#x2715;</button>
+            <button class="gallery-lightbox__nav gallery-lightbox__nav--prev" id="lightbox-prev" aria-label="Foto anterior">&#x2039;</button>
+            <img class="gallery-lightbox__img" id="lightbox-img" src="" alt="" />
+            <button class="gallery-lightbox__nav gallery-lightbox__nav--next" id="lightbox-next" aria-label="Foto siguiente">&#x203A;</button>
+            <span class="gallery-lightbox__counter" id="lightbox-counter"></span>
+        </div>
         <a
             href="admin.html"
             style="
@@ -4994,10 +4996,10 @@
             /* === GALLERY LIGHTBOX === */
             (function () {
                 var galleryPhotos = [
-                    "assets/Karla y Froyland/novios.webp",
+                    "assets/Karla y Froyland/brazos.jpg",
                     "assets/Karla y Froyland/kye-1.jpg",
                     "assets/Karla y Froyland/kye-2.jpg",
-                    "assets/Karla y Froyland/brazos.jpg",
+                    "assets/Karla y Froyland/novios.webp",
                     "assets/Karla y Froyland/anillo.webp",
                     "assets/Karla y Froyland/1-karla.jpg",
                     "assets/Karla y Froyland/eduardo.jpg"
@@ -5072,21 +5074,66 @@
                 var btn = document.getElementById("js-music-btn");
                 var audio = document.getElementById("js-audio");
                 var on = false;
-                var svgPlay =
-                    '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"/></svg>';
-                var svgPause =
-                    '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>';
-                btn.addEventListener("click", function () {
+                var autoStarted = false;
+                var fadeTimer = null;
+
+                var svgPlay  = '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"/></svg>';
+                var svgPause = '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>';
+
+                /* Fade de volumen de 0 → target en ms */
+                function fadeIn(targetVol, durationMs) {
+                    if (fadeTimer) clearInterval(fadeTimer);
+                    audio.volume = 0;
+                    var steps = 60;
+                    var interval = durationMs / steps;
+                    var step = 0;
+                    fadeTimer = setInterval(function () {
+                        step++;
+                        audio.volume = Math.min(targetVol, (step / steps) * targetVol);
+                        if (step >= steps) clearInterval(fadeTimer);
+                    }, interval);
+                }
+
+                /* Autoplay en la primera interacción del usuario */
+                function tryAutoStart() {
+                    if (autoStarted) return;
+                    autoStarted = true;
+                    audio.volume = 0;
+                    audio.play().then(function () {
+                        on = true;
+                        btn.innerHTML = svgPause;
+                        btn.setAttribute("aria-label", "Pausar música");
+                        fadeIn(0.55, 5000); /* sube hasta 55% en 5 seg */
+                    }).catch(function () {
+                        autoStarted = false; /* bloqueado por browser — necesita tap manual */
+                    });
+                }
+
+                /* Escuchar primer scroll o tap para disparar el autoplay */
+                ["touchstart", "click", "scroll"].forEach(function (evt) {
+                    document.addEventListener(evt, function handler() {
+                        tryAutoStart();
+                        document.removeEventListener(evt, handler);
+                    }, { once: true, passive: true });
+                });
+
+                /* Control manual del botón */
+                btn.addEventListener("click", function (e) {
+                    e.stopPropagation(); /* no disparar tryAutoStart desde este click */
                     if (on) {
+                        if (fadeTimer) clearInterval(fadeTimer);
                         audio.pause();
                         btn.innerHTML = svgPlay;
                         btn.setAttribute("aria-label", "Reproducir música");
+                        on = false;
                     } else {
                         audio.play().catch(function () {});
+                        fadeIn(0.55, 2000);
                         btn.innerHTML = svgPause;
                         btn.setAttribute("aria-label", "Pausar música");
+                        on = true;
                     }
-                    on = !on;
+                    autoStarted = true; /* ya hubo interacción manual */
                 });
             })();
 
