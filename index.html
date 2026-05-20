@@ -582,6 +582,9 @@
                     transform: translateY(0);
                 }
             }
+            @keyframes spin-rsvp {
+                to { transform: rotate(360deg); }
+            }
             .countdown__number--flip {
                 animation: cd-flip 0.28s ease forwards;
             }
@@ -2622,9 +2625,9 @@
                     <img
                         class="floral-band__img"
                         alt=""
-                        src="../karlayeduardo/assets/floral.png"
+                        src="assets/floral.png"
                     />
-                    <!--src="../karlayeduardo/assets/floral.png"/>-->
+                    <!--src="assets/floral.png"/>-->
                 </div>
 
                 <!-- HEADER -->
@@ -2684,7 +2687,7 @@
                         <img
                             class="ornament-divider__img"
                             alt=""
-                            src="../karlayeduardo/assets/floral.png"
+                            src="assets/floral.png"
                         />
                     </div>
 
@@ -2701,7 +2704,7 @@
                         <img
                             class="ornament-divider__img"
                             alt=""
-                            src="../karlayeduardo/assets/floral.png"
+                            src="assets/floral.png"
                         />
                     </div>
 
@@ -2767,8 +2770,8 @@
                 <div class="photo-break">
                     <img
                         class="photo-break__img"
-                        alt="Pareja caminando entre flores"
-                        src="../karlayeduardo/assets/Karla y Froyland/1065b92a-3a22-478f-97e3-1376d8f33b1d.jpg"
+                        alt="Karla y Eduardo"
+                        src="assets/Karla y Froyland/kye-1.jpg"
                     />
                 </div>
 
@@ -2895,7 +2898,7 @@
                         <img
                             class="ornament-divider__img"
                             alt=""
-                            src="../karlayeduardo/assets/floral.png"
+                            src="assets/floral.png"
                         />
                     </div>
 
@@ -3035,8 +3038,8 @@
                 <div class="photo-break">
                     <img
                         class="photo-break__img"
-                        alt="Ceremonia de boda al aire libre"
-                        src="https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=800&q=85&auto=format&fit=crop"
+                        alt="Karla y Eduardo"
+                        src="assets/Karla y Froyland/brazos.jpg"
                     />
                 </div>
 
@@ -3048,36 +3051,36 @@
                             <span class="story__year">01. El Encuentro</span>
                             <div class="story__bar"></div>
                             <p class="story__text">
-                                El día que nuestros caminos se cruzaron y
-                                nuestros corazones comenzaron a latir al
-                                unísono.
+                                Dos caminos distintos que la vida decidió cruzar.
+                                Desde ese primer instante algo cambió,
+                                como si siempre hubiera estado escrito.
                             </p>
                         </div>
                         <div class="story__item" style="transition-delay: 0.2s">
-                            <span class="story__year"
-                                >02. Los Primeros Meses</span
-                            >
+                            <span class="story__year">02. Crecer Juntos</span>
                             <div class="story__bar"></div>
                             <p class="story__text">
-                                Cada momento junto a ti fue especial,
-                                construyendo una complicidad única e
-                                irremplazable.
+                                Conversaciones que no querían terminar,
+                                risas que se volvieron costumbre y
+                                una complicidad que nadie más podría entender.
                             </p>
                         </div>
                         <div class="story__item" style="transition-delay: 0.3s">
-                            <span class="story__year">03. La Sorpresa</span>
+                            <span class="story__year">03. El Sí</span>
                             <div class="story__bar"></div>
                             <p class="story__text">
-                                Ese instante mágico en el que dijiste que sí,
-                                sellando nuestra promesa de un futuro juntos.
+                                Una pregunta, dos palabras y toda
+                                una vida por delante. Ese momento
+                                quedará grabado en nuestros corazones para siempre.
                             </p>
                         </div>
                         <div class="story__item" style="transition-delay: 0.4s">
-                            <span class="story__year">04. El Matrimonio</span>
+                            <span class="story__year">04. Para Siempre</span>
                             <div class="story__bar"></div>
                             <p class="story__text">
-                                Hoy, ante Dios y nuestros seres queridos,
-                                decimos <em>"Sí, acepto"</em> para siempre.
+                                El 21 de noviembre, ante Dios y las
+                                personas que más amamos, diremos
+                                <em>"Sí, acepto"</em> — y comenzará el mejor capítulo.
                             </p>
                         </div>
                     </div>
@@ -3304,11 +3307,11 @@
                     <p class="gifts__option-lbl">Nuestro Wishlist</p>
                     <a
                         class="btn btn--gold btn--lg"
-                        href="#"
+                        href="https://wa.me/527721204509?text=Hola%20Karla%20y%20Eduardo%20%F0%9F%92%9B%20quisiera%20ver%20su%20wishlist%20de%20regalos.%20%C2%A1Muchas%20gracias!"
                         target="_blank"
                         rel="noopener noreferrer"
                     >
-                        Visita nuestro wishlist aquí
+                        Preguntar por el wishlist
                     </a>
                 </section>
 
@@ -3736,7 +3739,7 @@
                             <img
                                 class="ornament-divider__img"
                                 alt=""
-                                src="../karlayeduardo/assets/floral.png"
+                                src="assets/floral.png"
                                 style="opacity:0.45;"
                             />
                         </div>
@@ -3755,7 +3758,7 @@
                         <img
                             class="floral-band__img"
                             alt=""
-                            src="../karlayeduardo/assets/floral.png"
+                            src="assets/floral.png"
                         />
                     </div>
                 </footer>
@@ -4541,7 +4544,7 @@
                                 "Ingresa tu código de invitación.";
                             return;
                         }
-                        self.textContent = "Verificando…";
+                        self.innerHTML = '<span style="display:inline-block;width:14px;height:14px;border:2px solid rgba(201,169,110,0.3);border-top-color:var(--c-gold);border-radius:50%;animation:spin-rsvp 0.7s linear infinite;vertical-align:middle;margin-right:0.5rem"></span>Verificando…';
                         self.disabled = true;
                         try {
                             var rows = await api(
@@ -4551,7 +4554,7 @@
                             );
                             if (!rows.length) {
                                 errEl.textContent =
-                                    "Código no encontrado. Verifica que esté bien escrito.";
+                                    "Código \"" + code + "\" no encontrado. Revisa mayúsculas y guiones (ej: GARCIA-01).";
                                 return;
                             }
                             family = rows[0];
@@ -4631,10 +4634,11 @@
                                     "?text=" + encodeURIComponent(changeMsg);
                             showStep("form");
                         } catch (err) {
-                            errEl.textContent =
-                                "Error de conexión. Intenta nuevamente.";
+                            errEl.textContent = navigator.onLine
+                                ? "Error del servidor. Intenta en unos segundos."
+                                : "Sin conexión a internet. Verifica tu red e intenta de nuevo.";
                         } finally {
-                            self.textContent = "Verificar código";
+                            self.innerHTML = "Verificar código";
                             self.disabled = false;
                         }
                     });
@@ -4714,6 +4718,8 @@
                                     colorLight: "#1e1410",
                                     correctLevel: QRCode.CorrectLevel.M,
                                 });
+                            } else {
+                                qrEl.innerHTML = '<p style="font-family:var(--f-sans);font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;color:rgba(201,169,110,0.6);text-align:center;padding:1rem;line-height:2;">' + family.code + '<br><span style="font-size:0.48rem;color:rgba(255,255,255,0.25);">Muestra este código en la entrada</span></p>';
                             }
 
                             /* WhatsApp → llega a los novios */

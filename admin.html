@@ -1333,12 +1333,13 @@
                     allData = await api(
                         "families?select=*,rsvps(*)&order=family_name.asc",
                     );
+                    lastConfirmedCount = allData.filter(function(f) { return f.confirmed; }).length;
                     renderStats(allData);
                     renderProgress(allData);
                     renderTable(allData);
                 } catch (err) {
                     document.getElementById("loading").textContent =
-                        "Error al cargar datos.";
+                        "Error al cargar datos. Verifica tu conexión.";
                 }
             }
 
@@ -1829,13 +1830,12 @@
 
             /* ── Eliminar familia ─────────────────────── */
             async function deleteFamily(id, name) {
-                if (
-                    !confirm(
-                        '¿Eliminar a "' +
-                            name +
-                            '"?\nSolo se puede eliminar si aún no confirmó.',
-                    )
-                )
+                var f = allData.find(function(x) { return x.id === id; });
+                if (f && f.confirmed) {
+                    alert('No se puede eliminar a "' + name + '" porque ya confirmó asistencia.\nSi necesitas hacer cambios, edita la familia.');
+                    return;
+                }
+                if (!confirm('¿Eliminar a "' + name + '"?\nEsta acción no se puede deshacer.'))
                     return;
                 try {
                     await fetch(
@@ -1850,7 +1850,7 @@
                     );
                     await loadData();
                 } catch (e) {
-                    alert("Error al eliminar.");
+                    alert("Error al eliminar. Intenta nuevamente.");
                 }
             }
 
@@ -1891,6 +1891,18 @@
             }
 
             async function assignTable(id, val) {
+                if (val) {
+                    var mMap = buildMesaMap();
+                    var mesa = mMap[parseInt(val)];
+                    var fam  = allData.find(function(x) { return x.id === id; });
+                    var famPax = fam && fam.rsvps && fam.rsvps[0] && fam.rsvps[0].attending ? fam.rsvps[0].guest_count : 0;
+                    if (mesa && (mesa.pax + famPax) > CAP_POR_MESA) {
+                        if (!confirm("⚠ La Mesa " + val + " quedaría con " + (mesa.pax + famPax) + "/" + CAP_POR_MESA + " pax (excede capacidad).\n¿Asignar de todas formas?")) {
+                            renderTable(allData);
+                            return;
+                        }
+                    }
+                }
                 try {
                     await fetch(SUPABASE_URL + "/rest/v1/families?id=eq." + id, {
                         method: "PATCH",
@@ -2105,10 +2117,26 @@
             /* ── Refresh ──────────────────────────────── */
             document.getElementById("btn-refresh").addEventListener("click", loadData);
 
-            /* Auto-refresh cada 90 s si la sesión sigue activa */
-            setInterval(function () {
-                if (sessionStorage.getItem("ke-admin") === "1") loadData();
-            }, 90000);
+            /* Auto-refresh cada 60 s si la sesión sigue activa + detecta nuevas confirmaciones */
+            var lastConfirmedCount = 0;
+            function showToast(msg) {
+                var t = document.createElement("div");
+                t.textContent = msg;
+                t.style.cssText = "position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);background:rgba(30,20,16,0.97);border:1px solid rgba(201,169,110,0.45);color:var(--gold);font-family:var(--f-sans);font-size:0.62rem;letter-spacing:0.14em;padding:0.7rem 1.5rem;z-index:9999;pointer-events:none;white-space:nowrap;box-shadow:0 8px 30px rgba(0,0,0,0.4);transition:opacity 0.4s ease;";
+                document.body.appendChild(t);
+                setTimeout(function() { t.style.opacity = "0"; }, 3000);
+                setTimeout(function() { t.remove(); }, 3400);
+            }
+            setInterval(async function () {
+                if (sessionStorage.getItem("ke-admin") !== "1") return;
+                var prevCount = lastConfirmedCount;
+                await loadData();
+                var newCount = allData.filter(function(f) { return f.confirmed; }).length;
+                if (prevCount > 0 && newCount > prevCount) {
+                    showToast("🎉 " + (newCount - prevCount) + " nueva" + (newCount - prevCount > 1 ? "s confirmaciones" : " confirmación"));
+                }
+                lastConfirmedCount = newCount;
+            }, 60000);
 
             /* ── Search ───────────────────────────────── */
             document.getElementById("search").addEventListener("input", applyFilters);
@@ -2171,9 +2199,14 @@
                     var url = URL.createObjectURL(blob);
                     var a = document.createElement("a");
                     a.href = url;
-                    a.download = "rsvp-karla-eduardo.csv";
+                    a.download = "rsvp-karla-eduardo-" + new Date().toISOString().slice(0,10) + ".csv";
+                    a.style.display = "none";
+                    document.body.appendChild(a);
                     a.click();
-                    URL.revokeObjectURL(url);
+                    setTimeout(function() {
+                        document.body.removeChild(a);
+                        URL.revokeObjectURL(url);
+                    }, 200);
                 });
         </script>
     </body>
