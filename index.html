@@ -155,18 +155,15 @@
                 width: 100%;
                 overflow: hidden;
                 line-height: 0;
+                position: relative;
             }
             .floral-band--top {
-                height: 150px;
-                display: flex;
-                align-items: flex-start;
-                justify-content: center;
+                height: 270px;
+                display: block;
             }
             .floral-band--bottom {
-                height: 150px;
-                display: flex;
-                align-items: flex-end;
-                justify-content: center;
+                height: 290px;
+                display: block;
             }
             .floral-band__img {
                 width: 100%;
@@ -174,12 +171,14 @@
                 display: block;
                 opacity: 0.9;
             }
-            .floral-band--top .floral-band__img {
-                margin-top: -2.5rem;
-            }
-            .floral-band--bottom .floral-band__img {
-                transform: rotate(180deg);
-                margin-bottom: -2.5rem;
+            /* =============================================
+       BLOCK: floral-deco  (corner / edge decorators)
+       ============================================= */
+            .floral-deco {
+                position: absolute;
+                pointer-events: none;
+                display: block;
+                mix-blend-mode: multiply;
             }
 
             /* =============================================
@@ -239,7 +238,7 @@
        BLOCK: inv-header
        ============================================= */
             .inv-header {
-                padding: 0 2.5rem 3rem;
+                padding: 0.75rem 2.5rem 3rem;
                 text-align: center;
             }
             .inv-header__verse {
@@ -376,12 +375,12 @@
                 margin: 0.5rem 0;
             }
             .ornament-divider__img {
-                width: 52px;
+                width: 180px;
                 height: auto;
-                opacity: 0.6;
+                mix-blend-mode: multiply;
             }
             .ornament-divider--flipped .ornament-divider__img {
-                transform: rotate(180deg);
+                transform: scaleX(-1) rotate(8deg);
             }
 
             /* =============================================
@@ -1315,6 +1314,10 @@
                 z-index: 9999;
                 pointer-events: none;
                 transition: opacity 1s cubic-bezier(0.4, 0, 0.2, 1);
+                animation: page-reveal-out 1s 0.8s forwards;
+            }
+            @keyframes page-reveal-out {
+                to { opacity: 0; visibility: hidden; }
             }
 
             /* Diagonal gold pattern on outer bg */
@@ -2070,13 +2073,11 @@
                     border-right-width: 8px;
                 }
 
-                .floral-band--top,
-                .floral-band--bottom {
-                    height: 180px;
-                }
+                .floral-band--top { height: 270px; }
+                .floral-band--bottom { height: 290px; }
 
                 .inv-header {
-                    padding: 0 3rem 3.5rem;
+                    padding: 0.75rem 3rem 3.5rem;
                 }
                 .inv-header__monogram {
                     font-size: 3.25rem;
@@ -2221,13 +2222,11 @@
                     right: -14px;
                 }
 
-                .floral-band--top,
-                .floral-band--bottom {
-                    height: 200px;
-                }
+                .floral-band--top { height: 300px; }
+                .floral-band--bottom { height: 310px; }
 
                 .inv-header {
-                    padding: 0 3.5rem 4rem;
+                    padding: 0.75rem 3.5rem 4rem;
                 }
                 .inv-header__monogram {
                     font-size: 3.5rem;
@@ -2622,16 +2621,30 @@
             <main class="invitation" role="main">
                 <!-- TOP FLORAL -->
                 <div class="floral-band floral-band--top" aria-hidden="true">
-                    <img
-                        class="floral-band__img"
-                        alt=""
-                        src="assets/floral.png"
-                    />
-                    <!--src="assets/floral.png"/>-->
+                    <!-- Esquina superior izquierda: arreglo aéreo espejado, grande -->
+                    <img class="floral-deco"
+                         src="assets/flores-5.png" alt=""
+                         style="width:290px; top:-10px; left:-40px; opacity:0.90; transform:scaleX(-1) rotate(-8deg);" />
+                    <!-- Esquina superior derecha: ramo completo coral, grande -->
+                    <img class="floral-deco"
+                         src="assets/flores-1.png" alt=""
+                         style="width:310px; top:-20px; right:-40px; opacity:0.88; transform:rotate(6deg);" />
+                    <!-- Centro: acento mínimo de ligazón, muy sutil -->
+                    <img class="floral-deco"
+                         src="assets/flores-4.png" alt=""
+                         style="width:130px; bottom:10px; left:50%; transform:translateX(-50%) rotate(-2deg); opacity:0.35;" />
                 </div>
 
                 <!-- HEADER -->
-                <section class="inv-header js-fade">
+                <section class="inv-header js-fade" style="position:relative; overflow:hidden;">
+                    <!-- Floral esquina derecha: girasol/pampas — pequeño, solo asoma -->
+                    <img class="floral-deco"
+                         src="assets/flores-3.png" alt=""
+                         style="width:145px; top:30px; right:-58px; opacity:0.42; transform:rotate(-12deg);" aria-hidden="true" />
+                    <!-- Floral esquina izquierda: arreglo aéreo — pequeño, solo asoma -->
+                    <img class="floral-deco"
+                         src="assets/flores-5.png" alt=""
+                         style="width:140px; top:60px; left:-58px; opacity:0.42; transform:scaleX(-1) rotate(8deg);" aria-hidden="true" />
                     <p class="inv-header__verse">
                         "Y sobre todas estas cosas,<br />
                         vístanse de amor, que es el<br />
@@ -2687,7 +2700,8 @@
                         <img
                             class="ornament-divider__img"
                             alt=""
-                            src="assets/floral.png"
+                            src="assets/flores-4.png"
+                            style="width:190px; transform:rotate(-2deg);"
                         />
                     </div>
 
@@ -2704,7 +2718,8 @@
                         <img
                             class="ornament-divider__img"
                             alt=""
-                            src="assets/floral.png"
+                            src="assets/flores-4.png"
+                            style="width:190px;"
                         />
                     </div>
 
@@ -2776,7 +2791,11 @@
                 </div>
 
                 <!-- EVENT DETAILS -->
-                <section class="event-info js-fade">
+                <section class="event-info js-fade" style="position:relative; overflow:hidden;">
+                    <!-- Floral lateral derecho sutil -->
+                    <img class="floral-deco"
+                         src="assets/flores-2.png" alt=""
+                         style="width:195px; top:15px; right:-55px; opacity:0.62; transform:rotate(-12deg);" aria-hidden="true" />
                     <svg
                         class="event-info__icon"
                         fill="none"
@@ -2829,7 +2848,11 @@
                 </section>
 
                 <!-- CÓMO LLEGAR -->
-                <section class="how-to-get js-fade">
+                <section class="how-to-get js-fade" style="position:relative; overflow:hidden;">
+                    <!-- Floral esquina superior derecha sutil -->
+                    <img class="floral-deco"
+                         src="assets/flores-2.png" alt=""
+                         style="width:175px; top:-5px; right:-55px; opacity:0.38; transform:rotate(-10deg);" aria-hidden="true" />
                     <h3 class="section-heading">¿Cómo Llegar?</h3>
                     <div class="how-to-get__cards">
 
@@ -2887,7 +2910,11 @@
                 </section>
 
                 <!-- ITINERARY -->
-                <section class="timeline js-fade">
+                <section class="timeline js-fade" style="position:relative; overflow:hidden;">
+                    <!-- Floral esquina izquierda sutil -->
+                    <img class="floral-deco"
+                         src="assets/flores-4.png" alt=""
+                         style="width:155px; top:10px; left:-48px; opacity:0.42; transform:rotate(8deg);" aria-hidden="true" />
                     <h3 class="section-heading">Itinerario</h3>
 
                     <div
@@ -2898,7 +2925,8 @@
                         <img
                             class="ornament-divider__img"
                             alt=""
-                            src="assets/floral.png"
+                            src="assets/flores-2.png"
+                            style="width:210px; opacity:0.78; transform:rotate(4deg);"
                         />
                     </div>
 
@@ -3044,7 +3072,11 @@
                 </div>
 
                 <!-- NUESTRA HISTORIA -->
-                <section class="story js-fade">
+                <section class="story js-fade" style="position:relative; overflow:hidden;">
+                    <!-- Floral lateral derecho, nuestra historia -->
+                    <img class="floral-deco"
+                         src="assets/flores-1.png" alt=""
+                         style="width:190px; top:10px; right:-50px; opacity:0.56; transform:rotate(-8deg);" aria-hidden="true" />
                     <h3 class="section-heading">Nuestra Historia</h3>
                     <div class="story__list">
                         <div class="story__item" style="transition-delay: 0.1s">
@@ -3087,7 +3119,11 @@
                 </section>
 
                 <!-- GALERÍA -->
-                <section class="gallery js-fade">
+                <section class="gallery js-fade" style="position:relative; overflow:hidden;">
+                    <!-- Floral esquina superior izquierda sutil -->
+                    <img class="floral-deco"
+                         src="assets/flores-5.png" alt=""
+                         style="width:160px; top:0px; left:-50px; opacity:0.40; mix-blend-mode:multiply; transform:scaleX(-1) rotate(5deg);" aria-hidden="true" />
                     <h3 class="section-heading">Nuestra Galería</h3>
                     <p style="font-family:var(--f-serif);font-style:italic;font-size:0.85rem;color:var(--c-text-light);margin:-1.25rem 0 2rem;line-height:1.8;">Momentos que atesoran nuestro amor</p>
 
@@ -3205,7 +3241,11 @@
                 </div>
 
                 <!-- DRESS CODE -->
-                <section class="dresscode js-fade">
+                <section class="dresscode js-fade" style="position:relative; overflow:hidden;">
+                    <!-- Floral lateral izquierdo sutil -->
+                    <img class="floral-deco"
+                         src="assets/flores-4.png" alt=""
+                         style="width:185px; top:15px; left:-50px; opacity:0.65; transform:rotate(10deg);" aria-hidden="true" />
                     <h3 class="section-heading">Código de Vestimenta</h3>
                     <p class="dresscode__style">Semi Formal</p>
                     <span class="dresscode__formal-lbl"
@@ -3283,7 +3323,11 @@
                 </section>
 
                 <!-- GIFTS -->
-                <section class="gifts js-fade">
+                <section class="gifts js-fade" style="position:relative; overflow:hidden;">
+                    <!-- Floral lateral izquierdo, regalos -->
+                    <img class="floral-deco"
+                         src="assets/flores-3.png" alt=""
+                         style="width:195px; top:10px; left:-55px; opacity:0.55; transform:scaleX(-1) rotate(6deg);" aria-hidden="true" />
                     <svg
                         class="gifts__icon"
                         fill="none"
@@ -3739,8 +3783,8 @@
                             <img
                                 class="ornament-divider__img"
                                 alt=""
-                                src="assets/floral.png"
-                                style="opacity:0.45;"
+                                src="assets/flores-4.png"
+                                style="width:150px; transform:rotate(-2deg); mix-blend-mode:screen; opacity:0.75;"
                             />
                         </div>
 
@@ -3753,13 +3797,19 @@
                     <div
                         class="floral-band floral-band--bottom"
                         aria-hidden="true"
-                        style="opacity:0.5;"
                     >
-                        <img
-                            class="floral-band__img"
-                            alt=""
-                            src="assets/floral.png"
-                        />
+                        <!-- Esquina inferior izquierda: ramo completo espejado -->
+                        <img class="floral-deco"
+                             src="assets/flores-1.png" alt=""
+                             style="width:300px; bottom:-10px; left:-35px; opacity:0.82; mix-blend-mode:screen; transform:scaleX(-1) rotate(5deg);" />
+                        <!-- Esquina inferior derecha: girasol/pampas -->
+                        <img class="floral-deco"
+                             src="assets/flores-3.png" alt=""
+                             style="width:285px; bottom:-10px; right:-35px; opacity:0.80; mix-blend-mode:screen; transform:rotate(-4deg);" />
+                        <!-- Centro superior de la banda: arreglo horizontal que une -->
+                        <img class="floral-deco"
+                             src="assets/flores-2.png" alt=""
+                             style="width:220px; top:5px; left:50%; mix-blend-mode:screen; transform:translateX(-50%) rotate(3deg); opacity:0.55;" />
                     </div>
                 </footer>
             </main>
@@ -4123,7 +4173,7 @@
                                 "img{max-width:100%}</style></head>" +
                                 "<body><img src='" + dataUrl + "'/>" +
                                 "<p style='text-align:center;color:rgba(255,255,255,0.3);font-family:sans-serif;font-size:12px;margin-top:8px'>Mantén presionada la imagen para guardarla</p>" +
-                                "</body></html>"
+                                "<\/body><\/html>"
                             );
                         }
                     } else {
@@ -4228,7 +4278,7 @@
                 var SUPABASE_URL =
                     "https://kdpgdgulrekryxqtewtr.supabase.co";
                 var SUPABASE_ANON_KEY =
-                    "sb_publishable_7qv3hB-J6RqLsJZyMcpTgA_9bQorv4O";
+                    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtkcGdkZ3VscmVrcnl4cXRld3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgzNTI0NDEsImV4cCI6MjA5MzkyODQ0MX0.T6_iQjxOWX82QQHPuBI5cewOoT3UWsOQ7bvjX9GP82E";
                 var code = new URLSearchParams(window.location.search).get(
                     "code",
                 );
@@ -4370,7 +4420,7 @@
             /* === RSVP === */
             (function () {
                 var SUPABASE_URL = "https://kdpgdgulrekryxqtewtr.supabase.co";
-                var SUPABASE_ANON_KEY = "sb_publishable_7qv3hB-J6RqLsJZyMcpTgA_9bQorv4O";
+                var SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtkcGdkZ3VscmVrcnl4cXRld3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgzNTI0NDEsImV4cCI6MjA5MzkyODQ0MX0.T6_iQjxOWX82QQHPuBI5cewOoT3UWsOQ7bvjX9GP82E";
 
                 var COUPLE_PHONE = "527721204509";
                 var family = null;
