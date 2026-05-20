@@ -364,6 +364,128 @@
             }
             .fam-toolbar__spacer { flex: 1; }
 
+            /* ── Familias: botón nueva + contador ──────────── */
+            .fam-new-btn {
+                display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+                width: 100%;
+                background: rgba(201,169,110,0.07);
+                border: 1.5px solid rgba(201,169,110,0.38);
+                color: var(--gold);
+                font-family: var(--f-sans); font-size: 0.68rem; letter-spacing: 0.14em; text-transform: uppercase;
+                padding: 0.9rem; cursor: pointer; margin-bottom: 0.85rem;
+                transition: all 0.2s ease;
+            }
+            .fam-new-btn:hover { background: rgba(201,169,110,0.14); border-color: var(--gold); }
+            .fam-count-bar {
+                font-size: 0.6rem; letter-spacing: 0.08em; color: rgba(255,255,255,0.28);
+                text-transform: uppercase; margin-bottom: 0.65rem; padding: 0 0.1rem;
+            }
+
+            /* ── Familias: lista de tarjetas ─────────────── */
+            .fam-list { display: flex; flex-direction: column; gap: 0.5rem; }
+            @media (min-width: 720px) { .fam-list { display: grid; grid-template-columns: repeat(2, 1fr); } }
+
+            .fam-card {
+                background: rgba(255,255,255,0.025);
+                border: 1px solid rgba(255,255,255,0.06);
+                border-left: 4px solid rgba(255,255,255,0.08);
+                overflow: hidden;
+                transition: border-color 0.2s ease, box-shadow 0.2s ease;
+            }
+            .fam-card:hover { border-color: rgba(201,169,110,0.18); box-shadow: 0 2px 18px rgba(0,0,0,0.25); }
+            .fam-card--confirmed { border-left-color: #7ec8a0; }
+            .fam-card--confirmed:hover { box-shadow: 0 2px 18px rgba(0,0,0,0.28), -1px 0 0 rgba(126,200,160,0.15); }
+            .fam-card--pending   { border-left-color: rgba(201,169,110,0.5); }
+            .fam-card--declined  { border-left-color: #e08888; }
+
+            .fam-card__main { padding: 0.9rem 1rem 0.65rem; cursor: pointer; user-select: none; }
+            .fam-card__top  { display: flex; align-items: flex-start; justify-content: space-between; gap: 0.5rem; margin-bottom: 0.45rem; }
+            .fam-card__name { font-size: 0.9rem; color: rgba(255,255,255,0.85); line-height: 1.3; flex: 1; }
+            .fam-card--pending .fam-card__name { color: rgba(255,255,255,0.45); }
+
+            .fam-status-badge {
+                font-size: 0.44rem; letter-spacing: 0.12em; text-transform: uppercase;
+                padding: 0.2rem 0.55rem; border-radius: 20px; border: 1px solid;
+                white-space: nowrap; flex-shrink: 0; margin-top: 0.08rem;
+            }
+            .fam-status-badge--confirmed { color: #7ec8a0; border-color: rgba(126,200,160,0.3); background: rgba(126,200,160,0.07); }
+            .fam-status-badge--pending   { color: rgba(201,169,110,0.7); border-color: rgba(201,169,110,0.22); }
+            .fam-status-badge--declined  { color: #e08888; border-color: rgba(224,136,136,0.3); background: rgba(224,136,136,0.06); }
+
+            /* Meta: grupo, mesa, pases */
+            .fam-card__meta { display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap; }
+            .fam-meta-sep  { color: rgba(255,255,255,0.12); font-size: 0.55rem; }
+            .fam-meta-mesa {
+                display: inline-flex; align-items: center; gap: 0.22rem;
+                font-size: 0.6rem; color: rgba(201,169,110,0.7); font-family: var(--f-serif); white-space: nowrap;
+            }
+            .fam-meta-mesa svg { flex-shrink: 0; }
+            .fam-meta-mesa--none { color: rgba(255,255,255,0.2); font-family: var(--f-sans); font-style: normal; }
+            .fam-meta-pax {
+                display: inline-flex; align-items: center; gap: 0.2rem;
+                font-size: 0.6rem; color: rgba(255,255,255,0.3); white-space: nowrap;
+            }
+            .fam-meta-pax svg { opacity: 0.5; flex-shrink: 0; }
+
+            /* Fila de acciones */
+            .fam-card__actions-row {
+                display: flex; align-items: center; justify-content: space-between;
+                padding: 0.48rem 0.85rem 0.48rem 1rem;
+                border-top: 1px solid rgba(255,255,255,0.04); gap: 0.5rem;
+                background: rgba(0,0,0,0.08);
+            }
+            .fam-actions-right { display: flex; gap: 0.3rem; align-items: center; }
+
+            /* Chip de código */
+            .fam-action-code {
+                display: inline-flex; align-items: center; gap: 0.28rem;
+                background: rgba(201,169,110,0.05); border: 1px solid rgba(201,169,110,0.15);
+                color: rgba(201,169,110,0.5); font-family: monospace; font-size: 0.64rem;
+                cursor: pointer; padding: 0.28rem 0.55rem; border-radius: 3px;
+                transition: all 0.2s ease; letter-spacing: 0.04em;
+            }
+            .fam-action-code:hover { color: var(--gold); border-color: rgba(201,169,110,0.4); background: rgba(201,169,110,0.09); }
+            .fam-action-code.is-copied { color: #7ec8a0; border-color: rgba(126,200,160,0.3); background: rgba(126,200,160,0.06); }
+            .fam-action-code svg { opacity: 0.6; transition: opacity 0.2s; }
+            .fam-action-code:hover svg { opacity: 1; }
+
+            /* WhatsApp */
+            .fam-action-wa {
+                display: inline-flex; align-items: center; gap: 0.3rem;
+                background: rgba(37,211,102,0.06); border: 1px solid rgba(37,211,102,0.18);
+                color: #25d366; font-family: var(--f-sans); font-size: 0.52rem; letter-spacing: 0.08em;
+                text-transform: uppercase; padding: 0.36rem 0.7rem;
+                text-decoration: none; transition: all 0.2s ease; white-space: nowrap; border-radius: 3px;
+            }
+            .fam-action-wa:hover { background: rgba(37,211,102,0.14); border-color: rgba(37,211,102,0.4); }
+            .fam-action-wa--direct { border-color: rgba(37,211,102,0.32); background: rgba(37,211,102,0.08); }
+            .fam-action-wa svg { flex-shrink: 0; }
+
+            /* Detalle toggle */
+            .fam-action-toggle {
+                display: inline-flex; align-items: center; gap: 0.25rem;
+                background: none; border: 1px solid rgba(255,255,255,0.09);
+                color: rgba(255,255,255,0.3); font-family: var(--f-sans); font-size: 0.52rem;
+                letter-spacing: 0.08em; text-transform: uppercase; padding: 0.36rem 0.65rem;
+                cursor: pointer; transition: all 0.2s ease; white-space: nowrap; border-radius: 3px;
+            }
+            .fam-action-toggle:hover { border-color: rgba(201,169,110,0.35); color: rgba(201,169,110,0.8); }
+            .fam-action-toggle.is-open { border-color: rgba(201,169,110,0.4); color: var(--gold); }
+
+            /* Eliminar */
+            .fam-action-del {
+                background: none; border: 1px solid rgba(224,136,136,0.18); color: rgba(224,136,136,0.4);
+                font-size: 0.6rem; width: 1.75rem; height: 1.75rem; cursor: pointer; border-radius: 3px;
+                display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+                transition: all 0.2s ease;
+            }
+            .fam-action-del:hover { background: rgba(224,136,136,0.08); border-color: rgba(224,136,136,0.5); color: #e08888; }
+
+            /* Panel de detalle dentro de la card */
+            .fam-detail-panel { display: none; border-top: 1px solid rgba(255,255,255,0.05); }
+            .fam-detail-panel.is-open { display: block; }
+            .fam-detail-panel .detail-inner { background: rgba(0,0,0,0.12); border: none; }
+
             /* ── Tab: Mesas (standalone) ──────────────────── */
             .mesas-tab-header {
                 display: flex;
@@ -683,6 +805,58 @@
             .ci-btn:disabled { opacity: 0.4; cursor: not-allowed; }
             .ci-done-badge { font-size: 0.5rem; letter-spacing: 0.12em; text-transform: uppercase; color: #7ec8a0; white-space: nowrap; flex-shrink: 0; }
 
+            /* ── QR Scanner ─────────────────────────── */
+            .qr-toggle-btn {
+                display: flex; align-items: center; justify-content: center; gap: 0.6rem;
+                width: 100%; padding: 0.95rem;
+                background: rgba(201,169,110,0.07); border: 1.5px solid rgba(201,169,110,0.32);
+                color: var(--gold); font-family: var(--f-sans); font-size: 0.68rem;
+                letter-spacing: 0.14em; text-transform: uppercase;
+                cursor: pointer; transition: all 0.2s ease; margin-bottom: 0.75rem;
+            }
+            .qr-toggle-btn:hover    { background: rgba(201,169,110,0.14); border-color: rgba(201,169,110,0.55); }
+            .qr-toggle-btn.scanning { background: rgba(224,136,136,0.07); border-color: rgba(224,136,136,0.35); color: #e08888; }
+            .qr-viewport {
+                position: relative; overflow: hidden;
+                border: 2px solid rgba(201,169,110,0.4); margin-bottom: 0.6rem; background: #000;
+            }
+            .qr-video { width: 100%; display: block; max-height: 270px; object-fit: cover; }
+            @keyframes ke-scan { 0% { top: 0; } 100% { top: 100%; } }
+            .qr-scan-line {
+                position: absolute; left: 0; right: 0; height: 2px; pointer-events: none;
+                background: linear-gradient(to right, transparent, var(--gold) 30%, var(--gold) 70%, transparent);
+                animation: ke-scan 1.6s linear infinite;
+                box-shadow: 0 0 10px rgba(201,169,110,0.55);
+            }
+            .qr-corner { position: absolute; width: 18px; height: 18px; border: 2px solid var(--gold); opacity: 0.75; }
+            .qr-corner--tl { top: 8px;    left: 8px;    border-right: none; border-bottom: none; }
+            .qr-corner--tr { top: 8px;    right: 8px;   border-left: none;  border-bottom: none; }
+            .qr-corner--bl { bottom: 8px; left: 8px;    border-right: none; border-top: none; }
+            .qr-corner--br { bottom: 8px; right: 8px;   border-left: none;  border-top: none; }
+            .qr-hint {
+                text-align: center; font-size: 0.56rem; letter-spacing: 0.09em;
+                color: rgba(255,255,255,0.32); padding: 0.25rem 0 0.6rem;
+            }
+            .qr-result-card {
+                display: flex; align-items: center; justify-content: space-between;
+                gap: 0.75rem; padding: 0.9rem 1rem; margin-bottom: 0.75rem;
+                border: 1px solid rgba(255,255,255,0.07);
+            }
+            .qr-result-card--found { border-color: rgba(201,169,110,0.32); background: rgba(201,169,110,0.05); }
+            .qr-result-card--done  { border-color: rgba(126,200,160,0.3);  background: rgba(126,200,160,0.05); }
+            .qr-result-card--error { border-color: rgba(224,136,136,0.3);  background: rgba(224,136,136,0.05); }
+            .qr-found__name   { font-family: var(--f-serif); font-size: 1.05rem; color: rgba(255,255,255,0.85); line-height: 1.2; }
+            .qr-found__detail { font-size: 0.6rem; color: rgba(255,255,255,0.35); margin-top: 0.15rem; }
+            .qr-scan-next {
+                display: flex; align-items: center; justify-content: center; gap: 0.4rem;
+                width: 100%; padding: 0.65rem; margin-top: 0.5rem;
+                background: none; border: 1px solid rgba(201,169,110,0.25);
+                color: rgba(201,169,110,0.65); font-family: var(--f-sans);
+                font-size: 0.58rem; letter-spacing: 0.12em; text-transform: uppercase;
+                cursor: pointer; transition: all 0.2s ease;
+            }
+            .qr-scan-next:hover { border-color: var(--gold); color: var(--gold); }
+
             /* Lista por persona en detalle */
             .member-status-list { display: flex; flex-direction: column; gap: 0.3rem; margin-top: 0.35rem; }
             .ms-row { display: flex; align-items: center; gap: 0.6rem; padding: 0.22rem 0; }
@@ -780,53 +954,251 @@
                 white-space: nowrap;
             }
 
-            /* Vista de mesas */
-            .mesas-section { display: none; margin-bottom: 1.75rem; }
-            .mesas-header-row {
-                display: flex; align-items: center; justify-content: space-between;
-                padding: 0.85rem 1.25rem;
-                border-bottom: 1px solid rgba(255,255,255,0.05);
-            }
-            .mesas-title { font-size: 0.5rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold); }
-            .mesas-close { background: none; border: none; color: rgba(255,255,255,0.3); cursor: pointer; font-size: 1rem; }
-            .mesas-grid {
-                display: grid;
-                grid-template-columns: repeat(6, 1fr);
+            /* ── Vista de mesas ─────────────────────────── */
+            .mesas-section { display: block; }
+
+            /* Stats resumen rápido */
+            .mesas-stats-row {
+                display: flex;
                 gap: 0.5rem;
-                padding: 1.25rem;
+                margin-bottom: 1rem;
             }
-            @media (max-width: 640px) { .mesas-grid { grid-template-columns: repeat(3, 1fr); } }
-            .mesa-card {
+            .mesas-stat {
+                flex: 1;
                 background: rgba(255,255,255,0.03);
-                border: 1px solid rgba(255,255,255,0.07);
-                padding: 0.65rem 0.4rem;
+                border: 1px solid rgba(255,255,255,0.06);
+                border-top: 2px solid rgba(201,169,110,0.35);
+                padding: 0.75rem 0.5rem;
                 text-align: center;
-                transition: border-color 0.25s ease;
-                cursor: default;
             }
-            .mesa-card--partial { border-color: rgba(201,169,110,0.3); }
-            .mesa-card--full    { border-color: rgba(126,200,160,0.4); }
-            .mesa-card__num {
+            .mesas-stat__num {
+                display: block;
                 font-family: var(--f-serif);
-                font-size: 1.3rem;
+                font-size: 1.4rem;
                 color: var(--gold);
                 line-height: 1;
             }
-            .mesa-card__cap {
-                font-size: 0.62rem;
-                letter-spacing: 0.08em;
+            .mesas-stat__lbl {
+                display: block;
+                font-size: 0.48rem;
+                letter-spacing: 0.11em;
                 text-transform: uppercase;
-                margin-top: 0.2rem;
+                color: rgba(255,255,255,0.32);
+                margin-top: 0.25rem;
             }
-            .mesa-card--full    .mesa-card__cap { color: #7ec8a0; }
-            .mesa-card--partial .mesa-card__cap { color: rgba(201,169,110,0.65); }
-            .mesa-card--empty   .mesa-card__cap { color: rgba(255,255,255,0.2); }
+
+            /* Grid de mesas */
+            .mesas-grid {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.65rem;
+            }
+            @media (min-width: 480px) { .mesas-grid { grid-template-columns: repeat(3, 1fr); } }
+            @media (min-width: 720px) { .mesas-grid { grid-template-columns: repeat(4, 1fr); gap: 0.85rem; } }
+            @media (min-width: 1000px){ .mesas-grid { grid-template-columns: repeat(5, 1fr); } }
+            @media (min-width: 1280px){ .mesas-grid { grid-template-columns: repeat(6, 1fr); } }
+
+            /* Tarjeta de mesa */
+            .mesa-card {
+                background: rgba(255,255,255,0.025);
+                border: 1px solid rgba(255,255,255,0.06);
+                border-left: 4px solid rgba(255,255,255,0.08);
+                padding: 0.9rem 0.85rem 0.75rem;
+                cursor: pointer;
+                transition: background 0.15s ease;
+                position: relative;
+            }
+            .mesa-card:hover  { background: rgba(255,255,255,0.05); }
+            .mesa-card:active { opacity: 0.75; }
+            .mesa-card--partial { border-left-color: var(--gold);  background: rgba(201,169,110,0.025); }
+            .mesa-card--full    { border-left-color: #7ec8a0;      background: rgba(126,200,160,0.03); }
+            .mesa-card--over    { border-left-color: #e08888;      background: rgba(224,136,136,0.04); }
+
+            /* Header: número + conteo */
+            .mesa-card__header {
+                display: flex;
+                align-items: baseline;
+                justify-content: space-between;
+                margin-bottom: 0.5rem;
+            }
+            .mesa-card__num {
+                font-family: var(--f-serif);
+                font-size: 1.55rem;
+                line-height: 1;
+                color: rgba(255,255,255,0.15);
+            }
+            .mesa-card--partial .mesa-card__num { color: var(--gold); }
+            .mesa-card--full    .mesa-card__num { color: #7ec8a0; }
+            .mesa-card--over    .mesa-card__num { color: #e08888; }
+            .mesa-card__pax {
+                font-size: 0.68rem;
+                color: rgba(255,255,255,0.22);
+                font-variant-numeric: tabular-nums;
+            }
+            .mesa-card--partial .mesa-card__pax { color: rgba(201,169,110,0.72); }
+            .mesa-card--full    .mesa-card__pax { color: #7ec8a0; }
+            .mesa-card--over    .mesa-card__pax { color: #e08888; }
+
+            /* Indicadores de asientos (10 barras) */
+            .mesa-card__seats {
+                display: grid;
+                grid-template-columns: repeat(10, 1fr);
+                gap: 3px;
+                margin-bottom: 0.6rem;
+            }
+            .mesa-seat {
+                height: 6px;
+                border-radius: 2px;
+                background: rgba(255,255,255,0.07);
+            }
+            .mesa-seat--filled                 { background: rgba(255,255,255,0.2); }
+            .mesa-card--partial .mesa-seat--filled { background: rgba(201,169,110,0.55); }
+            .mesa-card--full    .mesa-seat--filled { background: rgba(126,200,160,0.65); }
+            .mesa-card--over    .mesa-seat--filled { background: rgba(224,136,136,0.65); }
+
+            /* Nombres de familias */
             .mesa-card__fams {
-                font-size: 0.62rem;
-                color: rgba(255,255,255,0.45);
-                line-height: 1.5;
-                margin-top: 0.3rem;
+                font-size: 0.6rem;
+                color: rgba(255,255,255,0.3);
+                line-height: 1.45;
+                overflow: hidden;
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
+                min-height: 1.74em;
             }
+            .mesa-card--partial .mesa-card__fams { color: rgba(255,255,255,0.48); }
+
+            /* Mesa detail bottom-sheet */
+            .mesa-detail-overlay {
+                display: none;
+                position: fixed;
+                inset: 0;
+                background: rgba(10,6,4,0.85);
+                z-index: 800;
+                align-items: flex-end;
+                justify-content: center;
+            }
+            .mesa-detail-overlay.is-open { display: flex; }
+            .mesa-detail-sheet {
+                background: linear-gradient(160deg, #2c1f14 0%, #1e1410 100%);
+                border: 1px solid rgba(201,169,110,0.28);
+                border-top: 3px solid var(--gold);
+                width: 100%;
+                max-width: 520px;
+                max-height: 82vh;
+                overflow-y: auto;
+                padding-bottom: max(1rem, env(safe-area-inset-bottom));
+            }
+            @media (min-width: 640px) {
+                .mesa-detail-overlay { align-items: center; }
+                .mesa-detail-sheet { max-height: 72vh; }
+            }
+            .mesa-detail-header {
+                display: flex;
+                align-items: flex-start;
+                justify-content: space-between;
+                padding: 1.1rem 1.25rem 0.75rem;
+            }
+            .mesa-detail-num {
+                font-family: var(--f-serif);
+                font-style: italic;
+                font-size: 1.35rem;
+                color: var(--gold);
+                line-height: 1;
+                margin-bottom: 0.18rem;
+            }
+            .mesa-detail-pax { font-size: 0.68rem; color: rgba(255,255,255,0.42); }
+            .mesa-detail-close {
+                background: none;
+                border: 1px solid rgba(255,255,255,0.12);
+                color: rgba(255,255,255,0.4);
+                font-size: 0.75rem;
+                width: 2rem; height: 2rem;
+                cursor: pointer;
+                flex-shrink: 0;
+                display: flex; align-items: center; justify-content: center;
+            }
+            .mesa-detail-bar-wrap { padding: 0 1.25rem; margin-bottom: 1rem; }
+            .mesa-detail-sect-lbl {
+                font-size: 0.46rem;
+                letter-spacing: 0.2em;
+                text-transform: uppercase;
+                color: rgba(255,255,255,0.28);
+                padding: 0.6rem 1.25rem 0.4rem;
+                border-top: 1px solid rgba(255,255,255,0.05);
+            }
+            .mesa-fam-row {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 0.65rem 1.25rem;
+                border-bottom: 1px solid rgba(255,255,255,0.04);
+                gap: 0.75rem;
+            }
+            .mesa-fam-row__name { flex: 1; font-size: 0.82rem; color: rgba(255,255,255,0.72); line-height: 1.3; }
+            .mesa-fam-row__pax  { font-size: 0.62rem; color: rgba(255,255,255,0.32); display: block; margin-top: 0.1rem; }
+            .mesa-fam-row__remove {
+                background: none;
+                border: 1px solid rgba(224,136,136,0.25);
+                color: rgba(224,136,136,0.55);
+                font-size: 0.55rem;
+                letter-spacing: 0.1em;
+                text-transform: uppercase;
+                padding: 0.32rem 0.65rem;
+                cursor: pointer;
+                transition: all 0.2s ease;
+                white-space: nowrap; flex-shrink: 0;
+            }
+            .mesa-fam-row__remove:hover { background: rgba(224,136,136,0.08); border-color: rgba(224,136,136,0.5); color: #e08888; }
+            .mesa-assign-section { padding: 0.85rem 1.25rem; display: flex; gap: 0.5rem; align-items: center; }
+            .mesa-assign-select {
+                flex: 1; min-width: 0;
+                background: rgba(255,255,255,0.05);
+                border: 1px solid rgba(201,169,110,0.3);
+                color: rgba(255,255,255,0.7);
+                font-family: var(--f-sans);
+                font-size: 0.78rem;
+                padding: 0.62rem 0.75rem;
+                cursor: pointer; border-radius: 0;
+                -webkit-appearance: none; appearance: none;
+            }
+            .mesa-assign-select:focus { outline: none; border-color: var(--gold); }
+            .mesa-assign-select option { background: #1e1410; }
+            .mesa-assign-btn {
+                background: rgba(201,169,110,0.1);
+                border: 1.5px solid rgba(201,169,110,0.45);
+                color: var(--gold);
+                font-family: var(--f-sans);
+                font-size: 0.6rem;
+                letter-spacing: 0.12em;
+                text-transform: uppercase;
+                padding: 0.62rem 1rem;
+                cursor: pointer; white-space: nowrap; flex-shrink: 0;
+                transition: all 0.2s ease;
+            }
+            .mesa-assign-btn:hover { background: rgba(201,169,110,0.2); border-color: var(--gold); }
+
+            /* Sin mesa banner dentro del tab de mesas */
+            .mesas-sinmesa-banner {
+                display: none;
+                align-items: center;
+                gap: 0.75rem;
+                padding: 0.7rem 0.85rem;
+                background: rgba(201,169,110,0.06);
+                border: 1px solid rgba(201,169,110,0.22);
+                margin-bottom: 0.85rem;
+            }
+            .mesas-sinmesa-banner.is-visible { display: flex; }
+            .mesas-sinmesa-count {
+                font-family: var(--f-serif);
+                font-size: 1.8rem;
+                color: var(--gold);
+                line-height: 1;
+                flex-shrink: 0;
+            }
+            .mesas-sinmesa-txt p:first-child { font-size: 0.65rem; color: rgba(201,169,110,0.85); }
+            .mesas-sinmesa-txt p:last-child  { font-size: 0.55rem; color: rgba(255,255,255,0.3); margin-top: 0.1rem; }
 
             /* Fix overflow en flex mobile */
             @media (max-width: 640px) {
@@ -1397,6 +1769,7 @@
                 letter-spacing: 0.06em;
             }
         </style>
+        <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
     </head>
     <body>
         <!-- ═══ Gate ════════════════════════════════════════════ -->
@@ -1553,51 +1926,39 @@
                 <!-- ── TAB 2: FAMILIAS ──────────────────────── -->
                 <div class="tab-panel" id="tab-familias">
 
-                    <!-- Toolbar: filtros + agregar -->
-                    <div class="fam-toolbar">
-                        <div class="group-filter-wrap" style="flex:1;min-width:0;margin:0;">
-                            <div class="group-filter" id="group-filter">
-                                <button class="gf-btn is-active" data-group="">Todos</button>
-                                <button class="gf-btn" data-group="Familia novia">Novia</button>
-                                <button class="gf-btn" data-group="Familia novio">Novio</button>
-                                <button class="gf-btn" data-group="Amigos novia">Amigos novia</button>
-                                <button class="gf-btn" data-group="Amigos novio">Amigos novio</button>
-                                <button class="gf-btn" data-group="Trabajo / Compañeros">Trabajo</button>
-                                <button class="gf-btn" data-group="Otros">Otros</button>
-                            </div>
+                    <!-- Botón nueva familia -->
+                    <button class="fam-new-btn" onclick="openNfModal()">
+                        <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
+                        Nueva Familia
+                    </button>
+
+                    <!-- Filtros de grupo -->
+                    <div class="group-filter-wrap" style="margin-bottom:0.75rem;">
+                        <div class="group-filter" id="group-filter">
+                            <button class="gf-btn is-active" data-group="">Todos</button>
+                            <button class="gf-btn" data-group="Familia novia">Novia</button>
+                            <button class="gf-btn" data-group="Familia novio">Novio</button>
+                            <button class="gf-btn" data-group="Amigos novia">Amigos novia</button>
+                            <button class="gf-btn" data-group="Amigos novio">Amigos novio</button>
+                            <button class="gf-btn" data-group="Trabajo / Compañeros">Trabajo</button>
+                            <button class="gf-btn" data-group="Otros">Otros</button>
                         </div>
-                        <button class="fam-toolbar__btn fam-toolbar__btn--primary" onclick="openNfModal()" title="Nueva familia">
-                            <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
-                            Nueva
-                        </button>
                     </div>
 
-                    <!-- Search -->
+                    <!-- Búsqueda -->
                     <div class="search-wrap">
                         <input class="search-input" type="text" id="search" placeholder="Buscar familia o código…" />
                     </div>
 
-                    <!-- Table -->
-                    <div class="table-wrap">
-                        <p class="loading" id="loading">Cargando datos…</p>
-                        <table id="tbl" style="display:none;">
-                            <thead>
-                                <tr>
-                                    <th>Código</th>
-                                    <th>Familia</th>
-                                    <th>Pases</th>
-                                    <th>Mesa</th>
-                                    <th>Estado</th>
-                                    <th>Confirmó</th>
-                                    <th>Conf./Pases</th>
-                                    <th>Fecha</th>
-                                    <th>Enviar</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody id="tbody"></tbody>
-                        </table>
-                    </div>
+                    <!-- Contador -->
+                    <p class="fam-count-bar" id="fam-count-bar"></p>
+
+                    <!-- Lista de tarjetas -->
+                    <p class="loading" id="loading">Cargando datos…</p>
+                    <div class="fam-list" id="fam-list"></div>
+
+                    <!-- tabla oculta (compatibilidad interna) -->
+                    <table id="tbl" style="display:none;"><tbody id="tbody"></tbody></table>
                 </div>
 
                 <!-- ── TAB 3: MESAS ────────────────────────── -->
@@ -1606,20 +1967,69 @@
                         <p class="mesas-tab-title">Vista de Mesas</p>
                         <span style="font-size:0.65rem;color:rgba(255,255,255,0.32);">18 mesas · 10 pax c/u</span>
                     </div>
+                    <!-- Stats rápidos -->
+                    <div class="mesas-stats-row">
+                        <div class="mesas-stat">
+                            <span class="mesas-stat__num" id="mstat-occupied">—</span>
+                            <span class="mesas-stat__lbl">Mesas ocupadas</span>
+                        </div>
+                        <div class="mesas-stat">
+                            <span class="mesas-stat__num" id="mstat-pax">—</span>
+                            <span class="mesas-stat__lbl">Pax asignados</span>
+                        </div>
+                        <div class="mesas-stat">
+                            <span class="mesas-stat__num" id="mstat-free">—</span>
+                            <span class="mesas-stat__lbl">Lugares libres</span>
+                        </div>
+                    </div>
+                    <!-- Familias confirmadas sin mesa -->
+                    <div class="mesas-sinmesa-banner" id="mesas-sinmesa-banner">
+                        <span class="mesas-sinmesa-count" id="mesas-sinmesa-count">0</span>
+                        <div class="mesas-sinmesa-txt">
+                            <p>familias confirmadas sin mesa</p>
+                            <p>Toca una mesa para asignarlas</p>
+                        </div>
+                    </div>
+                    <!-- Alerta capacidad excedida -->
+                    <div class="mesas-over-banner" id="mesas-over-banner">⚠️ Hay mesas con capacidad excedida</div>
+                    <!-- Leyenda -->
                     <div class="mesas-legend">
-                        <div class="mesas-legend__item"><div class="mesas-legend__dot" style="background:#7ec8a0;"></div>Llena</div>
-                        <div class="mesas-legend__item"><div class="mesas-legend__dot" style="background:rgba(201,169,110,0.7);"></div>Parcial</div>
                         <div class="mesas-legend__item"><div class="mesas-legend__dot" style="background:rgba(255,255,255,0.12);"></div>Vacía</div>
+                        <div class="mesas-legend__item"><div class="mesas-legend__dot" style="background:rgba(201,169,110,0.7);"></div>Parcial</div>
+                        <div class="mesas-legend__item"><div class="mesas-legend__dot" style="background:#7ec8a0;"></div>Llena</div>
                         <div class="mesas-legend__item"><div class="mesas-legend__dot" style="background:#e08888;"></div>Excedida</div>
                     </div>
-                    <div class="mesas-over-banner" id="mesas-over-banner">⚠️ Hay mesas con capacidad excedida</div>
-                    <!-- mesas-section wrapper kept for JS compatibility -->
                     <div id="mesas-section" style="display:block;">
                         <div class="mesas-grid" id="mesas-grid"></div>
                     </div>
                 </div>
 
             </div><!-- end .tab-content -->
+
+            <!-- ═══ MESA DETAIL BOTTOM SHEET ════════════════ -->
+            <div class="mesa-detail-overlay" id="mesa-detail-overlay" onclick="closeMesaDetailIfBackdrop(event)">
+                <div class="mesa-detail-sheet" id="mesa-detail-sheet">
+                    <div class="mesa-detail-header">
+                        <div>
+                            <p class="mesa-detail-num" id="mdd-num">Mesa 1</p>
+                            <p class="mesa-detail-pax" id="mdd-pax">0 / 10 personas</p>
+                        </div>
+                        <button class="mesa-detail-close" onclick="closeMesaDetail()" aria-label="Cerrar">✕</button>
+                    </div>
+                    <div class="mesa-detail-bar-wrap">
+                        <div class="mesa-cap-bar" style="height:5px;margin:0;"><div class="mesa-cap-fill" id="mdd-bar" style="width:0%"></div></div>
+                    </div>
+                    <p class="mesa-detail-sect-lbl">Familias en esta mesa</p>
+                    <div id="mdd-families"></div>
+                    <p class="mesa-detail-sect-lbl">Agregar familia sin mesa</p>
+                    <div class="mesa-assign-section">
+                        <select class="mesa-assign-select" id="mdd-assign-select">
+                            <option value="">— Sin familias pendientes —</option>
+                        </select>
+                        <button class="mesa-assign-btn" onclick="assignFromDetail()">Asignar</button>
+                    </div>
+                </div>
+            </div>
 
             <!-- ═══ BOTTOM NAVIGATION ════════════════════════ -->
             <nav class="bottom-nav" role="navigation" aria-label="Navegación principal">
@@ -1750,7 +2160,27 @@
                 <div class="ci-stat"><p class="ci-stat__num" id="ci-n-total">0</p><p class="ci-stat__lbl">Confirmadas</p></div>
                 <div class="ci-stat"><p class="ci-stat__num" id="ci-n-guests">0</p><p class="ci-stat__lbl">Personas</p></div>
             </div>
-            <input class="search-input" id="ci-search" placeholder="Buscar familia o código…" style="width:100%;max-width:100%;margin-bottom:0" oninput="filterCheckin(this.value)" />
+
+            <!-- QR Scanner -->
+            <button class="qr-toggle-btn" id="qr-toggle-btn" onclick="toggleQrScanner()">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+                    <circle cx="17.5" cy="17.5" r="2.5"/></svg>
+                <span id="qr-btn-lbl">Escanear QR del invitado</span>
+            </button>
+            <div id="qr-viewport" style="display:none;" class="qr-viewport">
+                <video id="qr-video" autoplay playsinline muted></video>
+                <div class="qr-scan-line"></div>
+                <div class="qr-corner qr-corner--tl"></div>
+                <div class="qr-corner qr-corner--tr"></div>
+                <div class="qr-corner qr-corner--bl"></div>
+                <div class="qr-corner qr-corner--br"></div>
+                <canvas id="qr-canvas" style="display:none;"></canvas>
+            </div>
+            <p class="qr-hint" id="qr-hint"></p>
+            <div id="qr-result"></div>
+
+            <input class="search-input" id="ci-search" placeholder="O buscar familia / código manualmente…" style="width:100%;max-width:100%;margin-bottom:0" oninput="filterCheckin(this.value)" />
             <div class="ci-list" id="ci-list"></div>
         </div>
 
@@ -1760,6 +2190,7 @@
             var ADMIN_PASSWORD = "KarlaEduardo2026"; // Cambia esta contraseña
 
             var allData = [];
+            var _tabRestored = false;
 
             function api(path) {
                 return fetch(SUPABASE_URL + "/rest/v1/" + path, {
@@ -1790,6 +2221,7 @@
 
             function exitPanel() {
                 localStorage.removeItem("ke-admin");
+                _tabRestored = false;
                 document.getElementById("panel").classList.remove("is-visible");
                 document.getElementById("gate").style.display = "flex";
                 document.getElementById("gate-input").value = "";
@@ -1815,7 +2247,7 @@
             /* ── Load data ────────────────────────────── */
             async function loadData() {
                 document.getElementById("loading").style.display = "block";
-                document.getElementById("tbl").style.display = "none";
+                document.getElementById("fam-list").innerHTML = "";
                 try {
                     allData = await api(
                         "families?select=*,rsvps(*)&order=family_name.asc",
@@ -1824,6 +2256,11 @@
                     renderStats(allData);
                     renderProgress(allData);
                     renderTable(allData);
+                    if (!_tabRestored) {
+                        _tabRestored = true;
+                        var savedTab = localStorage.getItem("ke-tab");
+                        if (savedTab && savedTab !== "resumen") switchTab(savedTab);
+                    }
                 } catch (err) {
                     document.getElementById("loading").textContent =
                         "Error al cargar datos. Verifica tu conexión.";
@@ -1929,60 +2366,157 @@
                 return "https://wa.me/" + dest + "?text=" + encodeURIComponent(msg);
             }
 
+            /* ── SVG icons reutilizables ── */
+            var _SVG_WA   = '<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>';
+            var _SVG_COPY = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>';
+            var _SVG_CHAIR= '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 6a4 4 0 014-4h6a4 4 0 014 4v2H5V6z"/><path d="M3 8h18v2a2 2 0 01-2 2H5a2 2 0 01-2-2V8z"/><path d="M7 12v8m10-8v8"/></svg>';
+            var _SVG_USER = '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>';
+            var _SVG_CHEV = '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>';
+
             function renderTable(data) {
-                var tbody = document.getElementById("tbody");
-                tbody.innerHTML = "";
-                data.forEach(function (f) {
-                    var rsvp = f.rsvps && f.rsvps[0];
-                    var status = !f.confirmed
-                        ? "pending"
-                        : rsvp && rsvp.attending ? "confirmed" : "declined";
-                    var lbl = { pending: "Pendiente", confirmed: "Confirmada", declined: "No asiste" }[status];
-                    var date = rsvp
-                        ? new Date(rsvp.created_at).toLocaleDateString("es-MX", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" })
-                        : "—";
-                    var rowId = "detail-" + f.id;
+                var list = document.getElementById("fam-list");
+                list.innerHTML = "";
 
-                    /* Main row */
-                    var tr = document.createElement("tr");
-                    tr.innerHTML =
-                        '<td class="code-cell">' + esc(f.code) + "</td>" +
-                        '<td class="td-name" title="' + esc(f.family_name) + '">' +
-                            esc(f.family_name) +
-                            (f.group_name ? "<br>" + groupBadge(f.group_name) : "") +
-                        "</td>" +
-                        '<td class="td-center">' + f.max_guests + "</td>" +
-                        '<td class="td-center">' + buildMesaSelect(f.id, f.table_number) + "</td>" +
-                        '<td><span class="badge badge--' + status + '">' + lbl + "</span></td>" +
-                        "<td>" + esc(rsvp ? rsvp.contact_name : "—") + "</td>" +
-                        '<td class="td-center">' + (rsvp && rsvp.attending
-                            ? rsvp.guest_count + (rsvp.guest_count < f.max_guests
-                                ? '<span style="color:rgba(255,255,255,0.22);font-size:0.82em"> / ' + f.max_guests + "</span>"
-                                : "")
-                            : "—") + "</td>" +
-                        '<td class="ts">' + date + "</td>" +
-                        "<td>" +
-                            '<button class="link-btn" onclick="copyLink(\'' + esc(f.code) + "', this)\">Copiar link</button>" +
-                            '<a class="wa-btn' + (f.phone ? " wa-btn--direct" : "") + '" href="' + esc(buildWaUrl(f.family_name, f.code, f.phone, f.table_number)) + '" target="_blank">WhatsApp' + (f.phone ? " ✓" : "") + "</a>" +
-                        "</td>" +
-                        "<td>" +
-                            '<button class="expand-btn" onclick="toggleDetail(\'' + rowId + '\', this)" title="Ver detalles">▸</button>' +
-                            (!f.confirmed
-                                ? ' <button class="del-btn" title="Eliminar" onclick="deleteFamily(\'' + esc(f.id) + "', '" + esc(f.family_name) + '\')">✕</button>'
-                                : "") +
-                        "</td>";
-                    tbody.appendChild(tr);
+                /* Contador */
+                var total     = data.length;
+                var confirmed = data.filter(function(f) { return f.confirmed && f.rsvps && f.rsvps[0] && f.rsvps[0].attending; }).length;
+                var pending   = data.filter(function(f) { return !f.confirmed; }).length;
+                var countEl   = document.getElementById("fam-count-bar");
+                if (countEl) countEl.textContent = total + " familias  ·  " + confirmed + " confirmadas  ·  " + pending + " pendientes";
 
-                    /* Detail row */
-                    var dr = document.createElement("tr");
-                    dr.id = rowId;
-                    dr.className = "detail-row";
-                    dr.style.display = "none";
-                    dr.innerHTML = buildDetailHtml(f);
-                    tbody.appendChild(dr);
+                data.forEach(function(f) {
+                    var rsvp   = f.rsvps && f.rsvps[0];
+                    var status = !f.confirmed ? "pending" : rsvp && rsvp.attending ? "confirmed" : "declined";
+                    var statusLbl = { pending: "Pendiente", confirmed: "Confirmada", declined: "No asiste" }[status];
+                    var canDelete = !f.confirmed;
+
+                    var mesaHtml = f.table_number
+                        ? '<span class="fam-meta-mesa">' + _SVG_CHAIR + 'Mesa ' + f.table_number + '</span>'
+                        : '<span class="fam-meta-mesa fam-meta-mesa--none">Sin mesa</span>';
+
+                    var waLabel = f.phone
+                        ? _SVG_WA + '<span>Enviar ✓</span>'
+                        : _SVG_WA + '<span>Enviar</span>';
+                    var waCls = 'fam-action-wa' + (f.phone ? ' fam-action-wa--direct' : '');
+
+                    var card = document.createElement("div");
+                    card.className = "fam-card fam-card--" + status;
+                    card.id = "fam-card-" + f.id;
+
+                    card.innerHTML =
+                        '<div class="fam-card__main" onclick="toggleFamDetail(\'' + esc(f.id) + '\')">' +
+                            '<div class="fam-card__top">' +
+                                '<span class="fam-card__name">' + esc(f.family_name) + '</span>' +
+                                '<span class="fam-status-badge fam-status-badge--' + status + '">' + statusLbl + '</span>' +
+                            '</div>' +
+                            '<div class="fam-card__meta">' +
+                                (f.group_name ? groupBadge(f.group_name) + '<span class="fam-meta-sep">·</span>' : '') +
+                                mesaHtml +
+                                '<span class="fam-meta-sep">·</span>' +
+                                '<span class="fam-meta-pax">' + _SVG_USER + f.max_guests + ' pases</span>' +
+                            '</div>' +
+                        '</div>' +
+                        '<div class="fam-card__actions-row">' +
+                            '<button class="fam-action-code" id="fam-code-' + f.id + '" onclick="event.stopPropagation();famCopyLink(\'' + esc(f.code) + '\',\'' + esc(f.id) + '\')" title="Copiar link de invitación">' +
+                                _SVG_COPY + esc(f.code) +
+                            '</button>' +
+                            '<div class="fam-actions-right">' +
+                                '<a class="' + waCls + '" href="' + esc(buildWaUrl(f.family_name, f.code, f.phone, f.table_number)) + '" target="_blank" onclick="event.stopPropagation()">' + waLabel + '</a>' +
+                                '<button class="fam-action-toggle" id="fam-toggle-' + f.id + '" onclick="event.stopPropagation();toggleFamDetail(\'' + esc(f.id) + '\')">' +
+                                    _SVG_CHEV + '<span>Detalle</span>' +
+                                '</button>' +
+                                (canDelete ? '<button class="fam-action-del" onclick="event.stopPropagation();deleteFamily(\'' + esc(f.id) + '\',\'' + esc(f.family_name) + '\')" title="Eliminar">✕</button>' : '') +
+                            '</div>' +
+                        '</div>' +
+                        '<div class="fam-detail-panel" id="fdp-' + f.id + '">' +
+                            '<div class="detail-inner" id="di-' + f.id + '">' +
+                                buildFamDetailContent(f) +
+                            '</div>' +
+                        '</div>';
+
+                    list.appendChild(card);
                 });
+
                 document.getElementById("loading").style.display = "none";
-                document.getElementById("tbl").style.display = "table";
+            }
+
+            function famCopyLink(code, id) {
+                var link = buildLink(code);
+                var btn  = document.getElementById("fam-code-" + id);
+                navigator.clipboard.writeText(link).then(function() {
+                    if (!btn) return;
+                    var orig = btn.innerHTML;
+                    btn.innerHTML = _SVG_COPY + "✓ Copiado";
+                    btn.classList.add("is-copied");
+                    setTimeout(function() { btn.innerHTML = orig; btn.classList.remove("is-copied"); }, 2000);
+                }).catch(function() { prompt("Copia este link:", link); });
+            }
+
+            function toggleFamDetail(id) {
+                var panel  = document.getElementById("fdp-" + id);
+                var btn    = document.getElementById("fam-toggle-" + id);
+                var isOpen = panel.classList.contains("is-open");
+                /* Cierra todos los demás */
+                document.querySelectorAll(".fam-detail-panel.is-open").forEach(function(p) { p.classList.remove("is-open"); });
+                document.querySelectorAll(".fam-action-toggle.is-open").forEach(function(b) { b.classList.remove("is-open"); b.textContent = "Detalle ›"; });
+                if (!isOpen) {
+                    panel.classList.add("is-open");
+                    if (btn) { btn.classList.add("is-open"); btn.textContent = "Cerrar ✕"; }
+                }
+            }
+
+            function buildFamDetailContent(f) {
+                var rsvp = f.rsvps && f.rsvps[0];
+                var date = rsvp ? new Date(rsvp.created_at).toLocaleDateString("es-MX", { day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" }) : "—";
+                return "<div>" +
+                        '<p class="detail-field__lbl">Teléfono</p>' +
+                        '<p class="detail-field__val">' + (f.phone ? esc(f.phone) : "—") + "</p>" +
+                    "</div>" +
+                    "<div>" +
+                        '<p class="detail-field__lbl">Grupo</p>' +
+                        '<p class="detail-field__val">' + (f.group_name ? groupBadge(f.group_name) : "—") + "</p>" +
+                    "</div>" +
+                    "<div>" +
+                        '<p class="detail-field__lbl">Mesa asignada</p>' +
+                        '<p class="detail-field__val">' + (f.table_number
+                            ? '<span style="font-family:var(--f-serif);font-size:1.05rem;color:var(--gold)">Mesa ' + f.table_number + '</span>'
+                            : '<span style="color:rgba(255,255,255,0.22)">Sin asignar</span>') + "</p>" +
+                    "</div>" +
+                    "<div>" +
+                        '<p class="detail-field__lbl">Confirmó</p>' +
+                        '<p class="detail-field__val">' + esc(rsvp ? rsvp.contact_name || "—" : "—") + "</p>" +
+                    "</div>" +
+                    "<div>" +
+                        '<p class="detail-field__lbl">Pax confirmados</p>' +
+                        '<p class="detail-field__val">' + (rsvp && rsvp.attending ? rsvp.guest_count + " / " + f.max_guests : "—") + "</p>" +
+                    "</div>" +
+                    "<div>" +
+                        '<p class="detail-field__lbl">Fecha RSVP</p>' +
+                        '<p class="detail-field__val">' + date + "</p>" +
+                    "</div>" +
+                    (function() {
+                        var allNames = f.guest_names ? f.guest_names.split(",").map(function(n){return n.trim();}).filter(Boolean) : [];
+                        var attendingArr = rsvp && rsvp.attending_names ? rsvp.attending_names.split(",").map(function(n){return n.trim();}).filter(Boolean) : [];
+                        var attendingSet = {}; attendingArr.forEach(function(n){attendingSet[n]=true;});
+                        var hasConfirmed = rsvp && rsvp.attending !== undefined;
+                        if (!allNames.length) return attendingArr.length
+                            ? '<div style="grid-column:1/-1"><p class="detail-field__lbl" style="color:#7ec8a0">✓ Confirmaron</p><p class="detail-field__val" style="color:rgba(126,200,160,0.8)">' + esc(rsvp.attending_names) + "</p></div>"
+                            : "";
+                        var lbl = hasConfirmed ? (rsvp.attending ? "Asistencia por persona" : "No asistirán") : "Invitados registrados";
+                        var rows = allNames.map(function(name) {
+                            var cls = !hasConfirmed ? "pending" : attendingSet[name] ? "yes" : "no";
+                            var icon = {pending:"·",yes:"✓",no:"✗"}[cls];
+                            return '<div class="ms-row ms-row--' + cls + '"><span class="ms-icon">' + icon + '</span><span class="ms-name">' + esc(name) + '</span></div>';
+                        }).join("");
+                        return '<div style="grid-column:1/-1"><p class="detail-field__lbl">' + lbl + '</p><div class="member-status-list">' + rows + "</div></div>";
+                    }()) +
+                    "<div>" +
+                        '<p class="detail-field__lbl">Notas</p>' +
+                        '<p class="detail-field__val">' + (f.notes ? esc(f.notes) : "—") + "</p>" +
+                    "</div>" +
+                    '<div style="grid-column:1/-1;display:flex;justify-content:flex-end;margin-top:0.25rem">' +
+                        '<button class="action-btn" style="font-size:0.5rem;padding:0.4rem 1rem" onclick="startEdit(\'' + esc(f.id) + '\')">Editar familia</button>' +
+                    '</div>';
             }
 
             var GROUP_OPTIONS = ["Familia novia","Familia novio","Amigos novia","Amigos novio","Trabajo / Compañeros","Otros"];
@@ -2399,18 +2933,17 @@
                 }
             }
 
-            function showMesasView() {
-                var section = document.getElementById("mesas-section");
-                section.style.display = "block";
-                renderMesasGrid();
-                section.scrollIntoView({ behavior: "smooth", block: "nearest" });
-            }
+            function showMesasView() { switchTab("mesas"); }
 
             function renderMesasGrid() {
-                var grid    = document.getElementById("mesas-grid");
-                var banner  = document.getElementById("mesas-over-banner");
-                var mMap    = buildMesaMap();
-                var hasOver = false;
+                var grid     = document.getElementById("mesas-grid");
+                var banner   = document.getElementById("mesas-over-banner");
+                var smBanner = document.getElementById("mesas-sinmesa-banner");
+                var smCount  = document.getElementById("mesas-sinmesa-count");
+                var mMap     = buildMesaMap();
+                var hasOver  = false;
+                var totalPax = 0;
+                var totalOccupied = 0;
                 grid.innerHTML = "";
 
                 for (var n = 1; n <= TOTAL_MESAS; n++) {
@@ -2418,32 +2951,158 @@
                     var over = m.pax > CAP_POR_MESA;
                     var full = m.pax === CAP_POR_MESA;
                     if (over) hasOver = true;
+                    totalPax += m.pax;
+                    if (m.names.length > 0) totalOccupied++;
 
                     var cls = m.names.length === 0 ? "empty"
                             : over               ? "over"
                             : full               ? "full"
                             :                      "partial";
 
-                    var barPct   = Math.min(100, Math.round(m.pax / CAP_POR_MESA * 100));
-                    var barColor = over ? "#e08888"
-                                 : full ? "#7ec8a0"
-                                 :        "#c9a96e";
+                    /* Indicadores de asientos: 10 barras */
+                    var seatsHtml = "";
+                    for (var s = 1; s <= CAP_POR_MESA; s++) {
+                        seatsHtml += '<div class="mesa-seat' + (s <= m.pax ? ' mesa-seat--filled' : '') + '"></div>';
+                    }
 
-                    var capTxt = (over ? "⚠ " : "") + m.pax + " / " + CAP_POR_MESA + " pax";
-                    var fams   = m.names.length
-                        ? m.names.slice(0, 4).join(", ") + (m.names.length > 4 ? " +" + (m.names.length-4) : "")
-                        : "Vacía";
+                    var famsHtml = m.names.length
+                        ? esc(m.names.slice(0, 2).join(" · ") + (m.names.length > 2 ? " +" + (m.names.length - 2) + " más" : ""))
+                        : '<span style="color:rgba(255,255,255,0.13)">Sin familias asignadas</span>';
 
                     grid.innerHTML +=
-                        '<div class="mesa-card mesa-card--' + cls + '">' +
-                        '<p class="mesa-card__num">' + n + "</p>" +
-                        '<div class="mesa-cap-bar"><div class="mesa-cap-fill" style="width:' + barPct + "%;background:" + barColor + '"></div></div>' +
-                        '<p class="mesa-card__cap">' + capTxt + "</p>" +
-                        '<p class="mesa-card__fams">' + esc(fams) + "</p>" +
-                        "</div>";
+                        '<div class="mesa-card mesa-card--' + cls + '" onclick="openMesaDetail(' + n + ')" role="button" aria-label="Mesa ' + n + ', ' + m.pax + ' de ' + CAP_POR_MESA + ' personas">' +
+                        '<div class="mesa-card__header"><span class="mesa-card__num">' + n + '</span><span class="mesa-card__pax">' + m.pax + '/' + CAP_POR_MESA + '</span></div>' +
+                        '<div class="mesa-card__seats">' + seatsHtml + '</div>' +
+                        '<div class="mesa-card__fams">' + famsHtml + '</div>' +
+                        '</div>';
                 }
 
                 if (banner) banner.style.display = hasOver ? "block" : "none";
+
+                /* Stats resumen */
+                var el = document.getElementById("mstat-occupied");
+                if (el) el.textContent = totalOccupied + "/" + TOTAL_MESAS;
+                el = document.getElementById("mstat-pax");
+                if (el) el.textContent = totalPax;
+                el = document.getElementById("mstat-free");
+                if (el) el.textContent = (TOTAL_MESAS * CAP_POR_MESA) - totalPax;
+
+                /* Banner sin mesa */
+                var sinMesa = allData.filter(function(f) {
+                    return f.confirmed && f.rsvps && f.rsvps[0] && f.rsvps[0].attending && !f.table_number;
+                }).length;
+                if (smCount) smCount.textContent = sinMesa;
+                if (smBanner) {
+                    if (sinMesa > 0) smBanner.classList.add("is-visible");
+                    else smBanner.classList.remove("is-visible");
+                }
+            }
+
+            /* ── Mesa detail sheet ──────────────────────── */
+            var _currentMesaDetail = null;
+
+            function openMesaDetail(n) {
+                _currentMesaDetail = n;
+                var mMap  = buildMesaMap();
+                var m     = mMap[n];
+                var over  = m.pax > CAP_POR_MESA;
+                var full  = m.pax === CAP_POR_MESA;
+                var barColor = over ? "#e08888" : full ? "#7ec8a0" : "#c9a96e";
+                var barPct   = Math.min(100, Math.round(m.pax / CAP_POR_MESA * 100));
+
+                document.getElementById("mdd-num").textContent = "Mesa " + n;
+                document.getElementById("mdd-pax").textContent = m.pax + " / " + CAP_POR_MESA + " personas";
+                var bar = document.getElementById("mdd-bar");
+                bar.style.width = barPct + "%";
+                bar.style.background = barColor;
+
+                /* Familias en esta mesa */
+                var famsEl = document.getElementById("mdd-families");
+                var famsAtTable = allData.filter(function(f) { return f.table_number === n; });
+                if (famsAtTable.length === 0) {
+                    famsEl.innerHTML = '<p style="padding:1rem 1.25rem;font-size:0.72rem;color:rgba(255,255,255,0.22);text-align:center;">Mesa vacía — asigna una familia abajo</p>';
+                } else {
+                    famsEl.innerHTML = famsAtTable.map(function(f) {
+                        var pax = f.rsvps && f.rsvps[0] && f.rsvps[0].attending ? f.rsvps[0].guest_count : 0;
+                        return '<div class="mesa-fam-row">' +
+                            '<div class="mesa-fam-row__name">' + esc(f.family_name) +
+                            '<span class="mesa-fam-row__pax">' + esc(f.code) + (pax ? " · " + pax + " pax" : " · no confirmada") + '</span></div>' +
+                            '<button class="mesa-fam-row__remove" onclick="removeFromMesa(\'' + esc(f.id) + '\',' + n + ')">Quitar</button>' +
+                            '</div>';
+                    }).join("");
+                }
+
+                /* Dropdown familias sin mesa */
+                var assignSel = document.getElementById("mdd-assign-select");
+                var sinMesa = allData.filter(function(f) {
+                    return f.confirmed && f.rsvps && f.rsvps[0] && f.rsvps[0].attending && !f.table_number;
+                });
+                assignSel.innerHTML = sinMesa.length
+                    ? '<option value="">— Seleccionar familia —</option>' + sinMesa.map(function(f) {
+                        var pax = f.rsvps[0].guest_count || 0;
+                        return '<option value="' + esc(f.id) + '">' + esc(f.family_name) + ' (' + pax + ' pax)</option>';
+                      }).join("")
+                    : '<option value="">✓ Todas las familias tienen mesa</option>';
+
+                document.getElementById("mesa-detail-overlay").classList.add("is-open");
+            }
+
+            function closeMesaDetail() {
+                document.getElementById("mesa-detail-overlay").classList.remove("is-open");
+                _currentMesaDetail = null;
+            }
+
+            function closeMesaDetailIfBackdrop(e) {
+                if (e.target === document.getElementById("mesa-detail-overlay")) closeMesaDetail();
+            }
+
+            async function removeFromMesa(id, mesaNum) {
+                try {
+                    var tr = await fetch(SUPABASE_URL + "/rest/v1/families?id=eq." + id, {
+                        method: "PATCH",
+                        headers: { apikey: SUPABASE_ANON_KEY, Authorization: "Bearer " + SUPABASE_ANON_KEY, "Content-Type": "application/json" },
+                        body: JSON.stringify({ table_number: null }),
+                    });
+                    if (!tr.ok) throw new Error("HTTP " + tr.status);
+                    var f = allData.find(function(x) { return x.id === id; });
+                    if (f) f.table_number = null;
+                    renderMesasGrid();
+                    openMesaDetail(mesaNum);
+                    renderProgress(allData);
+                    renderTable(allData);
+                } catch (e) {
+                    showToast("⚠ Error al quitar familia. Intenta nuevamente.");
+                }
+            }
+
+            async function assignFromDetail() {
+                var sel = document.getElementById("mdd-assign-select");
+                var id  = sel.value;
+                if (!id || _currentMesaDetail === null) return;
+                var n   = _currentMesaDetail;
+                var mMap = buildMesaMap();
+                var mesa = mMap[n];
+                var fam  = allData.find(function(x) { return x.id === id; });
+                var famPax = fam && fam.rsvps && fam.rsvps[0] && fam.rsvps[0].attending ? fam.rsvps[0].guest_count : 0;
+                if (mesa && (mesa.pax + famPax) > CAP_POR_MESA) {
+                    if (!confirm("⚠ La Mesa " + n + " quedaría con " + (mesa.pax + famPax) + "/" + CAP_POR_MESA + " pax (excede capacidad).\n¿Asignar de todas formas?")) return;
+                }
+                try {
+                    var tr = await fetch(SUPABASE_URL + "/rest/v1/families?id=eq." + id, {
+                        method: "PATCH",
+                        headers: { apikey: SUPABASE_ANON_KEY, Authorization: "Bearer " + SUPABASE_ANON_KEY, "Content-Type": "application/json" },
+                        body: JSON.stringify({ table_number: n }),
+                    });
+                    if (!tr.ok) throw new Error("HTTP " + tr.status);
+                    var f = allData.find(function(x) { return x.id === id; });
+                    if (f) f.table_number = n;
+                    renderMesasGrid();
+                    openMesaDetail(n);
+                    renderProgress(allData);
+                    renderTable(allData);
+                } catch (e) {
+                    showToast("⚠ Error al asignar. Intenta nuevamente.");
+                }
             }
 
             /* ── Progress bars ────────────────────────── */
@@ -2505,6 +3164,7 @@
             }
 
             function closeCheckin() {
+                stopQrScanner();
                 document.getElementById("checkin-overlay").style.display = "none";
                 document.body.style.overflow = "";
                 loadData();
@@ -2558,6 +3218,135 @@
                     if (btn) { btn.textContent = "✓ Llegó"; btn.disabled = false; }
                     showToast("⚠ Error al registrar entrada. Intenta nuevamente.");
                 }
+            }
+
+            /* ── QR Scanner ─────────────────────────────── */
+            var _qrStream = null;
+            var _qrFrame  = null;
+            var _qrActive = false;
+            var _qrLast   = null;
+
+            function toggleQrScanner() {
+                if (_qrActive) stopQrScanner(); else startQrScanner();
+            }
+
+            async function startQrScanner() {
+                var viewport = document.getElementById("qr-viewport");
+                var hint     = document.getElementById("qr-hint");
+                var result   = document.getElementById("qr-result");
+                var lbl      = document.getElementById("qr-btn-lbl");
+                var btn      = document.getElementById("qr-toggle-btn");
+                result.innerHTML = "";
+                _qrLast = null;
+                try {
+                    _qrStream = await navigator.mediaDevices.getUserMedia({
+                        video: { facingMode: { ideal: "environment" }, width: { ideal: 1280 } }
+                    });
+                    var video = document.getElementById("qr-video");
+                    video.srcObject = _qrStream;
+                    await video.play();
+                    _qrActive = true;
+                    viewport.style.display = "block";
+                    btn.classList.add("scanning");
+                    lbl.textContent = "Cerrar cámara";
+                    hint.textContent = "Apunta al QR del ticket del invitado";
+                    tickQrScan();
+                } catch (e) {
+                    hint.textContent = "No se pudo acceder a la cámara. Verifica los permisos en el navegador.";
+                }
+            }
+
+            function stopQrScanner() {
+                if (_qrStream) { _qrStream.getTracks().forEach(function(t) { t.stop(); }); _qrStream = null; }
+                if (_qrFrame)  { cancelAnimationFrame(_qrFrame); _qrFrame = null; }
+                _qrActive = false;
+                var viewport = document.getElementById("qr-viewport");
+                var lbl      = document.getElementById("qr-btn-lbl");
+                var btn      = document.getElementById("qr-toggle-btn");
+                var hint     = document.getElementById("qr-hint");
+                if (viewport) viewport.style.display = "none";
+                if (btn) btn.classList.remove("scanning");
+                if (lbl) lbl.textContent = "Escanear QR del invitado";
+                if (hint) hint.textContent = "";
+            }
+
+            function tickQrScan() {
+                if (!_qrActive) return;
+                var video  = document.getElementById("qr-video");
+                var canvas = document.getElementById("qr-canvas");
+                var ctx    = canvas.getContext("2d");
+                if (video.readyState === video.HAVE_ENOUGH_DATA) {
+                    canvas.width  = video.videoWidth;
+                    canvas.height = video.videoHeight;
+                    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                    var img  = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                    var code = typeof jsQR !== "undefined"
+                        ? jsQR(img.data, img.width, img.height, { inversionAttempts: "dontInvert" })
+                        : null;
+                    if (code && code.data !== _qrLast) {
+                        _qrLast = code.data;
+                        /* Extrae ?code= de URL o toma el valor directo */
+                        var m = code.data.match(/[?&]code=([^&#]+)/i);
+                        var familyCode = m ? decodeURIComponent(m[1]) : code.data.trim();
+                        onQrDetected(familyCode);
+                        return;
+                    }
+                }
+                _qrFrame = requestAnimationFrame(tickQrScan);
+            }
+
+            function onQrDetected(code) {
+                stopQrScanner();
+                var hint   = document.getElementById("qr-hint");
+                var result = document.getElementById("qr-result");
+
+                /* Busca en la lista de confirmados */
+                var f = ciData.find(function(x) { return x.code === code; });
+
+                if (!f) {
+                    var anyF = allData.find(function(x) { return x.code === code; });
+                    result.innerHTML =
+                        '<div class="qr-result-card qr-result-card--error">' +
+                            '<div><p class="qr-found__name">' + (anyF ? esc(anyF.family_name) : "Código no reconocido") + '</p>' +
+                            '<p class="qr-found__detail">' + (anyF ? "No tiene RSVP confirmado" : esc(code)) + '</p></div>' +
+                        '</div>' +
+                        '<button class="qr-scan-next" onclick="startQrScanner()">↩ Escanear otro</button>';
+                    if (hint) hint.textContent = "";
+                    return;
+                }
+
+                var rsvp   = f.rsvps && f.rsvps[0];
+                var detail = (rsvp ? rsvp.guest_count + (rsvp.guest_count === 1 ? " persona" : " personas") : "?") +
+                             (f.table_number ? " · Mesa " + f.table_number : "");
+
+                if (f.checked_in) {
+                    var t = f.checked_in_at ? new Date(f.checked_in_at).toLocaleTimeString("es-MX", { hour: "2-digit", minute: "2-digit" }) : "";
+                    result.innerHTML =
+                        '<div class="qr-result-card qr-result-card--done">' +
+                            '<div><p class="qr-found__name">' + esc(f.family_name) + '</p>' +
+                            '<p class="qr-found__detail">' + detail + '</p></div>' +
+                            '<span class="ci-done-badge">✓ ' + (t || "Ya llegó") + '</span>' +
+                        '</div>' +
+                        '<button class="qr-scan-next" onclick="startQrScanner()">↩ Escanear otro</button>';
+                } else {
+                    result.innerHTML =
+                        '<div class="qr-result-card qr-result-card--found">' +
+                            '<div><p class="qr-found__name">' + esc(f.family_name) + '</p>' +
+                            '<p class="qr-found__detail">' + detail + '</p></div>' +
+                            '<button class="ci-btn" onclick="qrCheckIn(\'' + esc(f.id) + '\',\'' + esc(f.code) + '\')">✓ Llegó</button>' +
+                        '</div>';
+                }
+
+                if (hint) hint.textContent = "Código: " + code;
+            }
+
+            async function qrCheckIn(id, code) {
+                await checkIn(id);
+                /* Refresca el resultado */
+                onQrDetected(code);
+                /* Botón para seguir escaneando */
+                var result = document.getElementById("qr-result");
+                if (result) result.innerHTML += '<button class="qr-scan-next" onclick="startQrScanner()">↩ Escanear siguiente</button>';
             }
 
             /* ── Guardar URL del sitio ───────────────── */
@@ -2730,13 +3519,11 @@
                 var btn   = document.getElementById("nav-" + name);
                 if (panel) panel.classList.add("is-active");
                 if (btn)   btn.classList.add("is-active");
-                /* Scroll tab-content to top */
                 var tc = document.querySelector(".tab-content");
                 if (tc) tc.scrollTop = 0;
+                if (name === "mesas") renderMesasGrid();
+                localStorage.setItem("ke-tab", name);
             }
-
-            /* showMesasView ahora simplemente cambia al tab de mesas */
-            function showMesasView() { switchTab("mesas"); }
 
             /* ── Countdown hero en Resumen ──────────────────── */
             (function() {

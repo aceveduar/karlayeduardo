@@ -1,4 +1,4 @@
-const CACHE = "ke-boda-v1";
+const CACHE = "ke-boda-v6";
 const PRECACHE = [
   "./index.html",
   "./assets/flores-1.webp",
