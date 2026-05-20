@@ -69,7 +69,7 @@
                 border: 1px solid rgba(201, 169, 110, 0.28);
                 color: var(--white);
                 font-family: var(--f-sans);
-                font-size: 0.9rem;
+                font-size: 1rem;
                 padding: 0.85rem 1.5rem;
                 outline: none;
                 width: 100%;
@@ -158,11 +158,15 @@
                 line-height: 1;
                 text-shadow: 0 0 20px rgba(201, 169, 110, 0.3);
             }
+            .stat--good .stat__num { color: #7ec8a0; text-shadow: 0 0 20px rgba(126,200,160,0.3); }
+            .stat--good { border-color: rgba(126,200,160,0.2); background: rgba(126,200,160,0.04); }
+            .stat--warn .stat__num { color: #e0b888; text-shadow: 0 0 20px rgba(224,184,136,0.3); }
+            .stat--warn { border-color: rgba(224,184,136,0.2); background: rgba(224,184,136,0.04); }
             .stat__lbl {
-                font-size: 0.5rem;
-                letter-spacing: 0.18em;
+                font-size: 0.65rem;
+                letter-spacing: 0.14em;
                 text-transform: uppercase;
-                color: rgba(255, 255, 255, 0.32);
+                color: rgba(255, 255, 255, 0.42);
                 margin-top: 0.5rem;
             }
 
@@ -177,12 +181,12 @@
             .action-btn {
                 background: transparent;
                 border: 1px solid rgba(201, 169, 110, 0.3);
-                color: rgba(201, 169, 110, 0.65);
+                color: rgba(201, 169, 110, 0.72);
                 font-family: var(--f-sans);
-                font-size: 0.56rem;
-                letter-spacing: 0.2em;
+                font-size: 0.68rem;
+                letter-spacing: 0.16em;
                 text-transform: uppercase;
-                padding: 0.6rem 1.4rem;
+                padding: 0.65rem 1.4rem;
                 cursor: pointer;
                 transition: all 0.3s ease;
             }
@@ -235,8 +239,8 @@
                 font-size: 0.78rem;
             }
             thead th {
-                font-size: 0.5rem;
-                letter-spacing: 0.2em;
+                font-size: 0.65rem;
+                letter-spacing: 0.16em;
                 text-transform: uppercase;
                 color: rgba(255, 255, 255, 0.38);
                 padding: 0.75rem 1rem;
@@ -265,10 +269,10 @@
             }
             .badge {
                 display: inline-block;
-                font-size: 0.48rem;
-                letter-spacing: 0.14em;
+                font-size: 0.65rem;
+                letter-spacing: 0.1em;
                 text-transform: uppercase;
-                padding: 0.2rem 0.6rem;
+                padding: 0.22rem 0.65rem;
                 border-radius: 20px;
                 border: 1px solid;
                 white-space: nowrap;
@@ -295,9 +299,9 @@
             /* Progress bars */
             .progress-section { margin-bottom: 1.75rem; display: flex; flex-direction: column; gap: 0.85rem; }
             .progress-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.4rem; }
-            .progress-lbl { font-size: 0.5rem; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255,255,255,0.35); }
-            .progress-val { font-family: var(--f-serif); font-size: 0.88rem; color: var(--gold); }
-            .progress-pct { font-size: 0.5rem; color: rgba(255,255,255,0.25); margin-left: 0.3rem; }
+            .progress-lbl { font-size: 0.65rem; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.45); }
+            .progress-val { font-family: var(--f-serif); font-size: 0.92rem; color: var(--gold); }
+            .progress-pct { font-size: 0.62rem; color: rgba(255,255,255,0.35); margin-left: 0.3rem; }
             .progress-track { height: 5px; background: rgba(255,255,255,0.06); border-radius: 3px; overflow: hidden; }
             .progress-fill { height: 100%; border-radius: 3px; background: linear-gradient(to right, var(--terra), var(--gold)); transition: width 0.9s cubic-bezier(0.22,1,0.36,1); width: 0%; }
             .progress-fill--b { background: linear-gradient(to right, var(--gold), #f5e8b8); }
@@ -322,7 +326,7 @@
             .ci-stats { display: grid; grid-template-columns: repeat(3,1fr); gap: 0.75rem; margin-bottom: 1.25rem; }
             .ci-stat { background: rgba(255,255,255,0.04); border: 1px solid rgba(201,169,110,0.12); padding: 0.75rem; text-align: center; }
             .ci-stat__num { font-family: var(--f-serif); font-size: 2rem; color: var(--gold); line-height: 1; }
-            .ci-stat__lbl { font-size: 0.44rem; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(255,255,255,0.28); margin-top: 0.3rem; }
+            .ci-stat__lbl { font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.42); margin-top: 0.3rem; }
             .ci-list { display: flex; flex-direction: column; gap: 0.4rem; margin-top: 1rem; }
             .ci-item { display: flex; align-items: center; justify-content: space-between; padding: 0.85rem 1rem; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); gap: 0.75rem; }
             .ci-item--done { border-color: rgba(126,200,160,0.22); background: rgba(126,200,160,0.04); }
@@ -463,8 +467,8 @@
                 line-height: 1;
             }
             .mesa-card__cap {
-                font-size: 0.42rem;
-                letter-spacing: 0.1em;
+                font-size: 0.62rem;
+                letter-spacing: 0.08em;
                 text-transform: uppercase;
                 margin-top: 0.2rem;
             }
@@ -472,8 +476,8 @@
             .mesa-card--partial .mesa-card__cap { color: rgba(201,169,110,0.65); }
             .mesa-card--empty   .mesa-card__cap { color: rgba(255,255,255,0.2); }
             .mesa-card__fams {
-                font-size: 0.46rem;
-                color: rgba(255,255,255,0.38);
+                font-size: 0.62rem;
+                color: rgba(255,255,255,0.45);
                 line-height: 1.5;
                 margin-top: 0.3rem;
             }
@@ -530,10 +534,10 @@
             }
             .nf-label {
                 display: block;
-                font-size: 0.48rem;
-                letter-spacing: 0.2em;
+                font-size: 0.65rem;
+                letter-spacing: 0.15em;
                 text-transform: uppercase;
-                color: rgba(255, 255, 255, 0.35);
+                color: rgba(255, 255, 255, 0.45);
                 margin-bottom: 0.4rem;
             }
             .nf-error {
@@ -621,10 +625,10 @@
                 gap: 0.75rem;
             }
             .detail-field__lbl {
-                font-size: 0.46rem;
-                letter-spacing: 0.18em;
+                font-size: 0.62rem;
+                letter-spacing: 0.14em;
                 text-transform: uppercase;
-                color: rgba(255, 255, 255, 0.3);
+                color: rgba(255, 255, 255, 0.42);
                 margin-bottom: 0.25rem;
             }
             .detail-field__val {
@@ -647,21 +651,37 @@
             }
 
             /* Group filter tabs */
+            .group-filter-wrap {
+                position: relative;
+                margin-bottom: 1rem;
+            }
+            .group-filter-wrap::after {
+                content: "";
+                position: absolute;
+                top: 0; right: 0; bottom: 0;
+                width: 2.5rem;
+                background: linear-gradient(to right, transparent, rgba(30,20,16,0.9));
+                pointer-events: none;
+                display: none;
+            }
+            @media (max-width: 640px) {
+                .group-filter-wrap::after { display: block; }
+            }
             .group-filter {
                 display: flex;
                 gap: 0.5rem;
                 flex-wrap: wrap;
-                margin-bottom: 1rem;
+                margin-bottom: 0;
             }
             .gf-btn {
                 background: transparent;
                 border: 1px solid rgba(255, 255, 255, 0.1);
-                color: rgba(255, 255, 255, 0.38);
+                color: rgba(255, 255, 255, 0.48);
                 font-family: var(--f-sans);
-                font-size: 0.5rem;
-                letter-spacing: 0.15em;
+                font-size: 0.65rem;
+                letter-spacing: 0.12em;
                 text-transform: uppercase;
-                padding: 0.35rem 0.85rem;
+                padding: 0.4rem 0.9rem;
                 cursor: pointer;
                 transition: all 0.25s ease;
                 border-radius: 20px;
@@ -781,10 +801,10 @@
             .link-btn {
                 background: transparent;
                 border: 1px solid rgba(201, 169, 110, 0.28);
-                color: rgba(201, 169, 110, 0.6);
+                color: rgba(201, 169, 110, 0.7);
                 font-family: var(--f-sans);
-                font-size: 0.48rem;
-                letter-spacing: 0.14em;
+                font-size: 0.65rem;
+                letter-spacing: 0.1em;
                 text-transform: uppercase;
                 padding: 0.28rem 0.65rem;
                 cursor: pointer;
@@ -805,8 +825,8 @@
                 border: 1px solid rgba(37, 211, 102, 0.28);
                 color: #4cd480;
                 font-family: var(--f-sans);
-                font-size: 0.48rem;
-                letter-spacing: 0.14em;
+                font-size: 0.65rem;
+                letter-spacing: 0.1em;
                 text-transform: uppercase;
                 padding: 0.28rem 0.65rem;
                 text-decoration: none;
@@ -867,7 +887,7 @@
                 .stats { grid-template-columns: repeat(4, 1fr); gap: 0.4rem; }
                 .stat { padding: 0.65rem 0.25rem; }
                 .stat__num { font-size: 1.6rem; }
-                .stat__lbl { font-size: 0.36rem; letter-spacing: 0.08em; }
+                .stat__lbl { font-size: 0.55rem; letter-spacing: 0.08em; }
 
                 /* Progress */
                 .progress-val { font-size: 0.8rem; }
@@ -890,8 +910,8 @@
                 .action-btn {
                     flex: 1 1 auto;
                     min-width: 70px;
-                    font-size: 0.47rem;
-                    padding: 0.5rem 0.75rem;
+                    font-size: 0.60rem;
+                    padding: 0.55rem 0.75rem;
                     text-align: center;
                 }
 
@@ -905,14 +925,14 @@
                     scrollbar-width: none;
                 }
                 .group-filter::-webkit-scrollbar { display: none; }
-                .gf-btn { flex-shrink: 0; font-size: 0.44rem; padding: 0.3rem 0.7rem; }
+                .gf-btn { flex-shrink: 0; font-size: 0.60rem; padding: 0.35rem 0.75rem; }
 
                 /* Search full width */
                 .search-input { max-width: 100%; }
 
                 /* Tabla: ocultar columnas menos críticas */
-                table { font-size: 0.7rem; min-width: unset; }
-                thead th { padding: 0.55rem 0.45rem; font-size: 0.42rem; }
+                table { font-size: 0.72rem; min-width: unset; }
+                thead th { padding: 0.55rem 0.45rem; font-size: 0.58rem; }
                 tbody td { padding: 0.65rem 0.45rem; }
 
                 /* Ocultar: Código (1), Confirmó (6), Fecha (8) — actualizado tras añadir Mesa */
@@ -1123,7 +1143,7 @@
                     <div class="nf-grid">
                         <div>
                             <label class="nf-label" for="nf-name">Nombre de familia</label>
-                            <input class="config-input" type="text" id="nf-name" placeholder="Familia García" autocomplete="off" />
+                            <input class="config-input" type="text" id="nf-name" placeholder="Familia García" autocomplete="off" autocapitalize="words" />
                         </div>
                         <div>
                             <label class="nf-label" for="nf-code">Código único</label>
@@ -1211,6 +1231,7 @@
             </div>
 
             <!-- Filtro por grupo -->
+            <div class="group-filter-wrap">
             <div class="group-filter" id="group-filter">
                 <button class="gf-btn is-active" data-group="">Todos</button>
                 <button class="gf-btn" data-group="Familia novia">Familia novia</button>
@@ -1219,6 +1240,7 @@
                 <button class="gf-btn" data-group="Amigos novio">Amigos novio</button>
                 <button class="gf-btn" data-group="Trabajo / Compañeros">Trabajo</button>
                 <button class="gf-btn" data-group="Otros">Otros</button>
+            </div>
             </div>
 
             <div class="search-wrap">
@@ -1241,7 +1263,7 @@
                             <th>Mesa</th>
                             <th>Estado</th>
                             <th>Confirmó</th>
-                            <th>Asistentes</th>
+                            <th>Conf./Pases</th>
                             <th>Fecha</th>
                             <th>Enviar</th>
                             <th></th>
@@ -1364,10 +1386,15 @@
                     );
                 }, 0);
                 document.getElementById("stat-total").textContent = data.length;
-                document.getElementById("stat-confirmed").textContent =
-                    confirmed;
+                document.getElementById("stat-confirmed").textContent = confirmed;
                 document.getElementById("stat-pending").textContent = pending;
                 document.getElementById("stat-guests").textContent = guests;
+
+                /* Colores semánticos en stat cards */
+                var cardConfirmed = document.getElementById("stat-confirmed").closest(".stat");
+                var cardPending   = document.getElementById("stat-pending").closest(".stat");
+                if (cardConfirmed) cardConfirmed.className = "stat" + (confirmed > 0 ? " stat--good" : "");
+                if (cardPending)   cardPending.className   = "stat" + (pending === 0 ? " stat--good" : (pending > 5 ? " stat--warn" : ""));
             }
 
             function getSiteUrl() {
@@ -2093,11 +2120,23 @@
             (function () {
                 var input = document.getElementById("site-url");
                 var saved = localStorage.getItem("ke-site-url");
-                if (saved) input.value = saved;
+                if (saved) {
+                    input.value = saved;
+                } else {
+                    /* Auto-detect: usa la URL actual sin admin.html */
+                    var autoUrl = window.location.href
+                        .replace(/admin\.html.*$/, "index.html")
+                        .replace(/\?.*$/, "");
+                    if (autoUrl && autoUrl !== window.location.href) {
+                        input.value = autoUrl;
+                        localStorage.setItem("ke-site-url", autoUrl);
+                    }
+                }
                 document
                     .getElementById("btn-save-url")
                     .addEventListener("click", function () {
-                        var url = input.value.trim();
+                        var url = input.value.trim().replace(/\/$/, "");
+                        if (!url) return;
                         localStorage.setItem("ke-site-url", url);
                         this.textContent = "✓ Guardado";
                         var self = this;

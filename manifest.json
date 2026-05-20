@@ -1,0 +1,25 @@
+{
+  "name": "Boda Karla & Eduardo",
+  "short_name": "K & E 2026",
+  "description": "Invitación digital — 21 Noviembre 2026, Hacienda Zerezotla, Cholula",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#1e1410",
+  "theme_color": "#1e1410",
+  "orientation": "portrait",
+  "lang": "es-MX",
+  "icons": [
+    {
+      "src": "assets/Karla y Froyland/novios.webp",
+      "sizes": "192x192",
+      "type": "image/webp",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/Karla y Froyland/novios.webp",
+      "sizes": "512x512",
+      "type": "image/webp",
+      "purpose": "any"
+    }
+  ]
+}

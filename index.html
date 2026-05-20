@@ -4,6 +4,38 @@
         <meta charset="utf-8" />
         <meta content="width=device-width, initial-scale=1.0" name="viewport" />
         <title>Invitación de Boda - Karla &amp; Eduardo</title>
+
+        <!-- Preload recursos críticos above-the-fold -->
+        <link rel="preload" as="image" href="assets/flores-5.webp" />
+        <link rel="preload" as="image" href="assets/flores-1.webp" />
+        <link rel="preload" as="image" href="assets/Karla y Froyland/novios.webp" />
+
+        <!-- PWA -->
+        <link rel="manifest" href="manifest.json" />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta name="apple-mobile-web-app-title" content="K &amp; E 2026" />
+        <link rel="apple-touch-icon" href="assets/Karla y Froyland/novios.webp" />
+
+        <!-- ═══ SEO & Open Graph (WhatsApp, iMessage, redes) ═══ -->
+        <meta name="description" content="Karla y Eduardo se casan el 21 de noviembre de 2026 en Hacienda Zerezotla, San Andrés Cholula, Puebla. Confirma tu asistencia." />
+        <meta name="theme-color" content="#1e1410" />
+
+        <!-- Open Graph -->
+        <meta property="og:type"        content="website" />
+        <meta property="og:title"       content="Karla &amp; Eduardo — 21 Noviembre 2026" />
+        <meta property="og:description" content="Nos casamos 🌸 Hacienda Zerezotla, San Andrés Cholula, Puebla. Confirma tu asistencia." />
+        <meta property="og:image"       content="assets/Karla y Froyland/novios.webp" />
+        <meta property="og:image:width"  content="800" />
+        <meta property="og:image:height" content="600" />
+        <meta property="og:locale"      content="es_MX" />
+
+        <!-- WhatsApp usa og:image — sin Twitter card adicional necesario -->
+        <meta name="twitter:card"        content="summary_large_image" />
+        <meta name="twitter:title"       content="Karla &amp; Eduardo — 21 Nov 2026" />
+        <meta name="twitter:description" content="Nos casamos 🌸 Hacienda Zerezotla, Cholula, Puebla" />
+        <meta name="twitter:image"       content="assets/Karla y Froyland/novios.webp" />
         <link href="https://fonts.googleapis.com" rel="preconnect" />
         <link
             crossorigin=""
@@ -107,6 +139,7 @@
             /* =============================================
        SCROLL ANIMATION
        ============================================= */
+            /* Fallback: si JS falla, el contenido sigue visible */
             .js-fade {
                 opacity: 0;
                 transform: translateY(24px);
@@ -189,8 +222,8 @@
                 align-items: center;
                 justify-content: center;
                 gap: 1rem;
-                font-size: 0.62rem;
-                letter-spacing: 0.3em;
+                font-size: 0.72rem;
+                letter-spacing: 0.28em;
                 text-transform: uppercase;
                 font-weight: 600;
                 color: var(--c-text-mid);
@@ -448,9 +481,9 @@
             }
             .event-date__month {
                 display: block;
-                font-size: 0.48rem;
+                font-size: 0.68rem;
                 text-transform: uppercase;
-                letter-spacing: 0.25em;
+                letter-spacing: 0.22em;
                 color: var(--c-gold);
                 margin-bottom: 0.15rem;
             }
@@ -504,10 +537,10 @@
                 pointer-events: none;
             }
             .countdown__label {
-                font-size: 0.56rem;
-                letter-spacing: 0.4em;
+                font-size: 0.7rem;
+                letter-spacing: 0.35em;
                 text-transform: uppercase;
-                color: rgba(255, 255, 255, 0.4);
+                color: rgba(255, 255, 255, 0.55);
                 margin-bottom: 2.25rem;
                 position: relative;
             }
@@ -643,7 +676,7 @@
             }
             .photo-break__img {
                 width: 100%;
-                height: 280px;
+                height: clamp(220px, 72vw, 340px);
                 object-fit: cover;
                 display: block;
                 transition: transform 0.9s ease;
@@ -692,7 +725,8 @@
             }
             .event-info__venue {
                 font-family: var(--f-serif);
-                font-size: 1.2rem;
+                font-size: 1.45rem;
+                font-weight: 600;
                 margin-bottom: 0.4rem;
             }
             .event-info__address {
@@ -1113,8 +1147,8 @@
                 font-weight: 700;
             }
             .dresscode__swatch-lbl {
-                font-size: 0.42rem;
-                letter-spacing: 0.08em;
+                font-size: 0.68rem;
+                letter-spacing: 0.06em;
                 text-transform: uppercase;
                 color: var(--c-text-light);
             }
@@ -1524,7 +1558,7 @@
                 border: 1px solid rgba(201, 169, 110, 0.28);
                 color: var(--c-white);
                 font-family: var(--f-sans);
-                font-size: 0.9rem;
+                font-size: 1rem;
                 padding: 0.9rem 1.2rem;
                 outline: none;
                 transition: border-color 0.3s ease;
@@ -1719,17 +1753,17 @@
                 margin-top: 1.25rem;
                 background: none;
                 border: none;
-                color: rgba(255, 255, 255, 0.25);
+                color: rgba(255, 255, 255, 0.45);
                 font-family: var(--f-sans);
-                font-size: 0.58rem;
-                letter-spacing: 0.18em;
+                font-size: 0.68rem;
+                letter-spacing: 0.15em;
                 text-transform: uppercase;
                 cursor: pointer;
                 padding: 0.5rem;
                 transition: color 0.3s ease;
             }
             .rsvp__decline-link:hover {
-                color: rgba(255, 255, 255, 0.5);
+                color: rgba(255, 255, 255, 0.72);
             }
             /* ── Pase digital ── */
             .rsvp__ticket {
@@ -1801,10 +1835,10 @@
                 align-items: center;
             }
             .ticket__event-lbl {
-                font-size: 0.48rem;
-                letter-spacing: 0.2em;
+                font-size: 0.65rem;
+                letter-spacing: 0.15em;
                 text-transform: uppercase;
-                color: rgba(255, 255, 255, 0.28);
+                color: rgba(255, 255, 255, 0.45);
             }
             .ticket__event-val {
                 font-family: var(--f-serif);
@@ -1898,8 +1932,8 @@
                 margin-bottom: 0.75rem;
             }
             .rsvp__success-detail {
-                font-size: 0.75rem;
-                color: rgba(255, 255, 255, 0.38);
+                font-size: 0.78rem;
+                color: rgba(255, 255, 255, 0.60);
                 line-height: 2;
             }
 
@@ -1958,10 +1992,10 @@
                 z-index: 1;
             }
             .inv-footer__msg {
-                font-size: 0.52rem;
-                letter-spacing: 0.38em;
+                font-size: 0.68rem;
+                letter-spacing: 0.3em;
                 text-transform: uppercase;
-                color: rgba(201,169,110,0.5);
+                color: rgba(201,169,110,0.72);
                 margin-bottom: 0.75rem;
                 padding-top: 0.5rem;
             }
@@ -1984,11 +2018,56 @@
             }
             .inv-footer__date-line {
                 font-family: var(--f-serif);
-                font-size: 0.62rem;
-                letter-spacing: 0.38em;
-                color: rgba(201,169,110,0.38);
+                font-size: 0.72rem;
+                letter-spacing: 0.3em;
+                color: rgba(201,169,110,0.62);
                 margin-top: 0.6rem;
                 font-style: italic;
+            }
+
+            /* =============================================
+       BLOCK: rsvp-fab  (floating RSVP shortcut)
+       ============================================= */
+            .rsvp-fab {
+                position: fixed;
+                bottom: 1.75rem;
+                left: 50%;
+                transform: translateX(-50%) translateY(0);
+                z-index: 99;
+                background: linear-gradient(90deg, var(--c-terracotta) 0%, #d4875c 50%, var(--c-terracotta) 100%);
+                background-size: 200% auto;
+                color: var(--c-white);
+                border: none;
+                border-radius: 50px;
+                padding: 0.75rem 1.75rem;
+                font-family: var(--f-sans);
+                font-size: 0.68rem;
+                font-weight: 500;
+                letter-spacing: 0.2em;
+                text-transform: uppercase;
+                text-decoration: none;
+                box-shadow: 0 8px 28px rgba(183,110,73,0.5), 0 2px 8px rgba(0,0,0,0.15);
+                cursor: pointer;
+                transition: transform 0.45s cubic-bezier(0.34,1.56,0.64,1), opacity 0.35s ease, box-shadow 0.3s ease;
+                white-space: nowrap;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                animation: btn-shimmer 4s linear infinite;
+            }
+            .rsvp-fab:hover {
+                box-shadow: 0 14px 40px rgba(183,110,73,0.6);
+                transform: translateX(-50%) translateY(-3px);
+            }
+            .rsvp-fab.is-hidden {
+                opacity: 0;
+                transform: translateX(-50%) translateY(20px);
+                pointer-events: none;
+            }
+            .rsvp-fab__icon {
+                width: 14px;
+                height: 14px;
+                flex-shrink: 0;
             }
 
             /* =============================================
@@ -2423,6 +2502,30 @@
                 color: var(--c-text-mid);
                 font-weight: 600;
             }
+            .how-to-get__list {
+                list-style: none;
+                margin-top: 0.5rem;
+                display: flex;
+                flex-direction: column;
+                gap: 0.45rem;
+            }
+            .how-to-get__list li {
+                font-size: 0.76rem;
+                color: var(--c-text-light);
+                line-height: 1.55;
+                padding-left: 1rem;
+                position: relative;
+            }
+            .how-to-get__list li::before {
+                content: "·";
+                position: absolute;
+                left: 0;
+                color: var(--c-gold);
+                font-weight: 700;
+            }
+            .how-to-get__badge {
+                font-size: 0.6rem;
+            }
 
             /* =============================================
                BLOCK: gallery — Galería de fotos
@@ -2579,6 +2682,10 @@
         </style>
     </head>
     <body>
+        <!-- Fallback sin JS: muestra todo el contenido si el script no carga -->
+        <noscript>
+            <style>.js-fade { opacity: 1 !important; transform: none !important; }</style>
+        </noscript>
         <!-- PAGE REVEAL OVERLAY -->
         <div class="page-reveal" id="js-reveal"></div>
         <!-- GOLD PARTICLES -->
@@ -2593,6 +2700,14 @@
                 z-index: 5;
             "
         ></canvas>
+
+        <!-- RSVP FLOATING BUTTON -->
+        <a class="rsvp-fab" id="rsvp-fab" href="#rsvp" aria-label="Confirmar asistencia">
+            <svg class="rsvp-fab__icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+            </svg>
+            Confirmar Asistencia
+        </a>
 
         <!-- MUSIC PLAYER -->
         <div class="music-player">
@@ -2622,36 +2737,29 @@
                 <!-- TOP FLORAL -->
                 <div class="floral-band floral-band--top" aria-hidden="true">
                     <!-- Esquina superior izquierda: arreglo aéreo espejado, grande -->
-                    <img class="floral-deco"
-                         src="assets/flores-5.png" alt=""
+                    <img class="floral-deco" loading="lazy"
+                         src="assets/flores-5.webp" alt=""
                          style="width:290px; top:-10px; left:-40px; opacity:0.90; transform:scaleX(-1) rotate(-8deg);" />
                     <!-- Esquina superior derecha: ramo completo coral, grande -->
-                    <img class="floral-deco"
-                         src="assets/flores-1.png" alt=""
+                    <img class="floral-deco" loading="lazy"
+                         src="assets/flores-1.webp" alt=""
                          style="width:310px; top:-20px; right:-40px; opacity:0.88; transform:rotate(6deg);" />
                     <!-- Centro: acento mínimo de ligazón, muy sutil -->
-                    <img class="floral-deco"
-                         src="assets/flores-4.png" alt=""
+                    <img class="floral-deco" loading="lazy"
+                         src="assets/flores-4.webp" alt=""
                          style="width:130px; bottom:10px; left:50%; transform:translateX(-50%) rotate(-2deg); opacity:0.35;" />
                 </div>
 
                 <!-- HEADER -->
                 <section class="inv-header js-fade" style="position:relative; overflow:hidden;">
                     <!-- Floral esquina derecha: girasol/pampas — pequeño, solo asoma -->
-                    <img class="floral-deco"
-                         src="assets/flores-3.png" alt=""
+                    <img class="floral-deco" loading="lazy"
+                         src="assets/flores-3.webp" alt=""
                          style="width:145px; top:30px; right:-58px; opacity:0.42; transform:rotate(-12deg);" aria-hidden="true" />
                     <!-- Floral esquina izquierda: arreglo aéreo — pequeño, solo asoma -->
-                    <img class="floral-deco"
-                         src="assets/flores-5.png" alt=""
+                    <img class="floral-deco" loading="lazy"
+                         src="assets/flores-5.webp" alt=""
                          style="width:140px; top:60px; left:-58px; opacity:0.42; transform:scaleX(-1) rotate(8deg);" aria-hidden="true" />
-                    <p class="inv-header__verse">
-                        "Y sobre todas estas cosas,<br />
-                        vístanse de amor, que es el<br />
-                        vínculo perfecto"<br />
-                        <em>Colosenses 3:14</em>
-                    </p>
-
                     <h1 class="inv-header__monogram">K | E</h1>
                     <p class="inv-header__tagline">¡Nos Casamos!</p>
                     <div class="inv-header__divider-line">
@@ -2671,10 +2779,46 @@
                         <img
                             class="inv-header__photo"
                             alt="Karla y Eduardo"
-                            src="assets/Karla y Froyland/novios.jpg"
+                            src="assets/Karla y Froyland/novios.webp"
                         />
                     </div>
 
+                    <!-- NOMBRES — hero visual, antes de padres -->
+                    <div class="ornament-divider js-fade" aria-hidden="true">
+                        <img
+                            class="ornament-divider__img" loading="lazy"
+                            alt=""
+                            src="assets/flores-4.webp"
+                            style="width:190px; transform:rotate(-2deg);"
+                        />
+                    </div>
+
+                    <div class="names-display js-fade">
+                        <h2 class="names-display__name">Karla</h2>
+                        <span class="names-display__amp">&amp;</span>
+                        <h2 class="names-display__name">Eduardo</h2>
+                    </div>
+
+                    <div
+                        class="ornament-divider ornament-divider--flipped"
+                        aria-hidden="true"
+                    >
+                        <img
+                            class="ornament-divider__img" loading="lazy"
+                            alt=""
+                            src="assets/flores-4.webp"
+                            style="width:190px;"
+                        />
+                    </div>
+
+                    <!-- TEXTO DE INVITACIÓN — más personal -->
+                    <p class="inv-header__honor-text">
+                        Con el corazón lleno de alegría<br />
+                        te invitamos a ser parte de este<br />
+                        momento tan especial para nosotros
+                    </p>
+
+                    <!-- PADRES — después de los nombres -->
                     <div class="inv-header__parents js-fade">
                         <p>
                             Con nuestro amor, la bendición de Dios<br />y la de
@@ -2694,39 +2838,15 @@
                         <p>Froylan Martinez Martinez</p>
                     </div>
 
-                    <p class="inv-header__invite-text">Nosotros</p>
-
-                    <div class="ornament-divider js-fade" aria-hidden="true">
-                        <img
-                            class="ornament-divider__img"
-                            alt=""
-                            src="assets/flores-4.png"
-                            style="width:190px; transform:rotate(-2deg);"
-                        />
+                    <!-- VERSÍCULO — remate emocional después de los padres -->
+                    <div style="margin: 1.5rem 0 0.5rem;">
+                        <p class="inv-header__verse" style="margin-bottom:0;">
+                            "Y sobre todas estas cosas,<br />
+                            vístanse de amor, que es el<br />
+                            vínculo perfecto"<br />
+                            <em>Colosenses 3:14</em>
+                        </p>
                     </div>
-
-                    <div class="names-display js-fade">
-                        <h2 class="names-display__name">Karla</h2>
-                        <span class="names-display__amp">&amp;</span>
-                        <h2 class="names-display__name">Eduardo</h2>
-                    </div>
-
-                    <div
-                        class="ornament-divider ornament-divider--flipped"
-                        aria-hidden="true"
-                    >
-                        <img
-                            class="ornament-divider__img"
-                            alt=""
-                            src="assets/flores-4.png"
-                            style="width:190px;"
-                        />
-                    </div>
-
-                    <p class="inv-header__honor-text">
-                        Tenemos el honor de invitarte a<br />celebrar nuestra
-                        unión en matrimonio
-                    </p>
 
                     <div class="event-date js-fade">
                         <div><span class="event-date__label">Sábado</span></div>
@@ -2784,7 +2904,7 @@
                 <!-- PHOTO BREAK 1 -->
                 <div class="photo-break">
                     <img
-                        class="photo-break__img"
+                        class="photo-break__img" loading="lazy"
                         alt="Karla y Eduardo"
                         src="assets/Karla y Froyland/kye-1.jpg"
                     />
@@ -2793,8 +2913,8 @@
                 <!-- EVENT DETAILS -->
                 <section class="event-info js-fade" style="position:relative; overflow:hidden;">
                     <!-- Floral lateral derecho sutil -->
-                    <img class="floral-deco"
-                         src="assets/flores-2.png" alt=""
+                    <img class="floral-deco" loading="lazy"
+                         src="assets/flores-2.webp" alt=""
                          style="width:195px; top:15px; right:-55px; opacity:0.62; transform:rotate(-12deg);" aria-hidden="true" />
                     <svg
                         class="event-info__icon"
@@ -2850,26 +2970,26 @@
                 <!-- CÓMO LLEGAR -->
                 <section class="how-to-get js-fade" style="position:relative; overflow:hidden;">
                     <!-- Floral esquina superior derecha sutil -->
-                    <img class="floral-deco"
-                         src="assets/flores-2.png" alt=""
+                    <img class="floral-deco" loading="lazy"
+                         src="assets/flores-2.webp" alt=""
                          style="width:175px; top:-5px; right:-55px; opacity:0.38; transform:rotate(-10deg);" aria-hidden="true" />
                     <h3 class="section-heading">¿Cómo Llegar?</h3>
                     <div class="how-to-get__cards">
 
-                        <!-- HOTEL -->
+                        <!-- HOSPEDAJE -->
                         <div class="how-to-get__card">
                             <span class="how-to-get__badge">Hospedaje</span>
                             <p class="how-to-get__card-title">
                                 <svg class="how-to-get__card-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
                                 </svg>
-                                Hoteles Recomendados
+                                Hoteles cerca del venue
                             </p>
-                            <p class="how-to-get__card-text">
-                                A pocos minutos de la hacienda encontrarás varias opciones de hospedaje en San Andrés Cholula y Puebla centro.<br><br>
-                                <strong>Zona recomendada:</strong> San Andrés Cholula / Corredor Angelópolis<br>
-                                Busca disponibilidad con tiempo, los fines de semana se agotan rápido.
-                            </p>
+                            <ul class="how-to-get__list">
+                                <li>Zona Angelópolis y San Andrés Cholula — a 10 min</li>
+                                <li>Puebla centro histórico — a 20 min</li>
+                                <li>Reserva con anticipación, noviembre tiene alta demanda</li>
+                            </ul>
                         </div>
 
                         <!-- ESTACIONAMIENTO -->
@@ -2881,29 +3001,29 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10l2 2h10l2-2"/>
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 6l4 4m0 0l2 2m-2-2v6"/>
                                 </svg>
-                                Estacionamiento en el Venue
+                                Estacionamiento gratuito en el venue
                             </p>
-                            <p class="how-to-get__card-text">
-                                Hacienda Zerezotla cuenta con estacionamiento propio. Si planeas consumir alcohol, te recomendamos considerar un servicio de transporte.<br><br>
-                                <strong>Tip:</strong> Llega con 10–15 min de anticipación para apartar lugar cómodamente.
-                            </p>
+                            <ul class="how-to-get__list">
+                                <li>Hacienda Zerezotla cuenta con estacionamiento propio</li>
+                                <li>Llega 10–15 min antes para apartar lugar</li>
+                                <li>Si planeas beber, considera Uber o DiDi de regreso</li>
+                            </ul>
                         </div>
 
-                        <!-- TRANSPORTE -->
+                        <!-- CÓMO LLEGAR -->
                         <div class="how-to-get__card">
-                            <span class="how-to-get__badge">Transporte</span>
+                            <span class="how-to-get__badge">Cómo llegar</span>
                             <p class="how-to-get__card-title">
                                 <svg class="how-to-get__card-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
                                 </svg>
-                                Cómo Llegar
+                                Rutas desde las principales ciudades
                             </p>
-                            <p class="how-to-get__card-text">
-                                <strong>Desde Puebla centro:</strong> ~20 min en auto o taxi<br>
-                                <strong>Desde CDMX:</strong> ~2 hrs por la autopista México–Puebla (150D)<br>
-                                <strong>Uber / DiDi:</strong> Disponibles en la zona, muy recomendados para la noche<br><br>
-                                Usa Google Maps o Waze buscando <em>"Hacienda Zerezotla, San Andrés Cholula"</em> para la ruta más actualizada.
-                            </p>
+                            <ul class="how-to-get__list">
+                                <li>Desde Puebla centro — ~20 min en auto</li>
+                                <li>Desde CDMX — ~2 hrs por autopista 150D</li>
+                                <li>Uber y DiDi disponibles en la zona</li>
+                            </ul>
                         </div>
 
                     </div>
@@ -2912,21 +3032,21 @@
                 <!-- ITINERARY -->
                 <section class="timeline js-fade" style="position:relative; overflow:hidden;">
                     <!-- Floral esquina izquierda sutil -->
-                    <img class="floral-deco"
-                         src="assets/flores-4.png" alt=""
+                    <img class="floral-deco" loading="lazy"
+                         src="assets/flores-4.webp" alt=""
                          style="width:155px; top:10px; left:-48px; opacity:0.42; transform:rotate(8deg);" aria-hidden="true" />
-                    <h3 class="section-heading">Itinerario</h3>
+                    <h3 class="section-heading" style="margin-bottom:1.25rem;">Itinerario</h3>
 
                     <div
                         class="ornament-divider"
-                        style="margin-bottom: 2.25rem"
+                        style="margin-bottom: 0.75rem; margin-top: -1rem;"
                         aria-hidden="true"
                     >
                         <img
-                            class="ornament-divider__img"
+                            class="ornament-divider__img" loading="lazy"
                             alt=""
-                            src="assets/flores-2.png"
-                            style="width:210px; opacity:0.78; transform:rotate(4deg);"
+                            src="assets/flores-2.webp"
+                            style="width:175px; opacity:0.72; transform:rotate(4deg);"
                         />
                     </div>
 
@@ -3065,7 +3185,7 @@
                 <!-- PHOTO BREAK 2 -->
                 <div class="photo-break">
                     <img
-                        class="photo-break__img"
+                        class="photo-break__img" loading="lazy"
                         alt="Karla y Eduardo"
                         src="assets/Karla y Froyland/brazos.jpg"
                     />
@@ -3074,22 +3194,22 @@
                 <!-- NUESTRA HISTORIA -->
                 <section class="story js-fade" style="position:relative; overflow:hidden;">
                     <!-- Floral lateral derecho, nuestra historia -->
-                    <img class="floral-deco"
-                         src="assets/flores-1.png" alt=""
+                    <img class="floral-deco" loading="lazy"
+                         src="assets/flores-1.webp" alt=""
                          style="width:190px; top:10px; right:-50px; opacity:0.56; transform:rotate(-8deg);" aria-hidden="true" />
                     <h3 class="section-heading">Nuestra Historia</h3>
                     <div class="story__list">
                         <div class="story__item" style="transition-delay: 0.1s">
-                            <span class="story__year">01. El Encuentro</span>
+                            <span class="story__year">El Encuentro</span>
                             <div class="story__bar"></div>
                             <p class="story__text">
                                 Dos caminos distintos que la vida decidió cruzar.
-                                Desde ese primer instante algo cambió,
+                                Desde ese primer instante algo cambió —
                                 como si siempre hubiera estado escrito.
                             </p>
                         </div>
                         <div class="story__item" style="transition-delay: 0.2s">
-                            <span class="story__year">02. Crecer Juntos</span>
+                            <span class="story__year">Crecer Juntos</span>
                             <div class="story__bar"></div>
                             <p class="story__text">
                                 Conversaciones que no querían terminar,
@@ -3098,7 +3218,7 @@
                             </p>
                         </div>
                         <div class="story__item" style="transition-delay: 0.3s">
-                            <span class="story__year">03. El Sí</span>
+                            <span class="story__year">La Propuesta</span>
                             <div class="story__bar"></div>
                             <p class="story__text">
                                 Una pregunta, dos palabras y toda
@@ -3107,12 +3227,12 @@
                             </p>
                         </div>
                         <div class="story__item" style="transition-delay: 0.4s">
-                            <span class="story__year">04. Para Siempre</span>
+                            <span class="story__year">21 · Nov · 2026</span>
                             <div class="story__bar"></div>
                             <p class="story__text">
-                                El 21 de noviembre, ante Dios y las
-                                personas que más amamos, diremos
-                                <em>"Sí, acepto"</em> — y comenzará el mejor capítulo.
+                                Ante Dios y las personas que más amamos,
+                                diremos <em>"Sí, acepto"</em> —
+                                y comenzará el mejor capítulo de nuestra historia.
                             </p>
                         </div>
                     </div>
@@ -3121,8 +3241,8 @@
                 <!-- GALERÍA -->
                 <section class="gallery js-fade" style="position:relative; overflow:hidden;">
                     <!-- Floral esquina superior izquierda sutil -->
-                    <img class="floral-deco"
-                         src="assets/flores-5.png" alt=""
+                    <img class="floral-deco" loading="lazy"
+                         src="assets/flores-5.webp" alt=""
                          style="width:160px; top:0px; left:-50px; opacity:0.40; mix-blend-mode:multiply; transform:scaleX(-1) rotate(5deg);" aria-hidden="true" />
                     <h3 class="section-heading">Nuestra Galería</h3>
                     <p style="font-family:var(--f-serif);font-style:italic;font-size:0.85rem;color:var(--c-text-light);margin:-1.25rem 0 2rem;line-height:1.8;">Momentos que atesoran nuestro amor</p>
@@ -3132,10 +3252,9 @@
                         <!-- Foto principal — ancho completo -->
                         <div class="gallery__item gallery__item--wide" data-gallery-index="0">
                             <img
-                                class="gallery__img"
-                                src="assets/Karla y Froyland/novios.jpg"
+                                class="gallery__img" loading="lazy"
+                                src="assets/Karla y Froyland/brazos.jpg"
                                 alt="Karla y Eduardo"
-                                loading="lazy"
                             />
                             <div class="gallery__overlay">
                                 <svg class="gallery__zoom-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -3147,7 +3266,7 @@
                         <!-- Fila 2 -->
                         <div class="gallery__item" data-gallery-index="1">
                             <img
-                                class="gallery__img"
+                                class="gallery__img" loading="lazy"
                                 src="assets/Karla y Froyland/kye-1.jpg"
                                 alt="Karla y Eduardo"
                                 loading="lazy"
@@ -3160,7 +3279,7 @@
                         </div>
                         <div class="gallery__item" data-gallery-index="2">
                             <img
-                                class="gallery__img"
+                                class="gallery__img" loading="lazy"
                                 src="assets/Karla y Froyland/kye-2.jpg"
                                 alt="Karla y Eduardo"
                                 loading="lazy"
@@ -3175,10 +3294,9 @@
                         <!-- Fila 3 -->
                         <div class="gallery__item" data-gallery-index="3">
                             <img
-                                class="gallery__img"
-                                src="assets/Karla y Froyland/brazos.jpg"
+                                class="gallery__img" loading="lazy"
+                                src="assets/Karla y Froyland/novios.webp"
                                 alt="Karla y Eduardo"
-                                loading="lazy"
                             />
                             <div class="gallery__overlay">
                                 <svg class="gallery__zoom-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -3188,8 +3306,8 @@
                         </div>
                         <div class="gallery__item" data-gallery-index="4">
                             <img
-                                class="gallery__img"
-                                src="assets/Karla y Froyland/anillo.jpg"
+                                class="gallery__img" loading="lazy"
+                                src="assets/Karla y Froyland/anillo.webp"
                                 alt="El anillo"
                                 loading="lazy"
                             />
@@ -3203,7 +3321,7 @@
                         <!-- Fila 4 — retratos individuales -->
                         <div class="gallery__item" data-gallery-index="5">
                             <img
-                                class="gallery__img"
+                                class="gallery__img" loading="lazy"
                                 src="assets/Karla y Froyland/1-karla.jpg"
                                 alt="Karla"
                                 loading="lazy"
@@ -3216,7 +3334,7 @@
                         </div>
                         <div class="gallery__item" data-gallery-index="6">
                             <img
-                                class="gallery__img"
+                                class="gallery__img" loading="lazy"
                                 src="assets/Karla y Froyland/eduardo.jpg"
                                 alt="Eduardo"
                                 loading="lazy"
@@ -3243,8 +3361,8 @@
                 <!-- DRESS CODE -->
                 <section class="dresscode js-fade" style="position:relative; overflow:hidden;">
                     <!-- Floral lateral izquierdo sutil -->
-                    <img class="floral-deco"
-                         src="assets/flores-4.png" alt=""
+                    <img class="floral-deco" loading="lazy"
+                         src="assets/flores-4.webp" alt=""
                          style="width:185px; top:15px; left:-50px; opacity:0.65; transform:rotate(10deg);" aria-hidden="true" />
                     <h3 class="section-heading">Código de Vestimenta</h3>
                     <p class="dresscode__style">Semi Formal</p>
@@ -3305,7 +3423,7 @@
                                 style="background: #ffffff"
                                 title="Blanco — evitar"
                             ></div>
-                            <span class="dresscode__swatch-lbl">Evitar</span>
+                            <span class="dresscode__swatch-lbl">Blanco ✕</span>
                         </div>
                         <div class="dresscode__swatch-wrap">
                             <div
@@ -3313,7 +3431,7 @@
                                 style="background: #f0ead6"
                                 title="Beige — evitar"
                             ></div>
-                            <span class="dresscode__swatch-lbl">Evitar</span>
+                            <span class="dresscode__swatch-lbl">Beige ✕</span>
                         </div>
                     </div>
                     <p class="dresscode__note">
@@ -3325,8 +3443,8 @@
                 <!-- GIFTS -->
                 <section class="gifts js-fade" style="position:relative; overflow:hidden;">
                     <!-- Floral lateral izquierdo, regalos -->
-                    <img class="floral-deco"
-                         src="assets/flores-3.png" alt=""
+                    <img class="floral-deco" loading="lazy"
+                         src="assets/flores-3.webp" alt=""
                          style="width:195px; top:10px; left:-55px; opacity:0.55; transform:scaleX(-1) rotate(6deg);" aria-hidden="true" />
                     <svg
                         class="gifts__icon"
@@ -3344,18 +3462,28 @@
                     <h3 class="section-heading">Sugerencia de Regalos</h3>
                     <p class="gifts__desc">
                         Tu presencia es el mejor regalo que podemos recibir.<br />
-                        Si deseas tener un detalle con nosotros, visita<br />
-                        nuestro wishlist donde encontrarás todo lo que<br />
-                        nos hace ilusión.
+                        Si deseas tener un detalle con nosotros,<br />
+                        con mucho amor te dejamos estas opciones.
                     </p>
-                    <p class="gifts__option-lbl">Nuestro Wishlist</p>
+
+                    <!-- Opción 1: Lluvia de sobres -->
+                    <p class="gifts__option-lbl">Lluvia de Sobres</p>
+                    <div class="gifts__account" id="clabe-card" style="cursor:pointer;" onclick="copyClabe()" title="Toca para copiar">
+                        <p class="gifts__account-name">Karla Teyssier Mino</p>
+                        <p>BBVA · Cuenta: <strong id="clabe-num">XXXX XXXX XXXX</strong></p>
+                        <p>CLABE: <strong id="clabe-val">XXXXXXXXXXXXXXXXXX</strong></p>
+                        <p id="clabe-copied" style="color:var(--c-gold);font-size:0.65rem;letter-spacing:0.1em;margin-top:0.5rem;opacity:0;transition:opacity 0.3s ease;">✓ Copiado al portapapeles</p>
+                    </div>
+
+                    <!-- Opción 2: Wishlist -->
+                    <p class="gifts__option-lbl" style="margin-top:2rem;">O pregúntanos por nuestro Wishlist</p>
                     <a
                         class="btn btn--gold btn--lg"
                         href="https://wa.me/527721204509?text=Hola%20Karla%20y%20Eduardo%20%F0%9F%92%9B%20quisiera%20ver%20su%20wishlist%20de%20regalos.%20%C2%A1Muchas%20gracias!"
                         target="_blank"
                         rel="noopener noreferrer"
                     >
-                        Preguntar por el wishlist
+                        Ver wishlist por WhatsApp
                     </a>
                 </section>
 
@@ -3769,8 +3897,8 @@
                     <!-- Foto de pareja con fade a oscuro -->
                     <div class="inv-footer__photo-wrap">
                         <img
-                            class="inv-footer__couple-photo"
-                            src="assets/Karla y Froyland/novios.jpg"
+                            class="inv-footer__couple-photo" loading="lazy"
+                            src="assets/Karla y Froyland/novios.webp"
                             alt="Karla y Eduardo"
                             loading="lazy"
                         />
@@ -3781,9 +3909,9 @@
 
                         <div class="ornament-divider" aria-hidden="true">
                             <img
-                                class="ornament-divider__img"
+                                class="ornament-divider__img" loading="lazy"
                                 alt=""
-                                src="assets/flores-4.png"
+                                src="assets/flores-4.webp"
                                 style="width:150px; transform:rotate(-2deg); mix-blend-mode:screen; opacity:0.75;"
                             />
                         </div>
@@ -3799,16 +3927,16 @@
                         aria-hidden="true"
                     >
                         <!-- Esquina inferior izquierda: ramo completo espejado -->
-                        <img class="floral-deco"
-                             src="assets/flores-1.png" alt=""
+                        <img class="floral-deco" loading="lazy"
+                             src="assets/flores-1.webp" alt=""
                              style="width:300px; bottom:-10px; left:-35px; opacity:0.82; mix-blend-mode:screen; transform:scaleX(-1) rotate(5deg);" />
                         <!-- Esquina inferior derecha: girasol/pampas -->
-                        <img class="floral-deco"
-                             src="assets/flores-3.png" alt=""
+                        <img class="floral-deco" loading="lazy"
+                             src="assets/flores-3.webp" alt=""
                              style="width:285px; bottom:-10px; right:-35px; opacity:0.80; mix-blend-mode:screen; transform:rotate(-4deg);" />
                         <!-- Centro superior de la banda: arreglo horizontal que une -->
-                        <img class="floral-deco"
-                             src="assets/flores-2.png" alt=""
+                        <img class="floral-deco" loading="lazy"
+                             src="assets/flores-2.webp" alt=""
                              style="width:220px; top:5px; left:50%; mix-blend-mode:screen; transform:translateX(-50%) rotate(3deg); opacity:0.55;" />
                     </div>
                 </footer>
@@ -4417,6 +4545,26 @@
                 });
             })();
 
+            /* === RSVP FAB: ocultar cuando el usuario llega al formulario === */
+            (function () {
+                var fab = document.getElementById("rsvp-fab");
+                var rsvpSection = document.getElementById("rsvp");
+                if (!fab || !rsvpSection) return;
+                var fabObserver = new IntersectionObserver(
+                    function (entries) {
+                        entries.forEach(function (e) {
+                            if (e.isIntersecting) {
+                                fab.classList.add("is-hidden");
+                            } else {
+                                fab.classList.remove("is-hidden");
+                            }
+                        });
+                    },
+                    { threshold: 0.15 }
+                );
+                fabObserver.observe(rsvpSection);
+            })();
+
             /* === RSVP === */
             (function () {
                 var SUPABASE_URL = "https://kdpgdgulrekryxqtewtr.supabase.co";
@@ -4846,11 +4994,11 @@
             /* === GALLERY LIGHTBOX === */
             (function () {
                 var galleryPhotos = [
-                    "assets/Karla y Froyland/novios.jpg",
+                    "assets/Karla y Froyland/novios.webp",
                     "assets/Karla y Froyland/kye-1.jpg",
                     "assets/Karla y Froyland/kye-2.jpg",
                     "assets/Karla y Froyland/brazos.jpg",
-                    "assets/Karla y Froyland/anillo.jpg",
+                    "assets/Karla y Froyland/anillo.webp",
                     "assets/Karla y Froyland/1-karla.jpg",
                     "assets/Karla y Froyland/eduardo.jpg"
                 ];
@@ -4941,6 +5089,36 @@
                     on = !on;
                 });
             })();
+
+            /* ── Copy CLABE ───────────────────────────────────── */
+            function copyClabe() {
+                var clabe = document.getElementById("clabe-val").textContent.trim();
+                if (!clabe || clabe.startsWith("XXX")) return;
+                navigator.clipboard.writeText(clabe).then(function () {
+                    var msg = document.getElementById("clabe-copied");
+                    msg.style.opacity = "1";
+                    setTimeout(function () { msg.style.opacity = "0"; }, 2500);
+                }).catch(function () {
+                    /* fallback para WebViews sin clipboard API */
+                    var el = document.createElement("textarea");
+                    el.value = clabe;
+                    el.style.position = "fixed"; el.style.opacity = "0";
+                    document.body.appendChild(el);
+                    el.select();
+                    document.execCommand("copy");
+                    document.body.removeChild(el);
+                    var msg = document.getElementById("clabe-copied");
+                    msg.style.opacity = "1";
+                    setTimeout(function () { msg.style.opacity = "0"; }, 2500);
+                });
+            }
+
+            /* ── PWA: Service Worker ──────────────────────────── */
+            if ("serviceWorker" in navigator) {
+                window.addEventListener("load", function () {
+                    navigator.serviceWorker.register("./sw.js").catch(function () {});
+                });
+            }
         </script>
     </body>
 </html>
