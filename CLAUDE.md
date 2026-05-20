@@ -4,12 +4,19 @@
 
 Sistema completo de invitación digital premium para la boda de **Karla y Eduardo**, el **21 de noviembre de 2026** en Hacienda Zerezotla, San Andrés Cholula, Puebla. No es solo una invitación: es una plataforma de gestión de boda end-to-end.
 
-## Rol de Trabajo
+---
 
-- Actuar como **experto UX/UI + arquitecto de sistemas**
-- Ser honesto y directo: si el usuario propone algo, evaluarlo con criterio propio antes de implementar
-- Priorizar funcionalidad real, interactividad y valor para gestión de la boda
-- El usuario es el organizador principal; puede no tener siempre la razón técnica o de diseño — decirlo con tacto
+## Instrucciones de Comportamiento (respetar siempre)
+
+- Actuar como **experto UX/UI + arquitecto de sistemas + diseñador gráfico**
+- Ser honesto y directo: evaluar cualquier propuesta del usuario con criterio propio antes de implementar
+- Cuando el usuario diga "dale" o "sí" — implementar todo lo discutido de una sola vez sin preguntar más
+- Auditar como diseñador gráfico experto en invitaciones digitales: cuidar UX, UI, tipografía, espaciado, contraste, jerarquía visual
+- Cuando se audite, identificar problemas con evidencia del código (línea + valor real), no suposiciones
+- Siempre leer el código antes de proponer cambios — nunca asumir el estado actual
+- El usuario es Eduardo, el organizador; puede no tener siempre la razón técnica — decirlo con tacto
+- WhatsApp en móvil es el canal principal — todas las decisiones de diseño deben priorizar mobile-first
+- Priorizar funcionalidad real, interactividad y valor operativo para gestión de la boda
 
 ---
 
@@ -24,13 +31,15 @@ Sistema completo de invitación digital premium para la boda de **Karla y Eduard
 | Tipografía | Google Fonts: Playfair Display, Montserrat, Great Vibes |
 | Mensajería | WhatsApp (wa.me URLs) |
 | Animaciones | Canvas API + CSS transitions + Intersection Observer |
+| Imágenes | WebP (convertidas con cwebp, calidad 82-85) |
+| PWA | manifest.json + sw.js (service worker con cache offline) |
 
 ### Variables de entorno expuestas (JS público)
 ```
-SUPABASE_URL    = https://kdpgdgulrekryxqtewtr.supabase.co
+SUPABASE_URL      = https://kdpgdgulrekryxqtewtr.supabase.co
 SUPABASE_ANON_KEY = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtkcGdkZ3VscmVrcnl4cXRld3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgzNTI0NDEsImV4cCI6MjA5MzkyODQ0MX0.T6_iQjxOWX82QQHPuBI5cewOoT3UWsOQ7bvjX9GP82E
-ADMIN_PASSWORD  = KarlaEduardo2026
-COUPLE_PHONE    = 527721204509
+ADMIN_PASSWORD    = KarlaEduardo2026
+COUPLE_PHONE      = 527721204509
 ```
 
 ---
@@ -39,11 +48,23 @@ COUPLE_PHONE    = 527721204509
 
 | Archivo | Rol |
 |---------|-----|
-| `index.html` | Invitación pública + flujo RSVP completo (~4,290 líneas) |
-| `admin.html` | Dashboard de gestión (~2,180 líneas) |
-| `assets/` | Imágenes, logos, fotos de pareja |
-| `familias.csv` | Seed/export de familias (eliminado en working tree) |
-| `.github/workflows/keep-alive.yml` | GitHub Action que hace ping a Supabase cada 3 días para evitar pausa por inactividad |
+| `index.html` | Invitación pública + flujo RSVP completo (~5,200 líneas tras rediseño) |
+| `admin.html` | Dashboard de gestión con tabs (~2,500 líneas tras rediseño) |
+| `manifest.json` | PWA manifest — permite instalar la invitación en pantalla de inicio |
+| `sw.js` | Service Worker — cache offline de recursos estáticos; NO cachea Supabase |
+| `assets/flores-*.webp` | Arreglos florales decorativos (convertidos de PNG a WebP, ~85% más ligeros) |
+| `assets/Karla y Froyland/` | Fotos de la pareja (JPG + WebP donde aplica) |
+
+### Assets críticos (WebP convertidos)
+```
+flores-1.webp  556K  (era 3.1MB PNG)
+flores-2.webp  240K  (era 2.4MB PNG)
+flores-3.webp  424K  (era 2.1MB PNG)
+flores-4.webp  264K  (era 1.9MB PNG)
+flores-5.webp  244K  (era 1.8MB PNG)
+novios.webp     76K  (era 120K JPG)
+anillo.webp     56K  (era 104K JPG)
+```
 
 ---
 
@@ -76,7 +97,7 @@ created_at     TIMESTAMP
 
 ---
 
-## Funcionalidades Actuales
+## Funcionalidades Implementadas
 
 ### Para Invitados (index.html)
 - [x] Invitación personalizada por código URL (`?code=ACEVEDO-01`)
@@ -84,22 +105,80 @@ created_at     TIMESTAMP
 - [x] Ticket digital con QR y datos de mesa
 - [x] Countdown timer al evento
 - [x] Descarga de ICS (agregar al calendario)
-- [x] Mapa textual de la hacienda (salón)
-- [x] Reproductor de música
+- [x] Reproductor de música con autoplay fade-in al primer toque del usuario
 - [x] Link a WhatsApp de pareja para cambiar RSVP
 - [x] Animaciones de partículas (Canvas)
+- [x] **Sistema floral completo**: 20 instancias de arreglos florales usando flores-1 a flores-5.webp con `mix-blend-mode: multiply` en secciones claras y `screen` en secciones oscuras
+- [x] **Galería interactiva** con lightbox (el div del lightbox está fuera de `.invitation` para evitar el bug de `transform` containment)
+- [x] **Sección ¿Cómo Llegar?** con 3 tarjetas escaneables (bullets con punto dorado, no párrafos)
+- [x] **Timeline/Itinerario** del evento (recepción → entrada novios → brindis → banquete → fiesta)
+- [x] **Nuestra Historia** con 4 momentos (El Encuentro, Crecer Juntos, La Propuesta, 21·Nov·2026)
+- [x] **Dresscode** "Semi Formal" con paleta de swatches y colores prohibidos (Blanco ✕ / Beige ✕)
+- [x] **Sección de Regalos** con lluvia de sobres (CLABE con copy-to-clipboard) + wishlist WhatsApp
+- [x] **RSVP FAB flotante** que desaparece al llegar al formulario (IntersectionObserver)
+- [x] **Open Graph meta tags** para preview en WhatsApp (imagen, título, descripción)
+- [x] **PWA**: manifest.json + service worker (funciona offline después de primer carga)
+- [x] **Preload** de imágenes above-the-fold (flores-5, flores-1, novios)
+- [x] **37 imágenes** con `loading="lazy"`
+- [x] **noscript fallback** — si JS falla, el contenido sigue visible
 
 ### Para Admin (admin.html)
-- [x] Login con contraseña
+- [x] Login con contraseña persistente en `localStorage` (no sessionStorage — no se pierde al cerrar)
 - [x] CRUD completo de familias
-- [x] Estadísticas en tiempo real (confirmadas, pendientes, pax total)
+- [x] **Modal para Nueva Familia** (antes era inline expandible)
+- [x] **Auto-generación de código único** desde el nombre (GARCIA-01, GARCIA-02... consultando allData en memoria)
+- [x] Estadísticas con **colores semánticos**: verde=confirmadas, ámbar=pendientes
+- [x] **Badge de pendientes** en el tab de Resumen (punto rojo con número)
+- [x] **Countdown** al evento en el Resumen
 - [x] Asignación de mesas (18 mesas × 10 pax)
 - [x] Alerta de sobrecapacidad por mesa
-- [x] Modo check-in (día del evento, filtro por código/nombre)
+- [x] Modo check-in (día del evento)
 - [x] Export a CSV
 - [x] Envío de invitación por WhatsApp por familia
-- [x] Filtros por grupo (novia/novio/amigos/trabajo)
-- [x] Búsqueda en tiempo real
+- [x] Filtros por grupo (chips horizontales con scroll)
+- [x] Búsqueda en tiempo real con ícono lupa
+- [x] **Warning visual** cuando la URL del sitio es `file://` o `localhost`
+- [x] **Auto-detect URL** del sitio desde window.location al primer login
+
+---
+
+## Arquitectura del Admin — Sistema de Tabs
+
+El admin es una **app shell** con `position: fixed; inset: 0`:
+
+```
+┌──────────────────────────────┐
+│  App Header (56px)           │
+│  ← Invitación  K&E   ⚙      │
+├──────────────────────────────┤
+│                              │
+│  .tab-content                │
+│  (overflow-y: auto)          │
+│                              │
+├──────────────────────────────┤
+│  Bottom Nav (62px)           │
+│  📊 Resumen │ 👥 Familias    │
+│  🪑 Mesas   │ ✅ Check-in    │
+└──────────────────────────────┘
+```
+
+### Tabs y su contenido:
+- **`#tab-resumen`** — Hero countdown, stats 4 cards, progress bars, sin-mesa alert, recordatorios, acciones rápidas (actualizar/CSV), botón check-in, cerrar sesión
+- **`#tab-familias`** — Toolbar (filtros + botón Nueva), search, tabla de familias
+- **`#tab-mesas`** — Leyenda de colores, grid de 18 mesas
+- **Check-in** — Abre el overlay existente `#checkin-overlay`
+
+### Settings modal (`#settings-overlay`)
+URL del sitio — accesible con el ícono ⚙ del header. No estorba en el flujo diario.
+
+### JS clave del admin:
+- `switchTab(name)` — cambia entre tabs, hace scroll al top del contenido
+- `showMesasView()` → llama a `switchTab('mesas')`
+- `openNfModal()` / `closeNfModal()` — modal nueva familia
+- `autoGenerateCode(name)` — genera GARCIA-01, GARCIA-02... evitando duplicados contra allData
+- `updatePendingBadge(count)` — badge rojo en nav de Resumen
+- `openSettings()` / `closeSettings()` — modal de configuración URL
+- Login: `localStorage.setItem("ke-admin", "1")` / `classList.add("is-visible")`
 
 ---
 
@@ -111,9 +190,31 @@ Color secundario: #b76e49  (Terracota)
 Fondo claro:      #f7f4ee  (Pergamino)
 Texto oscuro:     #1e1410  (Oscuro profundo)
 Texto normal:     #2c2c2c
+Confirmado:       #7ec8a0  (Verde suave)
+Alerta:           #e08888  (Rojo suave)
 ```
 
-Estilo: Lujo premium. Bandas florales, bordes dorados, tipografía serif cursiva, gradientes elegantes.
+### Sistema Floral
+Las 5 imágenes florales se usan con estas reglas:
+- Sobre fondo pergamino → `mix-blend-mode: multiply` (todas)
+- Sobre fondo oscuro (footer, countdown) → `mix-blend-mode: screen`
+- flores-4 y flores-5 tienen **fondo blanco** → blend perfecto en multiply
+- flores-1, 2, 3 tienen fondos cálidos → crean vignette artístico en multiply
+
+### Estructura del Header de la Invitación (orden correcto)
+```
+1. Top floral band (flores-5 izq + flores-1 der + flores-4 centro sutil)
+2. Monograma K|E + "¡Nos Casamos!"
+3. Foto de la pareja (96% width, marco dorado)
+4. Floral ornament (flores-4) — arriba de los nombres
+5. Karla & Eduardo (script dorado shimmer)
+6. Floral ornament (flores-4 flipped) — debajo de los nombres
+7. Texto de invitación ("Con el corazón lleno de alegría...")
+8. Versículo Colosenses 3:14
+9. Padres de la novia y del novio
+10. Degradado de transición parchment → oscuro (::after del inv-header)
+11. Countdown oscuro (dark section)
+```
 
 ---
 
@@ -127,58 +228,17 @@ Estilo: Lujo premium. Bandas florales, bordes dorados, tipografía serif cursiva
 
 ---
 
-## Análisis Competitivo: ¿Qué tienen los mejores sistemas de invitación?
+## Bugs Corregidos en Esta Sesión (no volver a introducir)
 
-Sistemas analizados: **Zola, The Knot, Joy (withjoy.com), RSVPify, Paperless Post, Minted**.
+1. **Lightbox no cerraba** — Causa: `.invitation` tiene `animation: card-rise` con `fill-mode: both`, dejando `transform: scale(1)` activo. Eso convierte `.invitation` en containing block de `position: fixed`. **Fix: mover `#gallery-lightbox` fuera de `<main>`, como hijo directo de `<body>`.**
 
-### Lo que YA tiene este proyecto (ventaja real)
-- Personalización por código — Zola y The Knot también lo tienen
-- RSVP con selección de nombres específicos — pocas plataformas lo hacen así
-- Check-in para el día del evento — RSVPify lo tiene de pago; aquí es gratis
-- Integración WhatsApp — único en el mercado latinoamericano
-- Sin subscripción mensual — Zola cobra hasta $99/mes por features equivalentes
+2. **Admin panel no respetaba CSS `order`** — Causa: JS hacía `panel.style.display = 'block'` como inline style, anulando el `display: flex` del media query. **Fix: usar `classList.add('is-visible')` y definir `.is-visible { display: flex }` en el CSS.**
 
-### Mejoras Prioritarias (GAP vs. competencia)
+3. **Flores del bottom band invisibles** — Causa: `mix-blend-mode: multiply` sobre fondo oscuro oscurece los colores a negro. **Fix: `mix-blend-mode: screen` para elementos sobre fondos oscuros.**
 
-#### 🔴 Críticas — Faltan en el sistema, muy impactantes
+4. **Galería llama `onload` duplicado** — Algunos `<img>` tenían `loading="lazy"` dos veces tras el `sed` masivo. **Fix: verificar con `grep -c 'loading="lazy".*loading="lazy"'`.**
 
-1. **Mapa interactivo embebido** — Zola y Joy usan Google Maps embed o Waze. Actualmente solo hay texto y un mapa SVG decorativo del salón. Los invitados necesitan cómo llegar fácilmente desde el celular.
-
-2. **Información práctica del evento** — Todos los sistemas top tienen una sección con:
-   - Código de vestimenta (dress code)
-   - Cómo llegar (auto, Uber, estacionamiento)
-   - Hotel/hospedaje recomendado
-   - Hora de apertura de puertas vs. ceremonia
-
-3. **Mesa de regalos / lista de bodas** — Zola y The Knot lo integran nativamente. Una sección con link a Amazon, Liverpool, o cuenta bancaria directa es estándar.
-
-4. **Libro de visitas digital** — Joy lo tiene como feature estrella. Guests pueden dejar mensajes/fotos pre-boda. Genera mucho engagement y es un recuerdo valioso.
-
-5. **Notificaciones automáticas de RSVP** — RSVPify envía emails automáticos. Aquí todo es manual por WhatsApp. Al menos una notificación automática al confirmar (al admin) mejoraría mucho.
-
-#### 🟡 Importantes — Mejoran significativamente la UX
-
-6. **Check-in por escaneo de QR** — El ticket ya tiene QR generado, pero el admin no tiene un modo de escaneo real. Con la cámara del celular y un escáner JS podría funcionar como check-in real.
-
-7. **Restricciones dietéticas estructuradas** — Joy y Zola tienen checkboxes para vegetariano/vegano/sin gluten. Aquí es solo texto libre en `notes`. Datos desestructurados hacen difícil planificar con el catering.
-
-8. **Estadísticas visuales (charts)** — RSVPify muestra gráficas de confirmación en tiempo real. El admin actual solo tiene números. Una gráfica de dona o barras con Chart.js (CDN) daría mucha visibilidad.
-
-9. **Galería de fotos interactiva** — Minted y Joy tienen slider de fotos de la pareja. Las fotos están en assets pero no hay galería presentada.
-
-10. **Timeline/Itinerario del evento** — "5pm recepción → 7pm cena → 10pm baile → 1am cierre". Joy lo muestra como línea de tiempo vertical animada.
-
-#### 🟢 Nice-to-have — Diferenciadores premium
-
-11. **Hashtag para redes sociales** — #KarlaEduardo2026 con instrucciones y galería live. Zola genera uno automático.
-
-12. **Modo PWA (Progressive Web App)** — Agregar manifest.json y service worker para que invitados puedan "instalar" la invitación en su celular. Cero costo, alto impacto.
-
-13. **Acompañante/+1 con nombre propio** — Actualmente los nombres son texto libre. Permitir que el invitado registre el nombre de su +1 en el RSVP.
-
-14. **Historial de cambios de RSVP** — Si una familia cambia de "sí" a "no" o viceversa, no hay log. Para bodas grandes, este historial es valioso.
-
-15. **Dashboard de mesas visual** — Un mapa visual drag-and-drop de mesas como Zola ofrece sería el feature más premium. Por ahora solo hay listas.
+5. **iOS auto-zoom en formularios** — Causa: inputs con `font-size < 1rem` (16px) disparan zoom automático en Safari iOS. **Fix: todos los `input` y `textarea` con mínimo `font-size: 1rem`.**
 
 ---
 
@@ -187,22 +247,25 @@ Sistemas analizados: **Zola, The Knot, Joy (withjoy.com), RSVPify, Paperless Pos
 ### Convenciones
 - Sin frameworks — seguir con Vanilla JS
 - Supabase como único backend — no agregar otro servidor
-- Cambios en `index.html` afectan a invitados; cambios en `admin.html` son para Eduardo/Karla
+- Cambios en `index.html` afectan a invitados; cambios en `admin.html` son para Eduardo
 - Mantener el estilo visual premium: dorado, serif, elegante
 - WhatsApp es el canal de comunicación principal (no email)
+- Imágenes nuevas → convertir a WebP con `cwebp -q 82 -m 6 input.png -o output.webp`
+- Verificar siempre que `mix-blend-mode` sea `multiply` (claro) o `screen` (oscuro)
 
-### Patrones de código usados
+### Patrones de código
 - Fetch API para todas las llamadas a Supabase
-- `localStorage`/`sessionStorage` para sesión admin
+- `localStorage` para sesión admin (persiste aunque cierren el navegador)
 - `URLSearchParams` para leer el código de la URL (`?code=`)
-- Intersection Observer para animaciones de scroll
+- Intersection Observer para animaciones de scroll y RSVP FAB
 - `Canvas API` para partículas decorativas
+- `cwebp` CLI para comprimir imágenes PNG → WebP
 
-### Cómo agregar un feature nuevo
-1. Decidir si va en `index.html` (guest-facing) o `admin.html`
-2. Si necesita datos nuevos → agregar columna en Supabase primero
-3. Mantener el estilo visual existente (variables CSS definidas)
-4. Probar en móvil — la mayoría de invitados abrirán desde WhatsApp (WebView)
+### Checklist antes de hacer cambios en floral/layout
+1. ¿El elemento está sobre fondo claro (pergamino) o oscuro? → determina el blend mode
+2. ¿El elemento usa `transform`? → puede afectar `position: fixed` de hijos
+3. ¿El JS del lightbox sigue siendo hijo de `<body>` y no de `.invitation`?
+4. ¿Los nuevos `<img>` tienen `loading="lazy"` (excepto above-the-fold)?
 
 ---
 
@@ -213,12 +276,20 @@ Sistemas analizados: **Zola, The Knot, Joy (withjoy.com), RSVPify, Paperless Pos
 - El sistema se usa principalmente desde **WhatsApp en móvil**
 - Eduardo gestiona el admin; los invitados solo ven index.html
 - No hay servidor propio — todo es estático + Supabase
-- **Supabase Free tier pausa proyectos sin actividad por 7 días.** El GitHub Action `keep-alive.yml` hace ping cada 3 días para evitarlo. Si alguna vez el admin muestra "Error de conexión", verificar primero si el proyecto está pausado en supabase.com.
+- **Supabase Free tier pausa proyectos sin actividad por 7 días.** Si el admin muestra "Error de conexión", verificar si el proyecto está pausado en supabase.com
+- **La CLABE en la sección de Regalos tiene `XXXX` de placeholder** — Eduardo debe reemplazarla con sus datos reales de cuenta bancaria
 
 ---
 
-## Pendientes Conocidos (al momento de este análisis)
+## Pendientes / Próximas Iteraciones
 
-- `familias.csv` y `README.md` fueron eliminados del working tree (git status muestra `D`)
-- Nuevas fotos en `assets/Karla y Froyland/` sin commitear
-- Password de admin en texto plano en JS — aceptable para este caso de uso
+### Alto impacto (aún no implementado)
+- [ ] **QR Scanner en admin** — para check-in real el día del evento usando jsQR + cámara del celular
+- [ ] **Libro de visitas digital** — invitados dejan mensajes pre-boda (requiere tabla Supabase nueva)
+- [ ] **Despliegue en GitHub Pages o Netlify** — actualmente solo funciona en `file://` local; los links de WhatsApp no funcionarán hasta que esté en una URL pública
+- [ ] **Llenar CLABE real** en la sección de Regalos de index.html
+
+### Nice to have
+- [ ] Hashtag #KarlaEduardo2026 en la invitación
+- [ ] Historial de cambios de RSVP
+- [ ] Gráficas de dona/barras en el admin (Chart.js CDN)
