@@ -6,8 +6,8 @@
         <title>Invitación de Boda - Karla &amp; Eduardo</title>
 
         <!-- Preload recursos críticos above-the-fold -->
-        <link rel="preload" as="image" href="assets/flores-5.webp" />
-        <link rel="preload" as="image" href="assets/flores-1.webp" />
+        <link rel="preload" as="image" href="assets/flores-4.webp" />
+        <link rel="preload" as="image" href="assets/flores-2.webp" />
         <link rel="preload" as="image" href="assets/Karla y Froyland/novios.webp" />
 
         <!-- PWA -->
@@ -173,8 +173,8 @@
                 background-color: var(--c-parchment);
                 box-shadow: var(--shadow-card);
                 overflow: hidden;
-                border-left: 7px solid rgba(255, 255, 255, 0.6);
-                border-right: 7px solid rgba(255, 255, 255, 0.6);
+                border-left: 4px solid rgba(255, 255, 255, 0.18);
+                border-right: 4px solid rgba(255, 255, 255, 0.18);
                 position: relative;
                 outline: 2px solid rgba(201, 169, 110, 0.12);
                 outline-offset: -20px;
@@ -515,7 +515,7 @@
                     var(--c-dark-mid) 50%,
                     var(--c-dark-lt) 100%
                 );
-                padding: 4.5rem 2rem;
+                padding: 3rem 2rem;
                 text-align: center;
                 position: relative;
                 overflow: hidden;
@@ -1310,7 +1310,7 @@
                     var(--c-dark-mid) 50%,
                     var(--c-dark-lt) 100%
                 );
-                padding: 5rem 2.5rem;
+                padding: 3.5rem 2.5rem;
                 text-align: center;
                 position: relative;
                 overflow: hidden;
@@ -1522,10 +1522,15 @@
 
             /* Botones de evento agrupados */
             .event-info__btns {
-                display: flex;
-                flex-wrap: wrap;
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                grid-template-rows: auto auto;
                 gap: 0.75rem;
-                justify-content: center;
+                max-width: 320px;
+                margin: 0 auto;
+            }
+            .event-info__btns > :last-child {
+                grid-column: 1 / -1;
             }
 
             /* Countdown done script glow pulse */
@@ -2797,31 +2802,16 @@
             <!-- MAIN INVITATION -->
             <main class="invitation" role="main">
                 <!-- TOP FLORAL -->
-                <div class="floral-band floral-band--top" aria-hidden="true">
-                    <!-- Esquina superior izquierda: arreglo aéreo espejado, grande -->
-                    <img class="floral-deco" loading="lazy"
-                         src="assets/flores-5.webp" alt=""
-                         style="width:290px; top:-10px; left:-40px; opacity:0.90; transform:scaleX(-1) rotate(-8deg);" />
-                    <!-- Esquina superior derecha: ramo completo coral, grande -->
-                    <img class="floral-deco" loading="lazy"
-                         src="assets/flores-1.webp" alt=""
-                         style="width:310px; top:-20px; right:-40px; opacity:0.88; transform:rotate(6deg);" />
-                    <!-- Centro: acento mínimo de ligazón, muy sutil -->
-                    <img class="floral-deco" loading="lazy"
-                         src="assets/flores-4.webp" alt=""
-                         style="width:130px; bottom:10px; left:50%; transform:translateX(-50%) rotate(-2deg); opacity:0.35;" />
-                </div>
-
                 <!-- HEADER -->
                 <section class="inv-header js-fade" style="position:relative; overflow:hidden;">
-                    <!-- Floral esquina derecha: girasol/pampas — pequeño, solo asoma -->
+                    <!-- Ramo esquina superior derecha: flores-4, asoma parcialmente -->
+                    <img class="floral-deco"
+                         src="assets/flores-4.webp" alt=""
+                         style="width:210px; top:-30px; right:-55px; opacity:0.88;" aria-hidden="true" />
+                    <!-- Ramo esquina superior izquierda: flores-2 espejado, complemento más contenido -->
                     <img class="floral-deco" loading="lazy"
-                         src="assets/flores-3.webp" alt=""
-                         style="width:145px; top:30px; right:-58px; opacity:0.42; transform:rotate(-12deg);" aria-hidden="true" />
-                    <!-- Floral esquina izquierda: arreglo aéreo — pequeño, solo asoma -->
-                    <img class="floral-deco" loading="lazy"
-                         src="assets/flores-5.webp" alt=""
-                         style="width:140px; top:60px; left:-58px; opacity:0.42; transform:scaleX(-1) rotate(8deg);" aria-hidden="true" />
+                         src="assets/flores-2.webp" alt=""
+                         style="width:165px; top:-12px; left:-42px; opacity:0.82; transform:scaleX(-1);" aria-hidden="true" />
                     <h1 class="inv-header__monogram">K | E</h1>
                     <p class="inv-header__tagline">¡Nos Casamos!</p>
                     <div class="inv-header__divider-line">
@@ -2875,9 +2865,9 @@
 
                     <!-- TEXTO DE INVITACIÓN -->
                     <p class="inv-header__honor-text">
-                        Con el corazón lleno de alegría<br />
-                        te invitamos a ser parte de este<br />
-                        momento tan especial para nosotros
+                        Con el corazón lleno de alegría,<br />
+                        te invitamos a ser testigo del momento<br />
+                        más especial de nuestras vidas.
                     </p>
 
                     <!-- VERSÍCULO — remate espiritual del texto, antes de padres -->
@@ -2893,8 +2883,7 @@
                     <!-- PADRES -->
                     <div class="inv-header__parents js-fade">
                         <p>
-                            Con nuestro amor, la bendición de Dios<br />y la de
-                            nuestros padres:
+                            Unidos por el amor, la bendición de Dios<br />y de nuestras familias:
                         </p>
                         <br />
                         <p class="inv-header__parents-label">
@@ -3099,19 +3088,6 @@
                          style="width:155px; top:10px; left:-48px; opacity:0.42; transform:rotate(8deg);" aria-hidden="true" />
                     <h3 class="section-heading" style="margin-bottom:1.25rem;">Itinerario</h3>
 
-                    <div
-                        class="ornament-divider"
-                        style="margin-bottom: 0.75rem; margin-top: -1rem;"
-                        aria-hidden="true"
-                    >
-                        <img
-                            class="ornament-divider__img" loading="lazy"
-                            alt=""
-                            src="assets/flores-2.webp"
-                            style="width:175px; opacity:0.72; transform:rotate(4deg);"
-                        />
-                    </div>
-
                     <div class="timeline__track">
                         <div class="timeline__line" aria-hidden="true"></div>
 
@@ -3204,12 +3180,7 @@
                                     stroke="currentColor"
                                     viewBox="0 0 24 24"
                                 >
-                                    <path
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        stroke-width="1.5"
-                                        d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
-                                    />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3"/>
                                 </svg>
                             </div>
                             <div
@@ -3265,9 +3236,9 @@
                             <span class="story__year">El Encuentro</span>
                             <div class="story__bar"></div>
                             <p class="story__text">
-                                Dos caminos distintos que la vida decidió cruzar.
-                                Desde ese primer instante algo cambió —
-                                como si siempre hubiera estado escrito.
+                                Él venía de Teotihuacán. Ella, de Cholula.
+                                Dos caminos que, sin saberlo, ya estaban trazados para encontrarse.
+                                Desde ese primer instante, algo en sus vidas cambió para siempre.
                             </p>
                         </div>
                         <div class="story__item" style="transition-delay: 0.2s">
@@ -3275,26 +3246,25 @@
                             <div class="story__bar"></div>
                             <p class="story__text">
                                 Conversaciones que no querían terminar,
-                                risas que se volvieron costumbre y
-                                una complicidad que nadie más podría entender.
+                                risas que se volvieron costumbre,
+                                y una complicidad que solo ellos dos entienden.
                             </p>
                         </div>
                         <div class="story__item" style="transition-delay: 0.3s">
                             <span class="story__year">La Propuesta</span>
                             <div class="story__bar"></div>
                             <p class="story__text">
-                                Una pregunta, dos palabras y toda
-                                una vida por delante. Ese momento
-                                quedará grabado en nuestros corazones para siempre.
+                                La familia de Eduardo viajó desde Teotihuacán hasta Cholula con el corazón en la mano.
+                                Una pregunta, una respuesta, y dos familias que desde ese día se convirtieron en una.
                             </p>
                         </div>
                         <div class="story__item" style="transition-delay: 0.4s">
                             <span class="story__year">21 · Nov · 2026</span>
                             <div class="story__bar"></div>
                             <p class="story__text">
-                                Ante Dios y las personas que más amamos,
+                                Ante Dios y quienes más amamos,
                                 diremos <em>"Sí, acepto"</em> —
-                                y comenzará el mejor capítulo de nuestra historia.
+                                y ese sí será el inicio del capítulo más hermoso de nuestra historia.
                             </p>
                         </div>
                     </div>
@@ -3415,10 +3385,10 @@
 
                 <!-- DRESS CODE -->
                 <section class="dresscode js-fade" style="position:relative; overflow:hidden;">
-                    <!-- Floral lateral izquierdo sutil -->
+                    <!-- Floral esquina superior izquierda — bajado para no tapar el heading -->
                     <img class="floral-deco" loading="lazy"
                          src="assets/flores-4.webp" alt=""
-                         style="width:185px; top:15px; left:-50px; opacity:0.65; transform:rotate(10deg);" aria-hidden="true" />
+                         style="width:160px; top:55px; left:-45px; opacity:0.58; transform:rotate(10deg);" aria-hidden="true" />
                     <h3 class="section-heading">Código de Vestimenta</h3>
                     <p class="dresscode__style">Semi Formal</p>
                     <span class="dresscode__formal-lbl"
@@ -3490,17 +3460,12 @@
                         </div>
                     </div>
                     <p class="dresscode__note">
-                        Con mucho cariño les pedimos evitar<br />prendas en
-                        color blanco y beige.
+                        Con mucho cariño les pedimos reservar<br />el blanco y el beige para la novia. ¡Gracias!
                     </p>
                 </section>
 
                 <!-- GIFTS -->
                 <section class="gifts js-fade" style="position:relative; overflow:hidden;">
-                    <!-- Floral lateral izquierdo, regalos -->
-                    <img class="floral-deco" loading="lazy"
-                         src="assets/flores-3.webp" alt=""
-                         style="width:195px; top:10px; left:-55px; opacity:0.55; transform:scaleX(-1) rotate(6deg);" aria-hidden="true" />
                     <svg
                         class="gifts__icon"
                         fill="none"
@@ -3516,17 +3481,17 @@
                     </svg>
                     <h3 class="section-heading">Sugerencia de Regalos</h3>
                     <p class="gifts__desc">
-                        Tu presencia es el mejor regalo que podemos recibir.<br />
-                        Si deseas tener un detalle con nosotros,<br />
-                        con mucho amor te dejamos estas opciones.
+                        Tu presencia es el regalo más grande<br />que podemos recibir.<br />
+                        Si además deseas un detalle,<br />
+                        con cariño te compartimos estas opciones.
                     </p>
 
                     <!-- Mesa de Regalos Amazon -->
                     <!-- ⬇ CUANDO TENGAS EL LINK: reemplaza el href="#proximamente" con la URL de Amazon y quita el atributo disabled del botón -->
                     <div class="gifts__amazon-card">
                         <svg class="gifts__amazon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/>
-                            <circle cx="12" cy="10" r="3"/>
+                            <path d="M20 12v10H4V12M22 7H2v5h20V7z"/>
+                            <path d="M12 22V7M12 7H7.5a2.5 2.5 0 010-5C11 2 12 7 12 7zM12 7h4.5a2.5 2.5 0 000-5C13 2 12 7 12 7z"/>
                         </svg>
                         <p class="gifts__amazon-label">Mesa de Regalos</p>
                         <p class="gifts__amazon-store">Amazon · México</p>
@@ -3565,9 +3530,9 @@
                             <span class="rsvp__progress-dot" id="rsvp-dot-3"></span>
                         </div>
                         <p class="rsvp__desc">
-                            Agradecemos que confirmes tu asistencia
+                            Para preparar todo con amor,<br>confírmanos tu asistencia
                             <span class="rsvp__deadline"
-                                >antes del 05 de noviembre</span
+                                >antes del 5 de noviembre</span
                             >
                         </p>
 
@@ -3957,7 +3922,7 @@
                     </div>
 
                     <div class="inv-footer__content">
-                        <p class="inv-footer__msg">Esperamos contar con su presencia</p>
+                        <p class="inv-footer__msg">Será un honor tenerte</p>
 
                         <div class="ornament-divider" aria-hidden="true">
                             <img
@@ -3979,18 +3944,14 @@
                         class="floral-band floral-band--bottom"
                         aria-hidden="true"
                     >
-                        <!-- Esquina inferior izquierda: ramo completo espejado -->
+                        <!-- Esquina inferior izquierda -->
                         <img class="floral-deco" loading="lazy"
                              src="assets/flores-1.webp" alt=""
-                             style="width:300px; bottom:-10px; left:-35px; opacity:0.82; mix-blend-mode:screen; transform:scaleX(-1) rotate(5deg);" />
-                        <!-- Esquina inferior derecha: girasol/pampas -->
+                             style="width:230px; bottom:-10px; left:-30px; opacity:0.78; mix-blend-mode:screen; transform:scaleX(-1) rotate(5deg);" />
+                        <!-- Esquina inferior derecha -->
                         <img class="floral-deco" loading="lazy"
                              src="assets/flores-3.webp" alt=""
-                             style="width:285px; bottom:-10px; right:-35px; opacity:0.80; mix-blend-mode:screen; transform:rotate(-4deg);" />
-                        <!-- Centro superior de la banda: arreglo horizontal que une -->
-                        <img class="floral-deco" loading="lazy"
-                             src="assets/flores-2.webp" alt=""
-                             style="width:220px; top:5px; left:50%; mix-blend-mode:screen; transform:translateX(-50%) rotate(3deg); opacity:0.55;" />
+                             style="width:215px; bottom:-10px; right:-30px; opacity:0.76; mix-blend-mode:screen; transform:rotate(-4deg);" />
                     </div>
                 </footer>
             </main>
@@ -4612,7 +4573,24 @@
                 var fab = document.getElementById("rsvp-fab");
                 var rsvpSection = document.getElementById("rsvp");
                 if (!fab || !rsvpSection) return;
-                var fabObserver = new IntersectionObserver(
+
+                var FAB_DEADLINE = new Date("2026-11-05T23:59:00");
+                var fabObserver;
+
+                /* Ocultar permanentemente: desconecta el observer y retira el elemento del flujo */
+                window._fabHidePermanent = function () {
+                    fab.classList.add("is-hidden");
+                    fab.style.display = "none";
+                    if (fabObserver) fabObserver.disconnect();
+                };
+
+                /* Si el plazo de RSVP ya venció no tiene caso mostrarlo */
+                if (Date.now() > FAB_DEADLINE.getTime()) {
+                    window._fabHidePermanent();
+                    return;
+                }
+
+                fabObserver = new IntersectionObserver(
                     function (entries) {
                         entries.forEach(function (e) {
                             if (e.isIntersecting) {
@@ -4666,6 +4644,10 @@
                         dot1.className = "rsvp__progress-dot" + (step === 1 ? " is-active" : step > 1 ? " is-done" : "");
                         dot2.className = "rsvp__progress-dot" + (step === 2 ? " is-active" : step > 2 ? " is-done" : "");
                         dot3.className = "rsvp__progress-dot" + (step === 3 ? " is-active" : "");
+                    }
+                    /* En pasos terminales el FAB ya no tiene utilidad — ocultarlo para siempre */
+                    if (["success", "declined", "already", "closed"].indexOf(id) !== -1) {
+                        if (window._fabHidePermanent) window._fabHidePermanent();
                     }
                 }
 
@@ -5163,19 +5145,21 @@
                         on = true;
                         btn.innerHTML = svgPause;
                         btn.setAttribute("aria-label", "Pausar música");
-                        fadeIn(0.55, 5000); /* sube hasta 55% en 5 seg */
+                        fadeIn(0.55, 6000); /* sube hasta 55% en 6 seg */
                     }).catch(function () {
                         autoStarted = false; /* bloqueado por browser — necesita tap manual */
                     });
                 }
 
-                /* Escuchar primer scroll o tap para disparar el autoplay */
-                ["touchstart", "click", "scroll"].forEach(function (evt) {
-                    document.addEventListener(evt, function handler() {
+                /* Autoplay solo en primer click intencional, 3s después de carga.
+                   El delay evita que el primer tap exploratorio (abrir el link) dispare la música.
+                   El botón de música usa stopPropagation, así que no compite con este listener. */
+                setTimeout(function () {
+                    document.addEventListener("click", function handler() {
                         tryAutoStart();
-                        document.removeEventListener(evt, handler);
-                    }, { once: true, passive: true });
-                });
+                        document.removeEventListener("click", handler);
+                    }, { passive: true });
+                }, 3000);
 
                 /* Control manual del botón */
                 btn.addEventListener("click", function (e) {
