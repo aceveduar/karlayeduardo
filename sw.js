@@ -1,6 +1,5 @@
-const CACHE = "ke-boda-v9";
+const CACHE = "ke-boda-v10";
 const PRECACHE = [
-  "./index.html",
   "./assets/flores-1.webp",
   "./assets/flores-2.webp",
   "./assets/flores-3.webp",
@@ -32,10 +31,30 @@ self.addEventListener("activate", function (e) {
 });
 
 self.addEventListener("fetch", function (e) {
-  /* Solo cachear GET, ignorar Supabase (siempre en vivo) */
   if (e.request.method !== "GET") return;
   if (e.request.url.includes("supabase.co")) return;
 
+  var isHTML = e.request.headers.get("accept") &&
+               e.request.headers.get("accept").includes("text/html");
+
+  if (isHTML) {
+    /* HTML: network-first — siempre intenta la red para recibir cambios,
+       usa caché solo si no hay conexión (modo offline). */
+    e.respondWith(
+      fetch(e.request).then(function (res) {
+        if (res && res.status === 200) {
+          var clone = res.clone();
+          caches.open(CACHE).then(function (c) { c.put(e.request, clone); });
+        }
+        return res;
+      }).catch(function () {
+        return caches.match(e.request);
+      })
+    );
+    return;
+  }
+
+  /* Assets (imágenes, manifest): cache-first — no cambian frecuentemente */
   e.respondWith(
     caches.match(e.request).then(function (cached) {
       return cached || fetch(e.request).then(function (res) {
