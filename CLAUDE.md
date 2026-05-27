@@ -223,7 +223,7 @@ Las 5 imágenes florales se usan con estas reglas:
 - **Fecha:** 21 de noviembre de 2026, 5:00 PM
 - **Venue:** Hacienda Zerezotla, San Andrés Cholula, Puebla
 - **Dirección:** Calle 15 Poniente #1531, Barrio de Santa María Xixitla
-- **Deadline RSVP:** 5 de noviembre de 2026, 23:59
+- **Deadline RSVP:** 20 de septiembre de 2026, 23:59
 - **WhatsApp pareja:** +52 772 120 4509
 
 ---
@@ -272,7 +272,7 @@ Las 5 imágenes florales se usan con estas reglas:
 ## Notas Operativas
 
 - La boda es en **noviembre 2026** — hay tiempo para iterar
-- El deadline RSVP es **5 nov 2026**
+- El deadline RSVP es **20 sep 2026**
 - El sistema se usa principalmente desde **WhatsApp en móvil**
 - Eduardo gestiona el admin; los invitados solo ven index.html
 - No hay servidor propio — todo es estático + Supabase
