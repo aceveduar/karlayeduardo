@@ -130,7 +130,7 @@ created_at     TIMESTAMP
 - [x] Estadísticas con **colores semánticos**: verde=confirmadas, ámbar=pendientes
 - [x] **Badge de pendientes** en el tab de Resumen (punto rojo con número)
 - [x] **Countdown** al evento en el Resumen
-- [x] Asignación de mesas (18 mesas × 10 pax)
+- [x] Asignación de mesas (20 mesas × 10 pax)
 - [x] Alerta de sobrecapacidad por mesa
 - [x] Modo check-in (día del evento)
 - [x] Export a CSV
@@ -165,7 +165,7 @@ El admin es una **app shell** con `position: fixed; inset: 0`:
 ### Tabs y su contenido:
 - **`#tab-resumen`** — Hero countdown, stats 4 cards, progress bars, sin-mesa alert, recordatorios, acciones rápidas (actualizar/CSV), botón check-in, cerrar sesión
 - **`#tab-familias`** — Toolbar (filtros + botón Nueva), search, tabla de familias
-- **`#tab-mesas`** — Leyenda de colores, grid de 18 mesas
+- **`#tab-mesas`** — Leyenda de colores, grid de 20 mesas
 - **Check-in** — Abre el overlay existente `#checkin-overlay`
 
 ### Settings modal (`#settings-overlay`)

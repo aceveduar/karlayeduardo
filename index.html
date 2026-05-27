@@ -3487,7 +3487,6 @@
                     </p>
 
                     <!-- Mesa de Regalos Amazon -->
-                    <!-- ⬇ CUANDO TENGAS EL LINK: reemplaza el href="#proximamente" con la URL de Amazon y quita el atributo disabled del botón -->
                     <div class="gifts__amazon-card">
                         <svg class="gifts__amazon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M20 12v10H4V12M22 7H2v5h20V7z"/>
@@ -3495,12 +3494,10 @@
                         </svg>
                         <p class="gifts__amazon-label">Mesa de Regalos</p>
                         <p class="gifts__amazon-store">Amazon · México</p>
-                        <!-- OPCIÓN A (link listo): reemplaza href y cambia display del botón -->
-                        <a class="gifts__amazon-btn" href="#proximamente" onclick="return false;" aria-disabled="true">
+                        <a class="gifts__amazon-btn" href="https://www.amazon.com.mx/wedding/guest-view/2I37KPFD9RLZO" target="_blank" rel="noopener">
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-                            Próximamente
+                            Ver mesa de regalos
                         </a>
-                        <p class="gifts__amazon-hint">El link estará disponible muy pronto</p>
                     </div>
                 </section>
 
@@ -3764,7 +3761,7 @@
                                 <canvas
                                     id="already-map-canvas"
                                     width="600"
-                                    height="380"
+                                    height="460"
                                     style="width: 100%; display: block"
                                 ></canvas>
                             </div>
@@ -3870,7 +3867,7 @@
                                     <canvas
                                         id="ticket-map-canvas"
                                         width="600"
-                                        height="380"
+                                        height="460"
                                         style="
                                             width: 100%;
                                             display: block;
@@ -3994,7 +3991,7 @@
                 var CHR = 3.5; /* radio de cada silla */
                 var N_CHAIRS = 8;
 
-                /* Layout 5-4-4-5 · canvas 600×380 */
+                /* Layout 5-4-4-5-2 · canvas 600×460 */
                 var POS = [
                     /* Fila 1 — mesas 1-5 (y=74) */
                     {x:70,y:74},{x:185,y:74},{x:300,y:74},{x:415,y:74},{x:530,y:74},
@@ -4004,6 +4001,8 @@
                     {x:70,y:242},{x:185,y:242},{x:415,y:242},{x:530,y:242},
                     /* Fila 4 — mesas 14-18 (y=327) */
                     {x:70,y:327},{x:185,y:327},{x:300,y:327},{x:415,y:327},{x:530,y:327},
+                    /* Fila 5 — mesas 19-20 (y=411) */
+                    {x:185,y:411},{x:415,y:411},
                 ];
 
                 /* Pista de baile */
