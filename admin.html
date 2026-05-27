@@ -4166,19 +4166,34 @@
                 var card = document.getElementById("fslot-" + slotKey);
                 var bar  = document.getElementById("fprog-" + slotKey);
                 if (card) card.classList.add("foto-slot--uploading");
-                if (bar)  bar.style.width = "30%";
+                if (bar)  bar.style.width = "20%";
                 try {
+                    // Si ya existe un archivo, borrarlo primero.
+                    // Esto evita necesitar política UPDATE en Supabase (con INSERT + DELETE es suficiente).
+                    var existingUrl = _photoUrls[slotKey];
+                    if (existingUrl) {
+                        var oldFile = decodeURIComponent(existingUrl.split("/").pop().split("?")[0]);
+                        await fetch(SUPABASE_URL + "/storage/v1/object/" + STORAGE_BUCKET, {
+                            method: "DELETE",
+                            headers: {
+                                apikey: SUPABASE_ANON_KEY,
+                                Authorization: "Bearer " + SUPABASE_ANON_KEY,
+                                "Content-Type": "application/json",
+                            },
+                            body: JSON.stringify({ prefixes: [oldFile] }),
+                        });
+                    }
+                    if (bar) bar.style.width = "50%";
                     var r = await fetch(SUPABASE_URL + "/storage/v1/object/" + STORAGE_BUCKET + "/" + encodeURIComponent(filename), {
                         method: "POST",
                         headers: {
                             apikey: SUPABASE_ANON_KEY,
                             Authorization: "Bearer " + SUPABASE_ANON_KEY,
                             "Content-Type": file.type || "image/jpeg",
-                            "x-upsert": "true",
                         },
                         body: file,
                     });
-                    if (bar) bar.style.width = "80%";
+                    if (bar) bar.style.width = "85%";
                     if (!r.ok) {
                         var errJson = await r.json().catch(function(){ return {}; });
                         throw new Error(errJson.message || ("HTTP " + r.status));
@@ -4188,7 +4203,7 @@
                 } catch(e) {
                     if (card) card.classList.remove("foto-slot--uploading");
                     if (bar)  bar.style.width = "0%";
-                    alert("Error al subir la foto:\n" + e.message + "\n\nRevisa que el bucket 'fotos-boda' esté creado y con políticas INSERT para anon.");
+                    alert("Error al subir la foto:\n" + e.message + "\n\nEn Supabase → Storage → fotos-boda → Policies:\nVerifica que existan políticas INSERT y DELETE para el rol 'anon'.");
                 }
                 input.value = "";
             }
