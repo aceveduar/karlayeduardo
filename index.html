@@ -2832,6 +2832,7 @@
                             class="inv-header__photo"
                             alt="Karla y Eduardo"
                             src="assets/Karla y Froyland/novios.webp"
+                            data-photo-slot="portada"
                         />
                     </div>
 
@@ -2958,6 +2959,7 @@
                         class="photo-break__img" loading="lazy"
                         alt="Karla y Eduardo"
                         src="assets/Karla y Froyland/kye-1.jpg"
+                        data-photo-slot="galeria-1"
                     />
                 </div>
 
@@ -3221,6 +3223,7 @@
                         class="photo-break__img" loading="lazy"
                         alt="Karla y Eduardo"
                         src="assets/Karla y Froyland/brazos.jpg"
+                        data-photo-slot="galeria-0"
                     />
                 </div>
 
@@ -3287,6 +3290,7 @@
                                 class="gallery__img" loading="lazy"
                                 src="assets/Karla y Froyland/brazos.jpg"
                                 alt="Karla y Eduardo"
+                                data-photo-slot="galeria-0"
                             />
                             <div class="gallery__overlay">
                                 <svg class="gallery__zoom-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -3301,7 +3305,7 @@
                                 class="gallery__img" loading="lazy"
                                 src="assets/Karla y Froyland/kye-1.jpg"
                                 alt="Karla y Eduardo"
-                                loading="lazy"
+                                data-photo-slot="galeria-1"
                             />
                             <div class="gallery__overlay">
                                 <svg class="gallery__zoom-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -3314,7 +3318,7 @@
                                 class="gallery__img" loading="lazy"
                                 src="assets/Karla y Froyland/kye-2.jpg"
                                 alt="Karla y Eduardo"
-                                loading="lazy"
+                                data-photo-slot="galeria-2"
                             />
                             <div class="gallery__overlay">
                                 <svg class="gallery__zoom-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -3329,6 +3333,7 @@
                                 class="gallery__img" loading="lazy"
                                 src="assets/Karla y Froyland/novios.webp"
                                 alt="Karla y Eduardo"
+                                data-photo-slot="portada"
                             />
                             <div class="gallery__overlay">
                                 <svg class="gallery__zoom-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -3341,7 +3346,7 @@
                                 class="gallery__img" loading="lazy"
                                 src="assets/Karla y Froyland/anillo.webp"
                                 alt="El anillo"
-                                loading="lazy"
+                                data-photo-slot="galeria-4"
                             />
                             <div class="gallery__overlay">
                                 <svg class="gallery__zoom-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -3356,7 +3361,7 @@
                                 class="gallery__img" loading="lazy"
                                 src="assets/Karla y Froyland/1-karla.jpg"
                                 alt="Karla"
-                                loading="lazy"
+                                data-photo-slot="galeria-5"
                             />
                             <div class="gallery__overlay">
                                 <svg class="gallery__zoom-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -3369,7 +3374,7 @@
                                 class="gallery__img" loading="lazy"
                                 src="assets/Karla y Froyland/eduardo.jpg"
                                 alt="Eduardo"
-                                loading="lazy"
+                                data-photo-slot="galeria-6"
                             />
                             <div class="gallery__overlay">
                                 <svg class="gallery__zoom-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -3914,7 +3919,7 @@
                             class="inv-footer__couple-photo" loading="lazy"
                             src="assets/Karla y Froyland/novios.webp"
                             alt="Karla y Eduardo"
-                            loading="lazy"
+                            data-photo-slot="portada"
                         />
                     </div>
 
@@ -5034,17 +5039,43 @@
                     });
             })();
 
+            /* === CARGA DE FOTOS DESDE SUPABASE STORAGE === */
+            (function() {
+                var _SB_URL  = "https://kdpgdgulrekryxqtewtr.supabase.co";
+                var _SB_KEY  = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtkcGdkZ3VscmVrcnl4cXRld3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgzNTI0NDEsImV4cCI6MjA5MzkyODQ0MX0.T6_iQjxOWX82QQHPuBI5cewOoT3UWsOQ7bvjX9GP82E";
+                var _BUCKET  = "fotos-boda";
+                var _PUB     = _SB_URL + "/storage/v1/object/public/" + _BUCKET + "/";
+                fetch(_SB_URL + "/storage/v1/object/list/" + _BUCKET, {
+                    method: "POST",
+                    headers: {
+                        apikey: _SB_KEY,
+                        Authorization: "Bearer " + _SB_KEY,
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ prefix: "", limit: 100 }),
+                })
+                .then(function(r) { return r.ok ? r.json() : []; })
+                .then(function(files) {
+                    if (!Array.isArray(files) || !files.length) return;
+                    var map = {};
+                    files.forEach(function(f) {
+                        var slot = f.name.replace(/\.[^.]+$/, "");
+                        map[slot] = _PUB + encodeURIComponent(f.name);
+                    });
+                    document.querySelectorAll("[data-photo-slot]").forEach(function(img) {
+                        var slot = img.getAttribute("data-photo-slot");
+                        if (map[slot]) img.src = map[slot];
+                    });
+                })
+                .catch(function(){}); /* falla silenciosamente — fotos locales siguen funcionando */
+            })();
+
             /* === GALLERY LIGHTBOX === */
             (function () {
-                var galleryPhotos = [
-                    "assets/Karla y Froyland/brazos.jpg",
-                    "assets/Karla y Froyland/kye-1.jpg",
-                    "assets/Karla y Froyland/kye-2.jpg",
-                    "assets/Karla y Froyland/novios.webp",
-                    "assets/Karla y Froyland/anillo.webp",
-                    "assets/Karla y Froyland/1-karla.jpg",
-                    "assets/Karla y Froyland/eduardo.jpg"
-                ];
+                /* Lee srcs actuales para que funcione con fotos de Supabase Storage */
+                function getGalleryPhotos() {
+                    return Array.from(document.querySelectorAll(".gallery__img")).map(function(img){ return img.src; });
+                }
                 var currentIndex = 0;
                 var lightbox = document.getElementById("gallery-lightbox");
                 var lightboxImg = document.getElementById("lightbox-img");
@@ -5063,15 +5094,16 @@
                 }
 
                 function showPhoto(index) {
+                    var photos = getGalleryPhotos();
                     lightboxImg.classList.add("is-loading");
-                    var src = galleryPhotos[index];
+                    var src = photos[index];
                     var tmp = new Image();
                     tmp.onload = function () {
                         lightboxImg.src = src;
                         lightboxImg.classList.remove("is-loading");
                     };
                     tmp.src = src;
-                    counter.textContent = (index + 1) + " / " + galleryPhotos.length;
+                    counter.textContent = (index + 1) + " / " + photos.length;
                 }
 
                 document.querySelectorAll("[data-gallery-index]").forEach(function (el) {
@@ -5083,12 +5115,14 @@
                 document.getElementById("lightbox-close").addEventListener("click", closeLightbox);
 
                 document.getElementById("lightbox-prev").addEventListener("click", function () {
-                    currentIndex = (currentIndex - 1 + galleryPhotos.length) % galleryPhotos.length;
+                    var len = getGalleryPhotos().length;
+                    currentIndex = (currentIndex - 1 + len) % len;
                     showPhoto(currentIndex);
                 });
 
                 document.getElementById("lightbox-next").addEventListener("click", function () {
-                    currentIndex = (currentIndex + 1) % galleryPhotos.length;
+                    var len = getGalleryPhotos().length;
+                    currentIndex = (currentIndex + 1) % len;
                     showPhoto(currentIndex);
                 });
 
@@ -5100,11 +5134,13 @@
                     if (!lightbox.classList.contains("is-open")) return;
                     if (e.key === "Escape") closeLightbox();
                     if (e.key === "ArrowLeft") {
-                        currentIndex = (currentIndex - 1 + galleryPhotos.length) % galleryPhotos.length;
+                        var len = getGalleryPhotos().length;
+                        currentIndex = (currentIndex - 1 + len) % len;
                         showPhoto(currentIndex);
                     }
                     if (e.key === "ArrowRight") {
-                        currentIndex = (currentIndex + 1) % galleryPhotos.length;
+                        var len2 = getGalleryPhotos().length;
+                        currentIndex = (currentIndex + 1) % len2;
                         showPhoto(currentIndex);
                     }
                 });

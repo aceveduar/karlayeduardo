@@ -210,7 +210,7 @@
             .bottom-nav {
                 flex-shrink: 0;
                 display: grid;
-                grid-template-columns: repeat(4, 1fr);
+                grid-template-columns: repeat(5, 1fr);
                 height: 62px;
                 border-top: 1px solid rgba(201,169,110,0.15);
                 background: rgba(20,13,9,0.98);
@@ -1841,6 +1841,155 @@
                 margin-top: 0.3rem;
                 letter-spacing: 0.06em;
             }
+
+            /* ── Tab: Fotos ─────────────────────────────── */
+            .fotos-header { margin-bottom: 1.25rem; }
+            .fotos-header__title {
+                font-family: var(--f-serif);
+                font-size: 1.15rem;
+                color: var(--gold);
+                margin-bottom: 0.2rem;
+            }
+            .fotos-header__sub {
+                font-size: 0.58rem;
+                letter-spacing: 0.1em;
+                text-transform: uppercase;
+                color: rgba(255,255,255,0.28);
+            }
+            .fotos-setup {
+                background: rgba(201,169,110,0.05);
+                border: 1px solid rgba(201,169,110,0.2);
+                padding: 0.75rem 1rem;
+                margin-bottom: 1.25rem;
+            }
+            .fotos-setup summary {
+                cursor: pointer;
+                font-size: 0.6rem;
+                letter-spacing: 0.12em;
+                text-transform: uppercase;
+                color: rgba(201,169,110,0.7);
+                list-style: none;
+                user-select: none;
+            }
+            .fotos-setup summary::-webkit-details-marker { display: none; }
+            .fotos-setup summary::before { content: "⚙ "; }
+            .fotos-setup__steps {
+                margin-top: 0.85rem;
+                font-size: 0.7rem;
+                color: rgba(255,255,255,0.5);
+                line-height: 1.8;
+            }
+            .fotos-setup__steps ol { padding-left: 1.25rem; }
+            .fotos-setup__steps code {
+                background: rgba(255,255,255,0.08);
+                padding: 0.1rem 0.35rem;
+                font-family: monospace;
+                font-size: 0.9em;
+                color: var(--gold-lt);
+            }
+            .fotos-grid {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.75rem;
+            }
+            .foto-slot {
+                background: rgba(255,255,255,0.03);
+                border: 1px solid rgba(201,169,110,0.14);
+                overflow: hidden;
+                position: relative;
+            }
+            .foto-slot--full { grid-column: 1 / -1; }
+            .foto-slot__label {
+                font-size: 0.5rem;
+                letter-spacing: 0.11em;
+                text-transform: uppercase;
+                color: rgba(255,255,255,0.38);
+                padding: 0.45rem 0.65rem 0.35rem;
+                border-bottom: 1px solid rgba(255,255,255,0.04);
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            .foto-slot__preview {
+                width: 100%;
+                aspect-ratio: 4/3;
+                object-fit: cover;
+                display: block;
+            }
+            .foto-slot--full .foto-slot__preview { aspect-ratio: 16/9; }
+            .foto-slot__placeholder {
+                width: 100%;
+                aspect-ratio: 4/3;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                gap: 0.35rem;
+                background: rgba(255,255,255,0.02);
+            }
+            .foto-slot--full .foto-slot__placeholder { aspect-ratio: 16/9; }
+            .foto-slot__placeholder-icon { font-size: 1.4rem; opacity: 0.18; }
+            .foto-slot__placeholder-txt {
+                font-size: 0.5rem;
+                letter-spacing: 0.08em;
+                text-transform: uppercase;
+                color: rgba(255,255,255,0.18);
+            }
+            .foto-slot__badge {
+                display: inline-block;
+                font-size: 0.42rem;
+                letter-spacing: 0.08em;
+                text-transform: uppercase;
+                background: rgba(126,200,160,0.1);
+                color: #7ec8a0;
+                border: 1px solid rgba(126,200,160,0.22);
+                padding: 0.12rem 0.45rem;
+                position: absolute;
+                top: 0.45rem;
+                right: 0.45rem;
+            }
+            .foto-slot__progress { height: 3px; background: rgba(255,255,255,0.05); overflow: hidden; }
+            .foto-slot__progress-bar {
+                height: 100%;
+                background: var(--gold);
+                width: 0%;
+                transition: width 0.3s ease;
+            }
+            .foto-slot__actions {
+                display: flex;
+                gap: 0.4rem;
+                padding: 0.5rem 0.6rem;
+            }
+            .foto-slot__btn {
+                flex: 1;
+                background: transparent;
+                border: 1px solid rgba(201,169,110,0.28);
+                color: rgba(201,169,110,0.65);
+                font-family: var(--f-sans);
+                font-size: 0.5rem;
+                letter-spacing: 0.1em;
+                text-transform: uppercase;
+                padding: 0.38rem 0.4rem;
+                cursor: pointer;
+                transition: all 0.2s ease;
+                text-align: center;
+            }
+            .foto-slot__btn:hover {
+                border-color: var(--gold);
+                color: var(--gold);
+                background: rgba(201,169,110,0.07);
+            }
+            .foto-slot__btn--del {
+                flex: 0 0 auto;
+                border-color: rgba(224,136,136,0.22);
+                color: rgba(224,136,136,0.45);
+            }
+            .foto-slot__btn--del:hover {
+                border-color: rgba(224,136,136,0.55);
+                color: #e08888;
+                background: rgba(224,136,136,0.05);
+            }
+            .foto-slot--uploading .foto-slot__btn { opacity: 0.4; pointer-events: none; }
         </style>
         <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
     </head>
@@ -2090,6 +2239,34 @@
                     </div>
                 </div>
 
+                <!-- ── TAB 4: FOTOS ────────────────────────── -->
+                <div class="tab-panel" id="tab-fotos">
+
+                    <div class="fotos-header">
+                        <p class="fotos-header__title">Fotos de la Invitación</p>
+                        <p class="fotos-header__sub">Las fotos suben a Supabase y aparecen automáticamente en la invitación</p>
+                    </div>
+
+                    <details class="fotos-setup">
+                        <summary>Configuración inicial (una sola vez en Supabase)</summary>
+                        <div class="fotos-setup__steps">
+                            <ol>
+                                <li>Entra a <strong>supabase.com</strong> → tu proyecto → <strong>Storage</strong></li>
+                                <li>Crea un bucket llamado <code>fotos-boda</code> y márcalo como <strong>Público</strong></li>
+                                <li>En el bucket, ve a <strong>Policies</strong> → New Policy → "For full customization"</li>
+                                <li>Operación: <code>INSERT</code>, roles: <code>anon</code> — guarda la política</li>
+                                <li>Repite el paso 4 para <code>DELETE</code></li>
+                                <li>¡Listo! Ya puedes subir fotos desde aquí</li>
+                            </ol>
+                        </div>
+                    </details>
+
+                    <div class="fotos-grid" id="fotos-grid">
+                        <!-- Renderizado por JS al cargar el tab -->
+                    </div>
+
+                </div>
+
             </div><!-- end .tab-content -->
 
             <!-- ═══ MESA DETAIL BOTTOM SHEET ════════════════ -->
@@ -2131,6 +2308,10 @@
                 <button class="bottom-nav__item" id="nav-mesas" onclick="switchTab('mesas')" aria-label="Mesas">
                     <svg class="bottom-nav__icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
                     <span class="bottom-nav__lbl">Mesas</span>
+                </button>
+                <button class="bottom-nav__item" id="nav-fotos" onclick="switchTab('fotos')" aria-label="Fotos">
+                    <svg class="bottom-nav__icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                    <span class="bottom-nav__lbl">Fotos</span>
                 </button>
                 <button class="bottom-nav__item" id="nav-entrada" onclick="openCheckin()" aria-label="Check-in">
                     <svg class="bottom-nav__icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
@@ -3824,6 +4005,7 @@
                 var tc = document.querySelector(".tab-content");
                 if (tc) tc.scrollTop = 0;
                 if (name === "mesas") renderMesasGrid();
+                if (name === "fotos") loadPhotos();
                 localStorage.setItem("ke-tab", name);
             }
 
@@ -3895,6 +4077,143 @@
             document.addEventListener("keydown", function(e) {
                 if (e.key === "Escape") closeNfModal();
             });
+
+            /* ── Tab: Fotos — Supabase Storage ─────────────── */
+            var STORAGE_BUCKET = "fotos-boda";
+            var PHOTO_SLOTS = [
+                { key: "portada",   label: "Foto de Portada",           desc: "Header, footer y preview de WhatsApp", full: true },
+                { key: "galeria-0", label: "Galería: Foto Principal",   desc: "Foto ancha al inicio de la galería" },
+                { key: "galeria-1", label: "Galería 1 + Separadora",    desc: "Galería y separador entre secciones" },
+                { key: "galeria-2", label: "Galería 2",                  desc: "Segunda foto de la galería" },
+                { key: "galeria-4", label: "Galería: El Anillo",         desc: "Foto del anillo de compromiso" },
+                { key: "galeria-5", label: "Retrato Karla",              desc: "Retrato individual de la novia" },
+                { key: "galeria-6", label: "Retrato Eduardo",            desc: "Retrato individual del novio" },
+            ];
+            var _photoUrls = {};
+
+            function storagePublicUrl(filename) {
+                return SUPABASE_URL + "/storage/v1/object/public/" + STORAGE_BUCKET + "/" + encodeURIComponent(filename);
+            }
+
+            async function loadPhotos() {
+                var grid = document.getElementById("fotos-grid");
+                if (grid) grid.innerHTML = '<p style="font-size:0.65rem;color:rgba(255,255,255,0.28);padding:0.5rem 0;">Cargando…</p>';
+                try {
+                    var r = await fetch(SUPABASE_URL + "/storage/v1/object/list/" + STORAGE_BUCKET, {
+                        method: "POST",
+                        headers: {
+                            apikey: SUPABASE_ANON_KEY,
+                            Authorization: "Bearer " + SUPABASE_ANON_KEY,
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({ prefix: "", limit: 100 }),
+                    });
+                    var files = r.ok ? await r.json() : [];
+                    _photoUrls = {};
+                    if (Array.isArray(files)) {
+                        files.forEach(function(f) {
+                            var slot = f.name.replace(/\.[^.]+$/, "");
+                            _photoUrls[slot] = storagePublicUrl(f.name);
+                        });
+                    }
+                } catch (e) {
+                    _photoUrls = {};
+                }
+                renderPhotosTab();
+            }
+
+            function renderPhotosTab() {
+                var grid = document.getElementById("fotos-grid");
+                if (!grid) return;
+                grid.innerHTML = "";
+                PHOTO_SLOTS.forEach(function(slot) {
+                    var url = _photoUrls[slot.key] || null;
+                    var card = document.createElement("div");
+                    card.className = "foto-slot" + (slot.full ? " foto-slot--full" : "");
+                    card.id = "fslot-" + slot.key;
+                    card.innerHTML =
+                        '<p class="foto-slot__label" title="' + esc(slot.desc) + '">' + esc(slot.label) + '</p>' +
+                        (url
+                            ? '<img class="foto-slot__preview" src="' + esc(url) + '?t=' + Date.now() + '" alt="' + esc(slot.label) + '" />' +
+                              '<span class="foto-slot__badge">✓ Subida</span>'
+                            : '<div class="foto-slot__placeholder">' +
+                                '<span class="foto-slot__placeholder-icon">🖼</span>' +
+                                '<span class="foto-slot__placeholder-txt">Sin foto</span>' +
+                              '</div>') +
+                        '<div class="foto-slot__progress"><div class="foto-slot__progress-bar" id="fprog-' + slot.key + '"></div></div>' +
+                        '<div class="foto-slot__actions">' +
+                            '<button class="foto-slot__btn" onclick="triggerPhotoUpload(\'' + slot.key + '\')">' +
+                                (url ? 'Reemplazar' : 'Subir foto') +
+                            '</button>' +
+                            (url ? '<button class="foto-slot__btn foto-slot__btn--del" onclick="deletePhoto(\'' + slot.key + '\')">✕</button>' : '') +
+                        '</div>' +
+                        '<input type="file" accept="image/*" style="display:none" id="finput-' + slot.key + '" onchange="handlePhotoUpload(\'' + slot.key + '\',this)">';
+                    grid.appendChild(card);
+                });
+            }
+
+            function triggerPhotoUpload(slotKey) {
+                var input = document.getElementById("finput-" + slotKey);
+                if (input) input.click();
+            }
+
+            async function handlePhotoUpload(slotKey, input) {
+                var file = input.files[0];
+                if (!file) return;
+                var ext = (file.name.split(".").pop() || "jpg").toLowerCase();
+                if (ext === "jpeg") ext = "jpg";
+                var filename = slotKey + "." + ext;
+                var card = document.getElementById("fslot-" + slotKey);
+                var bar  = document.getElementById("fprog-" + slotKey);
+                if (card) card.classList.add("foto-slot--uploading");
+                if (bar)  bar.style.width = "30%";
+                try {
+                    var r = await fetch(SUPABASE_URL + "/storage/v1/object/" + STORAGE_BUCKET + "/" + encodeURIComponent(filename), {
+                        method: "POST",
+                        headers: {
+                            apikey: SUPABASE_ANON_KEY,
+                            Authorization: "Bearer " + SUPABASE_ANON_KEY,
+                            "Content-Type": file.type || "image/jpeg",
+                            "x-upsert": "true",
+                        },
+                        body: file,
+                    });
+                    if (bar) bar.style.width = "80%";
+                    if (!r.ok) {
+                        var errJson = await r.json().catch(function(){ return {}; });
+                        throw new Error(errJson.message || ("HTTP " + r.status));
+                    }
+                    if (bar) bar.style.width = "100%";
+                    setTimeout(function(){ loadPhotos(); }, 300);
+                } catch(e) {
+                    if (card) card.classList.remove("foto-slot--uploading");
+                    if (bar)  bar.style.width = "0%";
+                    alert("Error al subir la foto:\n" + e.message + "\n\nRevisa que el bucket 'fotos-boda' esté creado y con políticas INSERT para anon.");
+                }
+                input.value = "";
+            }
+
+            async function deletePhoto(slotKey) {
+                var url = _photoUrls[slotKey];
+                if (!url) return;
+                if (!confirm("¿Eliminar la foto de \"" + (PHOTO_SLOTS.find(function(s){return s.key===slotKey;}) || {label:slotKey}).label + "\"?")) return;
+                var filename = decodeURIComponent(url.split("/").pop().split("?")[0]);
+                try {
+                    var r = await fetch(SUPABASE_URL + "/storage/v1/object/" + STORAGE_BUCKET, {
+                        method: "DELETE",
+                        headers: {
+                            apikey: SUPABASE_ANON_KEY,
+                            Authorization: "Bearer " + SUPABASE_ANON_KEY,
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({ prefixes: [filename] }),
+                    });
+                    if (!r.ok) throw new Error("HTTP " + r.status);
+                    await loadPhotos();
+                } catch(e) {
+                    alert("Error al eliminar: " + e.message);
+                }
+            }
 
             /* ── Auto-generar código desde nombre ──────────── */
             function autoGenerateCode(name) {
