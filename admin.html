@@ -1910,8 +1910,22 @@
                 .fam-list { grid-template-columns: repeat(3, 1fr); gap: 0.75rem; }
                 .search-input { font-size: 0.88rem; }
 
-                /* ── Fotos: 3 columnas ─────────────────── */
+                /* ── Fotos: 3 columnas + portada con altura máxima ── */
                 .fotos-grid { grid-template-columns: repeat(3, 1fr); }
+                /* En mobile la portada es 16/9 full-width (enorme en laptop).
+                   La acotamos para no desbordarse de la pantalla. */
+                .foto-slot--full .foto-slot__preview     { max-height: 420px; }
+                .foto-slot--full .foto-slot__placeholder { max-height: 420px; aspect-ratio: unset; }
+
+                /* ── Mesas: máximo 5 columnas (20 ÷ 5 = 4 filas perfectas) ── */
+                /* Override del 6-col rule de 1280px para que no queden mesas huérfanas */
+                .mesas-grid { grid-template-columns: repeat(5, 1fr) !important; }
+
+                /* ── Check-in: centrado con ancho máximo ─── */
+                /* position:fixed llena la pantalla — padding proporcional limita el contenido */
+                .checkin-overlay {
+                    padding: 2rem max(2rem, calc(50vw - 480px));
+                }
 
                 /* ── Modales más anchos ────────────────── */
                 .nf-modal          { max-width: 640px; }
