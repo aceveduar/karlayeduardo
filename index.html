@@ -6,8 +6,8 @@
         <title>Invitación de Boda - Karla &amp; Eduardo</title>
 
         <!-- Preload recursos críticos above-the-fold -->
-        <link rel="preload" as="image" href="assets/flores-4.webp" />
-        <link rel="preload" as="image" href="assets/flores-2.webp" />
+        <link rel="preload" as="image" href="assets/flores-5.webp" />
+        <link rel="preload" as="image" href="assets/flores-1.webp" />
         <link rel="preload" as="image" href="assets/Karla y Froyland/novios.webp" />
 
         <!-- PWA -->
@@ -22,20 +22,24 @@
         <meta name="description" content="Karla y Eduardo se casan el 21 de noviembre de 2026 en Hacienda Zerezotla, San Andrés Cholula, Puebla. Confirma tu asistencia." />
         <meta name="theme-color" content="#1e1410" />
 
+        <!-- TODO tras Netlify deploy: reemplazar YOUR_DOMAIN con el dominio real (ej. karlayeduardo.netlify.app) -->
+        <link rel="canonical" href="https://YOUR_DOMAIN/" />
+
         <!-- Open Graph -->
         <meta property="og:type"        content="website" />
+        <meta property="og:url"         content="https://YOUR_DOMAIN/" />
         <meta property="og:title"       content="Karla &amp; Eduardo — 21 Noviembre 2026" />
         <meta property="og:description" content="Nos casamos 🌸 Hacienda Zerezotla, San Andrés Cholula, Puebla. Confirma tu asistencia." />
-        <meta property="og:image"       content="assets/Karla y Froyland/novios.webp" />
-        <meta property="og:image:width"  content="800" />
-        <meta property="og:image:height" content="600" />
+        <meta property="og:image"       content="https://YOUR_DOMAIN/assets/Karla%20y%20Froyland/novios.webp" />
+        <meta property="og:image:width"  content="600" />
+        <meta property="og:image:height" content="800" />
         <meta property="og:locale"      content="es_MX" />
 
         <!-- WhatsApp usa og:image — sin Twitter card adicional necesario -->
         <meta name="twitter:card"        content="summary_large_image" />
         <meta name="twitter:title"       content="Karla &amp; Eduardo — 21 Nov 2026" />
         <meta name="twitter:description" content="Nos casamos 🌸 Hacienda Zerezotla, Cholula, Puebla" />
-        <meta name="twitter:image"       content="assets/Karla y Froyland/novios.webp" />
+        <meta name="twitter:image"       content="https://YOUR_DOMAIN/assets/Karla%20y%20Froyland/novios.webp" />
         <link href="https://fonts.googleapis.com" rel="preconnect" />
         <link
             crossorigin=""
@@ -986,100 +990,6 @@
             }
 
             /* =============================================
-       BLOCK: dresscode
-       ============================================= */
-            .dresscode {
-                padding: 4rem 2.5rem;
-                text-align: center;
-            }
-            .dresscode__style {
-                font-family: var(--f-serif);
-                font-style: italic;
-                font-size: 1.4rem;
-                color: var(--c-text-dark);
-                margin-bottom: 1.75rem;
-            }
-            .dresscode__palette {
-                display: flex;
-                justify-content: center;
-                gap: 0.6rem;
-                margin-bottom: 1.75rem;
-            }
-            .dresscode__swatch {
-                width: 2.25rem;
-                height: 2.25rem;
-                border-radius: 50%;
-                border: 3px solid var(--c-white);
-                box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12);
-                position: relative;
-                transition: transform 0.3s ease;
-            }
-            .dresscode__swatch:hover {
-                transform: scale(1.15);
-            }
-            .dresscode__swatch--no {
-                opacity: 0.45;
-            }
-            .dresscode__swatch--no::after {
-                content: "✕";
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                font-size: 0.7rem;
-                color: #c0392b;
-                font-weight: 700;
-            }
-            .dresscode__note {
-                font-size: 0.77rem;
-                color: var(--c-text-light);
-                line-height: 1.9;
-            }
-
-            /* =============================================
-       BLOCK: gifts
-       ============================================= */
-            .gifts {
-                background-color: var(--c-parchment-lt);
-                padding: 4rem 2.5rem;
-                text-align: center;
-            }
-            .gifts__icon {
-                width: 2.25rem;
-                height: 2.25rem;
-                color: var(--c-terracotta);
-                margin: 0 auto 1rem;
-            }
-            .gifts__desc {
-                font-size: 0.78rem;
-                color: var(--c-text-light);
-                line-height: 1.9;
-                max-width: 280px;
-                margin: 0 auto 2rem;
-            }
-            .gifts__option-lbl {
-                font-size: 0.6rem;
-                font-weight: 700;
-                text-transform: uppercase;
-                letter-spacing: 0.2em;
-                color: var(--c-text-mid);
-                margin-bottom: 1.25rem;
-            }
-            .gifts__account {
-                display: inline-block;
-                background-color: var(--c-parchment);
-                border: 1px solid var(--c-border);
-                border-top: 3px solid var(--c-gold);
-                padding: 1.25rem 3rem;
-                font-size: 0.7rem;
-                letter-spacing: 0.12em;
-                text-transform: uppercase;
-                color: var(--c-text-mid);
-                line-height: 2.2;
-                box-shadow: var(--shadow-sm);
-            }
-
-            /* =============================================
        BLOCK: dresscode — enhanced
        ============================================= */
             .dresscode {
@@ -1288,6 +1198,118 @@
             .gifts__amazon-hint {
                 font-size: 0.6rem; color: var(--c-text-mid);
                 margin-top: 0.75rem; letter-spacing: 0.05em;
+            }
+
+            /* =============================================
+       BLOCK: visitas
+       ============================================= */
+            .visitas {
+                background: linear-gradient(160deg, var(--c-parchment-lt) 0%, var(--c-parchment) 100%);
+                padding: 4rem 2.5rem;
+                text-align: center;
+                position: relative;
+            }
+            .visitas::before {
+                content: "";
+                position: absolute; top: 0; left: 10%; right: 10%;
+                height: 1px; background: var(--gold-line);
+            }
+            .visitas__icon {
+                width: 2.25rem; height: 2.25rem;
+                color: var(--c-terracotta); margin: 0 auto 1rem;
+            }
+            .visitas__desc {
+                font-size: 0.78rem; color: var(--c-text-light);
+                line-height: 1.9; max-width: 280px; margin: 0 auto 2rem;
+            }
+            .visitas__form-wrap { max-width: 320px; margin: 0 auto; text-align: left; }
+            .visitas__input,
+            .visitas__textarea {
+                width: 100%;
+                background: var(--c-white);
+                border: 1px solid var(--c-border);
+                padding: 0.85rem 1rem;
+                font-family: var(--f-sans); font-size: 1rem;
+                color: var(--c-text-dark);
+                margin-bottom: 0.75rem;
+                transition: border-color 0.25s ease;
+                outline: none;
+                box-sizing: border-box;
+            }
+            .visitas__input:focus,
+            .visitas__textarea:focus { border-color: var(--c-gold); }
+            .visitas__textarea { resize: vertical; min-height: 100px; }
+            .visitas__count {
+                font-size: 0.55rem; letter-spacing: 0.1em; text-transform: uppercase;
+                color: var(--c-text-light); text-align: right; margin: -0.5rem 0 0.75rem;
+            }
+            .visitas__submit {
+                width: 100%; padding: 0.9rem;
+                background: var(--c-gold); color: #fff;
+                border: none; cursor: pointer;
+                font-family: var(--f-sans); font-size: 0.7rem;
+                letter-spacing: 0.2em; text-transform: uppercase;
+                transition: background 0.25s ease;
+                margin-bottom: 0.5rem;
+            }
+            .visitas__submit:hover:not(:disabled) { background: var(--c-terracotta); }
+            .visitas__submit:disabled { opacity: 0.6; cursor: default; }
+            .visitas__error {
+                font-size: 0.68rem; color: #c0392b; min-height: 1rem;
+                text-align: center; margin-bottom: 0.5rem;
+            }
+            .visitas__thanks { text-align: center; padding: 1.5rem 0; }
+            .visitas__thanks-icon {
+                width: 2.5rem; height: 2.5rem; color: #7ec8a0;
+                margin: 0 auto 0.75rem;
+            }
+            .visitas__thanks-title {
+                font-family: var(--f-script); font-size: 1.8rem;
+                color: var(--c-gold); margin-bottom: 0.35rem;
+            }
+            .visitas__thanks-sub {
+                font-size: 0.72rem; color: var(--c-text-light); margin-bottom: 1.25rem;
+            }
+            .visitas__otro-btn {
+                background: none; border: 1px solid var(--c-border);
+                padding: 0.55rem 1.25rem; font-family: var(--f-sans);
+                font-size: 0.6rem; letter-spacing: 0.15em; text-transform: uppercase;
+                color: var(--c-text-mid); cursor: pointer; transition: all 0.2s ease;
+            }
+            .visitas__otro-btn:hover { border-color: var(--c-gold); color: var(--c-gold); }
+            .visitas__sep {
+                height: 1px; background: var(--gold-line);
+                margin: 2.5rem auto; max-width: 200px;
+            }
+            .visitas__msg-list {
+                max-width: 360px; margin: 0 auto; text-align: left;
+                display: flex; flex-direction: column; gap: 1rem;
+            }
+            .visitas__msg-card {
+                background: var(--c-white);
+                border: 1px solid var(--c-border);
+                border-left: 3px solid var(--c-gold);
+                padding: 1rem 1.25rem;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            }
+            .visitas__msg-header {
+                display: flex; align-items: center; justify-content: space-between;
+                margin-bottom: 0.5rem;
+            }
+            .visitas__msg-name {
+                font-family: var(--f-serif); font-size: 0.95rem;
+                color: var(--c-text-dark);
+            }
+            .visitas__msg-date {
+                font-size: 0.52rem; letter-spacing: 0.08em; text-transform: uppercase;
+                color: var(--c-text-light); white-space: nowrap; margin-left: 0.5rem;
+            }
+            .visitas__msg-text {
+                font-size: 0.8rem; color: var(--c-text-mid); line-height: 1.7;
+            }
+            .visitas__empty {
+                font-size: 0.72rem; color: var(--c-text-light);
+                text-align: center; padding: 1.5rem 0; font-style: italic;
             }
 
             .gifts__account-name {
@@ -1698,7 +1720,6 @@
                 margin-top: 0.75rem;
                 min-height: 1rem;
             }
-            /* Bebés counter */
             /* Lista de miembros */
             .member-section { margin-bottom: 1.75rem; }
             .member-list { display: flex; flex-direction: column; gap: 0.45rem; margin: 0.6rem 0 0.85rem; }
@@ -1761,35 +1782,6 @@
                 letter-spacing: 0.06em;
             }
             .member-count-lbl strong { color: var(--c-gold); font-weight: 400; }
-
-            .rsvp__baby-section {
-                margin: 0 0 1.75rem;
-                padding: 1rem 1.25rem;
-                background: rgba(255, 255, 255, 0.03);
-                border: 1px solid rgba(255, 255, 255, 0.07);
-            }
-            .rsvp__baby-note {
-                display: block;
-                font-size: 0.5rem;
-                color: rgba(255, 255, 255, 0.22);
-                letter-spacing: 0.06em;
-                text-transform: none;
-                margin-top: 0.1rem;
-                font-weight: 300;
-            }
-            .rsvp__counter--sm {
-                gap: 1.5rem;
-                margin-bottom: 0;
-            }
-            .rsvp__counter-btn--sm {
-                width: 2.2rem;
-                height: 2.2rem;
-                font-size: 1.25rem;
-            }
-            .rsvp__counter-num--sm {
-                font-size: 2.75rem;
-                min-width: 2.5rem;
-            }
 
             /* Cambiar confirmación */
             .rsvp__change-link {
@@ -2988,7 +2980,7 @@
                             d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
                         />
                     </svg>
-                    <p class="event-info__time">17:00 HRS.</p>
+                    <p class="event-info__time">17:30 HRS.</p>
                     <p class="event-info__type">Recepción</p>
                     <p class="event-info__venue">Hacienda Zerezotla</p>
                     <p class="event-info__address">
@@ -3459,6 +3451,48 @@
                     </div>
                 </section>
 
+                <!-- LIBRO DE VISITAS -->
+                <section class="visitas js-fade" id="visitas">
+                    <svg class="visitas__icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                            d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                    </svg>
+                    <h3 class="section-heading">Libro de Visitas</h3>
+                    <p class="visitas__desc">
+                        Déjanos un mensaje antes de la boda.<br />
+                        ¡Lo atesoraremos para siempre!
+                    </p>
+
+                    <!-- Formulario -->
+                    <div class="visitas__form-wrap" id="visitas-form-wrap">
+                        <input class="visitas__input" id="visitas-name" type="text"
+                            placeholder="Tu nombre" maxlength="60" autocomplete="name" />
+                        <textarea class="visitas__textarea" id="visitas-msg"
+                            placeholder="Escribe tu mensaje para Karla y Eduardo…" maxlength="280"></textarea>
+                        <p class="visitas__count"><span id="visitas-count">0</span> / 280</p>
+                        <button class="visitas__submit" id="visitas-submit">Dejar mensaje</button>
+                        <p class="visitas__error" id="visitas-error"></p>
+                    </div>
+
+                    <!-- Estado de éxito -->
+                    <div style="display:none;" id="visitas-thanks" class="visitas__thanks">
+                        <svg class="visitas__thanks-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        <p class="visitas__thanks-title">¡Gracias!</p>
+                        <p class="visitas__thanks-sub">Tu mensaje fue guardado con cariño.</p>
+                        <button class="visitas__otro-btn" id="visitas-otro-btn">Escribir otro</button>
+                    </div>
+
+                    <!-- Mensajes recibidos -->
+                    <div class="visitas__sep" id="visitas-sep" style="display:none;"></div>
+                    <div class="visitas__msg-list" id="visitas-msg-list">
+                        <p class="visitas__empty" id="visitas-empty" style="display:none;">
+                            Sé el primero en dejar un mensaje.
+                        </p>
+                    </div>
+                </section>
+
                 <!-- RSVP -->
                 <section class="rsvp js-fade" id="rsvp">
                     <div class="rsvp__inner">
@@ -3755,7 +3789,7 @@
                                     </div>
                                     <div class="ticket__event-row">
                                         <span class="ticket__event-lbl">Hora</span>
-                                        <span class="ticket__event-val">17:00 HRS</span>
+                                        <span class="ticket__event-val">17:30 HRS</span>
                                     </div>
                                     <div class="ticket__event-row">
                                         <span class="ticket__event-lbl">Lugar</span>
@@ -4223,7 +4257,7 @@
                     var y = yMid + 38;
 
                     /* Detalles evento */
-                    [["FECHA", "21 · NOV · 2026"], ["HORA", "17:00 HRS"], ["LUGAR", "Hacienda Zerezotla"]].forEach(function (row) {
+                    [["FECHA", "21 · NOV · 2026"], ["HORA", "17:30 HRS"], ["LUGAR", "Hacienda Zerezotla"]].forEach(function (row) {
                         ctx.fillStyle = "rgba(255,255,255,0.28)";
                         ctx.font = '400 9px Montserrat, Arial, sans-serif';
                         ctx.textAlign = "left";
@@ -4427,8 +4461,8 @@
                         "VERSION:2.0",
                         "PRODID:-//Boda Karla & Eduardo//ES",
                         "BEGIN:VEVENT",
-                        "DTSTART:20261121T170000",
-                        "DTEND:20261122T010000",
+                        "DTSTART;TZID=America/Mexico_City:20261121T173000",
+                        "DTEND;TZID=America/Mexico_City:20261122T013000",
                         "SUMMARY:Boda de Karla & Eduardo 🥂",
                         "DESCRIPTION:Recepción — Hacienda Zerezotla\\nSan Andrés Cholula\\, Puebla",
                         "LOCATION:Calle 15 Poniente #1531\\, Barrio de Santa María Xixitla\\, San Andrés Cholula\\, Puebla",
@@ -4463,7 +4497,7 @@
 
             /* === COUNTDOWN === */
             (function () {
-                var WEDDING = new Date("2026-11-21T17:00:00").getTime();
+                var WEDDING = new Date("2026-11-21T17:30:00").getTime();
 
                 var els = {
                     section: document.getElementById("js-countdown"),
@@ -4913,12 +4947,20 @@
                                     text: family.code,
                                     width: 130,
                                     height: 130,
-                                    colorDark: "#c9a96e",
-                                    colorLight: "#1e1410",
+                                    colorDark: "#1e1410",
+                                    colorLight: "#f7f4ee",
                                     correctLevel: QRCode.CorrectLevel.M,
                                 });
                             } else {
-                                qrEl.innerHTML = '<p style="font-family:var(--f-sans);font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;color:rgba(201,169,110,0.6);text-align:center;padding:1rem;line-height:2;">' + family.code + '<br><span style="font-size:0.48rem;color:rgba(255,255,255,0.25);">Muestra este código en la entrada</span></p>';
+                                var _p = document.createElement("p");
+                                _p.style.cssText = "font-family:var(--f-sans);font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;color:rgba(201,169,110,0.6);text-align:center;padding:1rem;line-height:2;";
+                                _p.textContent = family.code;
+                                var _sm = document.createElement("span");
+                                _sm.style.cssText = "font-size:0.48rem;color:rgba(255,255,255,0.25);display:block;";
+                                _sm.textContent = "Muestra este código en la entrada";
+                                _p.appendChild(document.createElement("br"));
+                                _p.appendChild(_sm);
+                                qrEl.appendChild(_p);
                             }
 
                             /* WhatsApp → llega a los novios */
@@ -5092,11 +5134,34 @@
                         showPhoto(currentIndex);
                     }
                     if (e.key === "ArrowRight") {
-                        var len2 = getGalleryPhotos().length;
-                        currentIndex = (currentIndex + 1) % len2;
+                        var len = getGalleryPhotos().length;
+                        currentIndex = (currentIndex + 1) % len;
                         showPhoto(currentIndex);
                     }
                 });
+
+                /* Swipe touch para navegar en mobile */
+                var _touchStartX = 0;
+                var _touchStartY = 0;
+                lightbox.addEventListener("touchstart", function (e) {
+                    _touchStartX = e.changedTouches[0].clientX;
+                    _touchStartY = e.changedTouches[0].clientY;
+                }, { passive: true });
+                lightbox.addEventListener("touchend", function (e) {
+                    if (!lightbox.classList.contains("is-open")) return;
+                    var dx = e.changedTouches[0].clientX - _touchStartX;
+                    var dy = e.changedTouches[0].clientY - _touchStartY;
+                    /* Ignorar si el movimiento es más vertical que horizontal (scroll) */
+                    if (Math.abs(dy) > Math.abs(dx)) return;
+                    if (Math.abs(dx) < 40) return; /* umbral mínimo */
+                    var len = getGalleryPhotos().length;
+                    if (dx < 0) {
+                        currentIndex = (currentIndex + 1) % len;
+                    } else {
+                        currentIndex = (currentIndex - 1 + len) % len;
+                    }
+                    showPhoto(currentIndex);
+                }, { passive: true });
             })();
 
             /* === MUSIC PLAYER === */
@@ -5169,33 +5234,108 @@
                 });
             })();
 
-            /* ── Copy CLABE ───────────────────────────────────── */
-            function copyClabe() {
-                var clabe = document.getElementById("clabe-val").textContent.trim();
-                if (!clabe || clabe.startsWith("XXX")) return;
-                navigator.clipboard.writeText(clabe).then(function () {
-                    var msg = document.getElementById("clabe-copied");
-                    msg.style.opacity = "1";
-                    setTimeout(function () { msg.style.opacity = "0"; }, 2500);
-                }).catch(function () {
-                    /* fallback para WebViews sin clipboard API */
-                    var el = document.createElement("textarea");
-                    el.value = clabe;
-                    el.style.position = "fixed"; el.style.opacity = "0";
-                    document.body.appendChild(el);
-                    el.select();
-                    document.execCommand("copy");
-                    document.body.removeChild(el);
-                    var msg = document.getElementById("clabe-copied");
-                    msg.style.opacity = "1";
-                    setTimeout(function () { msg.style.opacity = "0"; }, 2500);
-                });
-            }
+            /* === LIBRO DE VISITAS === */
+            (function () {
+                var SB_URL = "https://kdpgdgulrekryxqtewtr.supabase.co";
+                var SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtkcGdkZ3VscmVrcnl4cXRld3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgzNTI0NDEsImV4cCI6MjA5MzkyODQ0MX0.T6_iQjxOWX82QQHPuBI5cewOoT3UWsOQ7bvjX9GP82E";
+
+                function esc(s) {
+                    return String(s)
+                        .replace(/&/g, "&amp;").replace(/</g, "&lt;")
+                        .replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+                }
+
+                function renderMessages(msgs) {
+                    var list  = document.getElementById("visitas-msg-list");
+                    var sep   = document.getElementById("visitas-sep");
+                    var empty = document.getElementById("visitas-empty");
+                    if (!msgs || !msgs.length) {
+                        empty.style.display = "block";
+                        return;
+                    }
+                    sep.style.display = "block";
+                    empty.style.display = "none";
+                    list.innerHTML = msgs.map(function (m) {
+                        var d    = new Date(m.created_at);
+                        var date = d.toLocaleDateString("es-MX", { day: "numeric", month: "short", year: "numeric" });
+                        return '<div class="visitas__msg-card">' +
+                            '<div class="visitas__msg-header">' +
+                                '<span class="visitas__msg-name">' + esc(m.name) + '</span>' +
+                                '<span class="visitas__msg-date">' + date + '</span>' +
+                            '</div>' +
+                            '<p class="visitas__msg-text">' + esc(m.message) + '</p>' +
+                        '</div>';
+                    }).join("");
+                }
+
+                function loadMessages() {
+                    fetch(SB_URL + "/rest/v1/messages?select=name,message,created_at&order=created_at.desc&limit=50", {
+                        headers: { apikey: SB_KEY, Authorization: "Bearer " + SB_KEY }
+                    }).then(function (r) { return r.ok ? r.json() : []; })
+                      .then(renderMessages)
+                      .catch(function () {});
+                }
+
+                /* Contador de caracteres */
+                var textarea = document.getElementById("visitas-msg");
+                if (textarea) {
+                    textarea.addEventListener("input", function () {
+                        document.getElementById("visitas-count").textContent = textarea.value.length;
+                    });
+                }
+
+                /* Botón "Escribir otro" */
+                var otroBtn = document.getElementById("visitas-otro-btn");
+                if (otroBtn) {
+                    otroBtn.addEventListener("click", function () {
+                        document.getElementById("visitas-name").value = "";
+                        document.getElementById("visitas-msg").value = "";
+                        document.getElementById("visitas-count").textContent = "0";
+                        document.getElementById("visitas-error").textContent = "";
+                        document.getElementById("visitas-thanks").style.display = "none";
+                        document.getElementById("visitas-form-wrap").style.display = "block";
+                    });
+                }
+
+                /* Submit */
+                var submitBtn = document.getElementById("visitas-submit");
+                if (submitBtn) {
+                    submitBtn.addEventListener("click", function () {
+                        var name  = (document.getElementById("visitas-name").value || "").trim();
+                        var msg   = (document.getElementById("visitas-msg").value || "").trim();
+                        var errEl = document.getElementById("visitas-error");
+                        errEl.textContent = "";
+                        if (!name) { errEl.textContent = "Por favor escribe tu nombre."; return; }
+                        if (!msg)  { errEl.textContent = "Por favor escribe tu mensaje."; return; }
+                        submitBtn.textContent = "Enviando…";
+                        submitBtn.disabled = true;
+                        fetch(SB_URL + "/rest/v1/messages", {
+                            method: "POST",
+                            headers: {
+                                apikey: SB_KEY, Authorization: "Bearer " + SB_KEY,
+                                "Content-Type": "application/json", Prefer: "return=minimal"
+                            },
+                            body: JSON.stringify({ name: name, message: msg })
+                        }).then(function (r) {
+                            if (!r.ok) throw new Error(r.status);
+                            document.getElementById("visitas-form-wrap").style.display = "none";
+                            document.getElementById("visitas-thanks").style.display = "block";
+                            loadMessages();
+                        }).catch(function () {
+                            errEl.textContent = "Error al enviar. Intenta de nuevo.";
+                            submitBtn.textContent = "Dejar mensaje";
+                            submitBtn.disabled = false;
+                        });
+                    });
+                }
+
+                loadMessages();
+            })();
 
             /* ── PWA: Service Worker ──────────────────────────── */
             if ("serviceWorker" in navigator) {
                 window.addEventListener("load", function () {
-                    navigator.serviceWorker.register("./sw.js").catch(function () {});
+                    navigator.serviceWorker.register("./sw.js").catch(function (err) { console.error("[SW] registro fallido:", err); });
                 });
             }
         </script>

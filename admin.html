@@ -932,6 +932,51 @@
             }
             .qr-scan-next:hover { border-color: var(--gold); color: var(--gold); }
 
+            /* ── Mensajes (Libro de Visitas) ────────────── */
+            .msgs-list { display: flex; flex-direction: column; gap: 0.6rem; margin-top: 0.75rem; }
+            .msgs-card {
+                display: flex; align-items: flex-start; gap: 0.75rem;
+                background: rgba(255,255,255,0.03);
+                border: 1px solid rgba(255,255,255,0.07);
+                border-left: 2px solid var(--gold);
+                padding: 0.75rem 0.9rem;
+            }
+            .msgs-card__body { flex: 1; min-width: 0; }
+            .msgs-card__header {
+                display: flex; align-items: center; justify-content: space-between;
+                gap: 0.5rem; margin-bottom: 0.25rem;
+            }
+            .msgs-card__name {
+                font-family: var(--f-serif); font-size: 0.9rem;
+                color: rgba(255,255,255,0.82); white-space: nowrap;
+                overflow: hidden; text-overflow: ellipsis;
+            }
+            .msgs-card__date {
+                font-size: 0.5rem; letter-spacing: 0.08em; text-transform: uppercase;
+                color: rgba(255,255,255,0.22); white-space: nowrap; flex-shrink: 0;
+            }
+            .msgs-card__text {
+                font-size: 0.72rem; color: rgba(255,255,255,0.45); line-height: 1.6;
+                word-break: break-word;
+            }
+            .msgs-del-btn {
+                background: none; border: none; cursor: pointer; padding: 0.2rem;
+                color: rgba(224,136,136,0.4); flex-shrink: 0; line-height: 1;
+                transition: color 0.2s ease; font-size: 0.85rem;
+            }
+            .msgs-del-btn:hover { color: #e08888; }
+            .msgs-empty {
+                font-size: 0.62rem; color: rgba(255,255,255,0.22);
+                text-align: center; padding: 1rem 0; letter-spacing: 0.06em;
+            }
+            .msgs-count-badge {
+                display: inline-flex; align-items: center; justify-content: center;
+                background: var(--gold); color: #1e1410;
+                font-size: 0.5rem; font-weight: 600; letter-spacing: 0.05em;
+                min-width: 1.2rem; height: 1.2rem; border-radius: 999px;
+                padding: 0 0.3rem; margin-left: 0.4rem; vertical-align: middle;
+            }
+
             /* Lista por persona en detalle */
             .member-status-list { display: flex; flex-direction: column; gap: 0.3rem; margin-top: 0.35rem; }
             .ms-row { display: flex; align-items: center; gap: 0.6rem; padding: 0.22rem 0; }
@@ -2379,6 +2424,15 @@
                         <svg class="ci-cta-chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
                     </button>
 
+                    <!-- Libro de Visitas -->
+                    <p class="resumen-section-title" style="margin-top:1.75rem;">
+                        Libro de Visitas
+                        <span class="msgs-count-badge" id="msgs-badge" style="display:none;">0</span>
+                    </p>
+                    <div class="msgs-list" id="msgs-list">
+                        <p class="msgs-empty" id="msgs-empty">Cargando…</p>
+                    </div>
+
                     <!-- Salir sesión -->
                     <div style="margin-top:2rem;text-align:center;">
                         <button onclick="exitPanel()" style="background:none;border:none;color:rgba(255,255,255,0.22);font-family:var(--f-sans);font-size:0.62rem;letter-spacing:0.15em;text-transform:uppercase;cursor:pointer;padding:0.5rem;transition:color 0.2s ease;" onmouseover="this.style.color='rgba(255,255,255,0.5)'" onmouseout="this.style.color='rgba(255,255,255,0.22)'">
@@ -2783,11 +2837,13 @@
                 document.getElementById("gate").style.display = "none";
                 document.getElementById("panel").classList.add("is-visible");
                 loadData();
+                loadMsgs();
             }
 
             function exitPanel() {
                 localStorage.removeItem("ke-admin");
                 _tabRestored = false;
+                if (_refreshInterval) { clearInterval(_refreshInterval); _refreshInterval = null; }
                 document.getElementById("panel").classList.remove("is-visible");
                 document.getElementById("gate").style.display = "flex";
                 document.getElementById("gate-input").value = "";
@@ -3058,10 +3114,10 @@
                 var isOpen = panel.classList.contains("is-open");
                 /* Cierra todos los demás */
                 document.querySelectorAll(".fam-detail-panel.is-open").forEach(function(p) { p.classList.remove("is-open"); });
-                document.querySelectorAll(".fam-action-toggle.is-open").forEach(function(b) { b.classList.remove("is-open"); b.textContent = "Detalle ›"; });
+                document.querySelectorAll(".fam-action-toggle.is-open").forEach(function(b) { b.classList.remove("is-open"); b.innerHTML = _SVG_CHEV + '<span>Detalle</span>'; });
                 if (!isOpen) {
                     panel.classList.add("is-open");
-                    if (btn) { btn.classList.add("is-open"); btn.textContent = "Cerrar ✕"; }
+                    if (btn) { btn.classList.add("is-open"); btn.innerHTML = '<span>Cerrar</span> ✕'; }
                 }
             }
 
@@ -3533,7 +3589,6 @@
                 }
             }
 
-            function showMesasView() { switchTab("mesas"); }
 
             function renderMesasGrid() {
                 var grid     = document.getElementById("mesas-grid");
@@ -3965,7 +4020,13 @@
                     });
                     var video = document.getElementById("qr-video");
                     video.srcObject = _qrStream;
-                    await video.play();
+                    try {
+                        await video.play();
+                    } catch (playErr) {
+                        stopQrScanner();
+                        hint.textContent = "No se pudo iniciar la cámara. Intenta de nuevo.";
+                        return;
+                    }
                     _qrActive = true;
                     viewport.style.display = "block";
                     btn.classList.add("scanning");
@@ -4070,6 +4131,74 @@
                 if (result) result.innerHTML += '<button class="qr-scan-next" onclick="startQrScanner()">↩ Escanear siguiente</button>';
             }
 
+            /* ── Libro de Visitas (mensajes) ──────────── */
+            function escMsg(s) {
+                return String(s)
+                    .replace(/&/g,"&amp;").replace(/</g,"&lt;")
+                    .replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+            }
+
+            async function loadMsgs() {
+                var list  = document.getElementById("msgs-list");
+                var empty = document.getElementById("msgs-empty");
+                var badge = document.getElementById("msgs-badge");
+                if (!list) return;
+                try {
+                    var msgs = await fetch(SUPABASE_URL + "/rest/v1/messages?select=id,name,message,created_at&order=created_at.desc&limit=100", {
+                        headers: { apikey: SUPABASE_ANON_KEY, Authorization: "Bearer " + SUPABASE_ANON_KEY }
+                    }).then(function(r) { return r.ok ? r.json() : []; });
+
+                    if (badge) {
+                        badge.textContent = msgs.length;
+                        badge.style.display = msgs.length ? "inline-flex" : "none";
+                    }
+
+                    if (!msgs.length) {
+                        empty.textContent = "Ningún mensaje aún.";
+                        return;
+                    }
+                    empty.style.display = "none";
+                    list.innerHTML = msgs.map(function(m) {
+                        var d    = new Date(m.created_at);
+                        var date = d.toLocaleDateString("es-MX", { day:"numeric", month:"short", year:"numeric" });
+                        return '<div class="msgs-card" id="msg-' + escMsg(m.id) + '">' +
+                            '<div class="msgs-card__body">' +
+                                '<div class="msgs-card__header">' +
+                                    '<span class="msgs-card__name">' + escMsg(m.name) + '</span>' +
+                                    '<span class="msgs-card__date">' + date + '</span>' +
+                                '</div>' +
+                                '<p class="msgs-card__text">' + escMsg(m.message) + '</p>' +
+                            '</div>' +
+                            '<button class="msgs-del-btn" onclick="deleteMsg(\'' + escMsg(m.id) + '\')" title="Eliminar">✕</button>' +
+                        '</div>';
+                    }).join("");
+                } catch(e) {
+                    empty.textContent = "Error al cargar mensajes.";
+                }
+            }
+
+            async function deleteMsg(id) {
+                if (!confirm("¿Eliminar este mensaje?")) return;
+                try {
+                    var r = await fetch(SUPABASE_URL + "/rest/v1/messages?id=eq." + id, {
+                        method: "DELETE",
+                        headers: { apikey: SUPABASE_ANON_KEY, Authorization: "Bearer " + SUPABASE_ANON_KEY }
+                    });
+                    if (!r.ok) throw new Error(r.status);
+                    var card = document.getElementById("msg-" + id);
+                    if (card) card.remove();
+                    var list = document.getElementById("msgs-list");
+                    var badge = document.getElementById("msgs-badge");
+                    if (list && !list.querySelector(".msgs-card")) {
+                        document.getElementById("msgs-empty").style.display = "block";
+                        document.getElementById("msgs-empty").textContent = "Ningún mensaje aún.";
+                        if (badge) badge.style.display = "none";
+                    } else if (badge) {
+                        badge.textContent = parseInt(badge.textContent) - 1;
+                    }
+                } catch(e) { showToast("⚠ Error al eliminar mensaje"); }
+            }
+
             /* ── Guardar URL del sitio ───────────────── */
             (function () {
                 var input = document.getElementById("site-url");
@@ -4138,6 +4267,7 @@
 
             /* Auto-refresh cada 60 s si la sesión sigue activa + detecta nuevas confirmaciones */
             var lastConfirmedCount = 0;
+            var _refreshInterval = null;
             function showToast(msg) {
                 var t = document.createElement("div");
                 t.textContent = msg;
@@ -4146,15 +4276,19 @@
                 setTimeout(function() { t.style.opacity = "0"; }, 3000);
                 setTimeout(function() { t.remove(); }, 3400);
             }
-            setInterval(async function () {
-                if (sessionStorage.getItem("ke-admin") !== "1") return;
-                var prevCount = lastConfirmedCount;
-                await loadData();
-                var newCount = allData.filter(function(f) { return f.confirmed; }).length;
-                if (prevCount > 0 && newCount > prevCount) {
-                    showToast("🎉 " + (newCount - prevCount) + " " + (newCount - prevCount > 1 ? "nuevas confirmaciones" : "nueva confirmación"));
+            _refreshInterval = setInterval(async function () {
+                if (localStorage.getItem("ke-admin") !== "1") return;
+                try {
+                    var prevCount = lastConfirmedCount;
+                    await loadData();
+                    var newCount = allData.filter(function(f) { return f.confirmed; }).length;
+                    if (prevCount > 0 && newCount > prevCount) {
+                        showToast("🎉 " + (newCount - prevCount) + " " + (newCount - prevCount > 1 ? "nuevas confirmaciones" : "nueva confirmación"));
+                    }
+                    lastConfirmedCount = newCount;
+                } catch (e) {
+                    console.error("[auto-refresh] error:", e);
                 }
-                lastConfirmedCount = newCount;
             }, 60000);
 
             /* ── Search ───────────────────────────────── */
@@ -4395,19 +4529,42 @@
                 if (input) input.click();
             }
 
+            /* Comprime cualquier imagen a máx 1200px, calidad 82%, siempre JPEG */
+            function compressImage(file, maxPx, quality) {
+                return new Promise(function(resolve) {
+                    var img = new Image();
+                    var url = URL.createObjectURL(file);
+                    img.onload = function() {
+                        URL.revokeObjectURL(url);
+                        var w = img.naturalWidth, h = img.naturalHeight;
+                        if (w > maxPx || h > maxPx) {
+                            if (w >= h) { h = Math.round(h * maxPx / w); w = maxPx; }
+                            else        { w = Math.round(w * maxPx / h); h = maxPx; }
+                        }
+                        var canvas = document.createElement("canvas");
+                        canvas.width = w; canvas.height = h;
+                        canvas.getContext("2d").drawImage(img, 0, 0, w, h);
+                        canvas.toBlob(function(blob) { resolve(blob || file); }, "image/jpeg", quality);
+                    };
+                    img.onerror = function() { URL.revokeObjectURL(url); resolve(file); };
+                    img.src = url;
+                });
+            }
+
             async function handlePhotoUpload(slotKey, input) {
                 var file = input.files[0];
                 if (!file) return;
-                var ext = (file.name.split(".").pop() || "jpg").toLowerCase();
-                if (ext === "jpeg") ext = "jpg";
-                var filename = slotKey + "." + ext;
+                var filename = slotKey + ".jpg";
                 var card = document.getElementById("fslot-" + slotKey);
                 var bar  = document.getElementById("fprog-" + slotKey);
                 if (card) card.classList.add("foto-slot--uploading");
-                if (bar)  bar.style.width = "20%";
+                if (bar)  bar.style.width = "15%";
                 try {
-                    // Si ya existe un archivo, borrarlo primero.
-                    // Esto evita necesitar política UPDATE en Supabase (con INSERT + DELETE es suficiente).
+                    /* Comprimir antes de subir — máx 1200px, calidad 82% */
+                    var blob = await compressImage(file, 1200, 0.82);
+                    if (bar) bar.style.width = "35%";
+
+                    /* Si ya existe un archivo, borrarlo primero */
                     var existingUrl = _photoUrls[slotKey];
                     if (existingUrl) {
                         var oldFile = decodeURIComponent(existingUrl.split("/").pop().split("?")[0]);
@@ -4421,15 +4578,15 @@
                             body: JSON.stringify({ prefixes: [oldFile] }),
                         });
                     }
-                    if (bar) bar.style.width = "50%";
+                    if (bar) bar.style.width = "55%";
                     var r = await fetch(SUPABASE_URL + "/storage/v1/object/" + STORAGE_BUCKET + "/" + encodeURIComponent(filename), {
                         method: "POST",
                         headers: {
                             apikey: SUPABASE_ANON_KEY,
                             Authorization: "Bearer " + SUPABASE_ANON_KEY,
-                            "Content-Type": file.type || "image/jpeg",
+                            "Content-Type": "image/jpeg",
                         },
-                        body: file,
+                        body: blob,
                     });
                     if (bar) bar.style.width = "85%";
                     if (!r.ok) {

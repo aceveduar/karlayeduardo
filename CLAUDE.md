@@ -73,26 +73,29 @@ anillo.webp     56K  (era 104K JPG)
 ### Tabla `families`
 ```
 id            UUID        PK
-code          TEXT        Código único (ej. ACEVEDO-01)
+code          TEXT        Código único (ej. ACEVEDO-01) — índice único
 family_name   TEXT        Nombre de la familia
 max_guests    INTEGER     Pases asignados
 confirmed     BOOLEAN     ¿Confirmó asistencia?
+created_at    TIMESTAMPTZ Auto-generado por Supabase
 group_name    TEXT        Familia novia / novio / Amigos / Trabajo / Otros
 phone         TEXT        WhatsApp (sin código país)
 guest_names   TEXT        Nombres separados por comas
-table_number  INTEGER     Mesa asignada (1–18)
 notes         TEXT        Notas internas (dieta, accesibilidad, etc.)
+checked_in    BOOLEAN     Llegó al evento (día de la boda)
+checked_in_at TIMESTAMPTZ Hora de llegada (registrada por el QR scanner)
+table_number  INTEGER     Mesa asignada (1–20)
 ```
 
 ### Tabla `rsvps`
 ```
-id             UUID       PK
-family_id      UUID       FK → families
-contact_name   TEXT       Quien confirmó
-guest_count    INTEGER    Cuántos asisten
-attending      BOOLEAN    true = asiste, false = no asiste
-attending_names TEXT      Nombres de quienes asisten (coma)
-created_at     TIMESTAMP
+id              UUID       PK
+family_id       UUID       FK → families
+contact_name    TEXT       Quien confirmó
+guest_count     INTEGER    Cuántos asisten
+attending       BOOLEAN    true = asiste, false = no asiste
+attending_names TEXT       Nombres de quienes asisten (coma)
+created_at      TIMESTAMPTZ
 ```
 
 ---
@@ -114,7 +117,7 @@ created_at     TIMESTAMP
 - [x] **Timeline/Itinerario** del evento (recepción → entrada novios → brindis → banquete → fiesta)
 - [x] **Nuestra Historia** con 4 momentos (El Encuentro, Crecer Juntos, La Propuesta, 21·Nov·2026)
 - [x] **Dresscode** "Semi Formal" con paleta de swatches y colores prohibidos (Blanco ✕ / Beige ✕)
-- [x] **Sección de Regalos** con lluvia de sobres (CLABE con copy-to-clipboard) + wishlist WhatsApp
+- [x] **Sección de Regalos** con mesa de regalos Amazon (link directo)
 - [x] **RSVP FAB flotante** que desaparece al llegar al formulario (IntersectionObserver)
 - [x] **Open Graph meta tags** para preview en WhatsApp (imagen, título, descripción)
 - [x] **PWA**: manifest.json + service worker (funciona offline después de primer carga)
@@ -132,6 +135,7 @@ created_at     TIMESTAMP
 - [x] **Countdown** al evento en el Resumen
 - [x] Asignación de mesas (20 mesas × 12 pax)
 - [x] Alerta de sobrecapacidad por mesa
+- [x] **QR Scanner para check-in** (jsQR + cámara trasera) — escanea ticket → muestra familia + mesa → marca llegada en Supabase
 - [x] Modo check-in (día del evento)
 - [x] Export a CSV
 - [x] Envío de invitación por WhatsApp por familia
@@ -220,7 +224,7 @@ Las 5 imágenes florales se usan con estas reglas:
 
 ## Detalles del Evento (Hardcodeados)
 
-- **Fecha:** 21 de noviembre de 2026, 5:00 PM
+- **Fecha:** 21 de noviembre de 2026, 5:30 PM
 - **Venue:** Hacienda Zerezotla, San Andrés Cholula, Puebla
 - **Dirección:** Calle 15 Poniente #1531, Barrio de Santa María Xixitla
 - **Deadline RSVP:** 20 de septiembre de 2026, 23:59
@@ -277,17 +281,15 @@ Las 5 imágenes florales se usan con estas reglas:
 - Eduardo gestiona el admin; los invitados solo ven index.html
 - No hay servidor propio — todo es estático + Supabase
 - **Supabase Free tier pausa proyectos sin actividad por 7 días.** Si el admin muestra "Error de conexión", verificar si el proyecto está pausado en supabase.com
-- **La CLABE en la sección de Regalos tiene `XXXX` de placeholder** — Eduardo debe reemplazarla con sus datos reales de cuenta bancaria
+- La función `copyClabe()` en index.html es código muerto — no hay elemento `#clabe-val` en el HTML. Se puede eliminar cuando convenga.
 
 ---
 
 ## Pendientes / Próximas Iteraciones
 
 ### Alto impacto (aún no implementado)
-- [ ] **QR Scanner en admin** — para check-in real el día del evento usando jsQR + cámara del celular
-- [ ] **Libro de visitas digital** — invitados dejan mensajes pre-boda (requiere tabla Supabase nueva)
-- [ ] **Despliegue en GitHub Pages o Netlify** — actualmente solo funciona en `file://` local; los links de WhatsApp no funcionarán hasta que esté en una URL pública
-- [ ] **Llenar CLABE real** en la sección de Regalos de index.html
+- [ ] **Libro de visitas digital** — invitados dejan mensajes pre-boda (requiere tabla `messages` en Supabase)
+- [ ] **Despliegue en Netlify** — actualmente solo funciona en `file://` local
 
 ### Nice to have
 - [ ] Hashtag #KarlaEduardo2026 en la invitación
