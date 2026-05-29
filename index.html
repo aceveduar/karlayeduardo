@@ -3779,7 +3779,7 @@
                                     Enviar por WhatsApp
                                 </a>
                                 <button class="ticket__wa-btn" id="already-save-img" style="border:none; cursor:pointer; border-top:1px solid rgba(201,169,110,0.15); color:rgba(201,169,110,0.6); display:block; width:100%; text-align:center;">
-                                    Guardar imagen del pase
+                                    Guardar / Compartir imagen
                                 </button>
                             </div>
                             <a
@@ -3902,7 +3902,7 @@
                                     Enviar por WhatsApp
                                 </a>
                                 <button class="ticket__wa-btn" id="ticket-save-img" style="border:none;cursor:pointer;border-top:1px solid rgba(201,169,110,0.15);color:rgba(201,169,110,0.6)">
-                                    Guardar imagen del pase
+                                    Guardar / Compartir imagen
                                 </button>
                             </div>
                         </div>
@@ -4189,7 +4189,7 @@
                         } finally {
                             /* toBlob es async — restaurar botón tras un momento */
                             setTimeout(function() {
-                                btn.textContent = "Guardar imagen del pase";
+                                btn.textContent = "Guardar / Compartir imagen";
                                 btn.disabled = false;
                             }, 800);
                         }
@@ -4923,7 +4923,7 @@
                                         "📅 21 de noviembre de 2026 — 17:30 HRS\n" +
                                         "📍 Hacienda Zerezotla, San Andrés Cholula\n" +
                                         "🔑 Código: " + family.code;
-                                    alreadyWaBtn.href = "https://wa.me/?text=" + encodeURIComponent(waMsg);
+                                    alreadyWaBtn.href = "https://wa.me/" + COUPLE_PHONE + "?text=" + encodeURIComponent(waMsg);
                                 }
 
                                 /* Poblar datos del ticket para que "Guardar imagen" funcione */
