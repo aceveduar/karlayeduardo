@@ -2923,14 +2923,14 @@
                         <p class="inv-header__parents-label">
                             Padres de la novia
                         </p>
-                        <p>Blanca Mino Gamboa</p>
-                        <p>Gilberto Teyssier Trejo</p>
+                        <p>Sra. Blanca Mino Gamboa</p>
+                        <p>Sr. Gilberto Teyssier Trejo</p>
                         <br />
                         <p class="inv-header__parents-label">
                             Padres del novio
                         </p>
-                        <p>Ofelia Martínez Díaz</p>
-                        <p>Froylan Martínez Martínez</p>
+                        <p>Sra. Ofelia Martínez Díaz</p>
+                        <p>Sr. Froylan Martínez Martínez</p>
                     </div>
 
                     <div class="event-date js-fade">
@@ -4187,8 +4187,11 @@
                         } catch (err) {
                             alert("No se pudo generar. Toma una captura de pantalla.");
                         } finally {
-                            btn.textContent = "Guardar imagen del pase";
-                            btn.disabled = false;
+                            /* toBlob es async — restaurar botón tras un momento */
+                            setTimeout(function() {
+                                btn.textContent = "Guardar imagen del pase";
+                                btn.disabled = false;
+                            }, 800);
                         }
                     });
                 });
@@ -4344,6 +4347,24 @@
                 }
 
                 function shareOrDownload(canvas) {
+                    /* Intenta Web Share API (share sheet nativo — iOS 15+, Android Chrome 75+) */
+                    canvas.toBlob(function(blob) {
+                        var file = new File([blob], "pase-karla-eduardo.png", { type: "image/png" });
+                        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                            navigator.share({
+                                files: [file],
+                                title: "Pase · Karla & Eduardo",
+                                text: "Mi pase de entrada — Boda Karla & Eduardo 💍"
+                            }).catch(function(err) {
+                                if (err.name !== "AbortError") _fallbackSave(canvas);
+                            });
+                            return;
+                        }
+                        _fallbackSave(canvas);
+                    }, "image/png");
+                }
+
+                function _fallbackSave(canvas) {
                     var dataUrl = canvas.toDataURL("image/png");
                     var isMobile = /iPhone|iPad|Android/i.test(navigator.userAgent);
                     if (isMobile) {
@@ -5065,6 +5086,7 @@
                                 "Confirmó: " + firstName + "\n" +
                                 "👥 " + guestCount + (guestCount === 1 ? " persona" : " personas") + "\n" +
                                 (attendingNames ? "Nombres: " + attendingNames + "\n" : "") +
+                                (family.table_number ? "🪑 Mesa " + family.table_number + "\n" : "") +
                                 "🎫 Código: " + family.code;
                             document.getElementById("ticket-wa-btn").href =
                                 "https://wa.me/" + COUPLE_PHONE +

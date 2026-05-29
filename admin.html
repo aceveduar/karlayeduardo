@@ -2860,7 +2860,7 @@
                 <div class="settings-modal__body">
                     <p class="config-label">🔗 URL del sitio — para links de invitación</p>
                     <div class="config-row">
-                        <input class="config-input" type="url" id="site-url" placeholder="https://tuusuario.github.io/karlayeduardo" style="flex:1;" />
+                        <input class="config-input" type="url" id="site-url" placeholder="https://karlayeduardo.netlify.app" style="flex:1;" />
                         <button class="action-btn" id="btn-save-url">Guardar</button>
                     </div>
                     <p class="config-hint" style="margin-top:0.5rem;">Cada invitado recibe: URL + ?code=CODIGO</p>
@@ -3249,7 +3249,7 @@
                     "¡Hola, " + family + "! 🥂\n\n" +
                     "Con mucho cariño les compartimos su invitación a la boda de *Karla & Eduardo*.\n\n" +
                     "📅 Sábado 21 de noviembre de 2026\n" +
-                    "🕔 17:00 hrs\n" +
+                    "🕔 17:30 hrs\n" +
                     "📍 Hacienda Zerezotla, San Andrés Cholula\n" +
                     (tableNum ? "🪑 Su mesa: *Mesa " + tableNum + "*\n" : "") +
                     "\nSu invitación personalizada:\n" + link;
@@ -4716,7 +4716,7 @@
 
             /* ── Countdown hero en Resumen ──────────────────── */
             (function() {
-                var target = new Date("2026-11-21T17:00:00");
+                var target = new Date("2026-11-21T17:30:00");
                 var el = document.getElementById("resumen-days");
                 if (!el) return;
                 var diff = Math.ceil((target - Date.now()) / 86400000);
