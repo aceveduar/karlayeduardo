@@ -39,7 +39,7 @@ Sistema completo de invitación digital premium para la boda de **Karla y Eduard
 SUPABASE_URL      = https://kdpgdgulrekryxqtewtr.supabase.co
 SUPABASE_ANON_KEY = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtkcGdkZ3VscmVrcnl4cXRld3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgzNTI0NDEsImV4cCI6MjA5MzkyODQ0MX0.T6_iQjxOWX82QQHPuBI5cewOoT3UWsOQ7bvjX9GP82E
 ADMIN_PASSWORD    = KarlaEduardo2026
-COUPLE_PHONE      = 527721204509
+COUPLE_PHONE      = 521444382498
 ```
 
 ---

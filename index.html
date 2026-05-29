@@ -22,15 +22,15 @@
         <meta name="description" content="Karla y Eduardo se casan el 21 de noviembre de 2026 en Hacienda Zerezotla, San Andrés Cholula, Puebla. Confirma tu asistencia." />
         <meta name="theme-color" content="#1e1410" />
 
-        <!-- TODO tras Netlify deploy: reemplazar YOUR_DOMAIN con el dominio real (ej. karlayeduardo.netlify.app) -->
-        <link rel="canonical" href="https://YOUR_DOMAIN/" />
+        <!-- TODO tras Netlify deploy: reemplazar karlayeduardo.netlify.app con el dominio real (ej. karlayeduardo.netlify.app) -->
+        <link rel="canonical" href="https://karlayeduardo.netlify.app/" />
 
         <!-- Open Graph -->
         <meta property="og:type"        content="website" />
-        <meta property="og:url"         content="https://YOUR_DOMAIN/" />
+        <meta property="og:url"         content="https://karlayeduardo.netlify.app/" />
         <meta property="og:title"       content="Karla &amp; Eduardo — 21 Noviembre 2026" />
         <meta property="og:description" content="Nos casamos 🌸 Hacienda Zerezotla, San Andrés Cholula, Puebla. Confirma tu asistencia." />
-        <meta property="og:image"       content="https://YOUR_DOMAIN/assets/Karla%20y%20Froyland/novios.webp" />
+        <meta property="og:image"       content="https://karlayeduardo.netlify.app/assets/Karla%20y%20Froyland/novios.webp" />
         <meta property="og:image:width"  content="600" />
         <meta property="og:image:height" content="800" />
         <meta property="og:locale"      content="es_MX" />
@@ -39,7 +39,7 @@
         <meta name="twitter:card"        content="summary_large_image" />
         <meta name="twitter:title"       content="Karla &amp; Eduardo — 21 Nov 2026" />
         <meta name="twitter:description" content="Nos casamos 🌸 Hacienda Zerezotla, Cholula, Puebla" />
-        <meta name="twitter:image"       content="https://YOUR_DOMAIN/assets/Karla%20y%20Froyland/novios.webp" />
+        <meta name="twitter:image"       content="https://karlayeduardo.netlify.app/assets/Karla%20y%20Froyland/novios.webp" />
         <link href="https://fonts.googleapis.com" rel="preconnect" />
         <link
             crossorigin=""
@@ -148,8 +148,8 @@
                 opacity: 0;
                 transform: translateY(24px);
                 transition:
-                    opacity 0.8s ease,
-                    transform 0.8s ease;
+                    opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1),
+                    transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
             }
             .js-fade.is-visible {
                 opacity: 1;
@@ -216,6 +216,18 @@
                 pointer-events: none;
                 display: block;
                 mix-blend-mode: multiply;
+                animation: floral-float 10s ease-in-out infinite;
+            }
+
+            /* translate stacks con transform:rotate() inline — sin conflicto */
+            @keyframes floral-float {
+                0%, 100% { translate: 0 0; }
+                50%       { translate: 0 -6px; }
+            }
+            @keyframes floral-breathe {
+                0%, 100% { translate: 0 0;      scale: 1;     }
+                33%      { translate: -2px -4px; scale: 1.010; }
+                66%      { translate: 2px  -3px; scale: 1.006; }
             }
 
             /* =============================================
@@ -275,7 +287,7 @@
        BLOCK: inv-header
        ============================================= */
             .inv-header {
-                padding: 0.75rem 2.5rem 0;
+                padding: 0.25rem 2.5rem 0;
                 text-align: center;
                 position: relative;
             }
@@ -370,13 +382,25 @@
             .inv-header__frame {
                 border: 4px solid var(--c-white);
                 box-shadow:
-                    0 0 0 1px rgba(201, 169, 110, 0.7),
+                    0 0 0 1px rgba(201, 169, 110, 0.75),
                     0 0 0 4px var(--c-white),
-                    0 0 0 5px rgba(201, 169, 110, 0.28),
-                    0 28px 80px rgba(0, 0, 0, 0.26);
+                    0 0 0 5px rgba(201, 169, 110, 0.32),
+                    0 20px 50px rgba(0, 0, 0, 0.18),
+                    0 40px 100px rgba(0, 0, 0, 0.14);
                 margin: 2rem auto;
                 width: 96%;
                 overflow: hidden;
+                border-radius: 4px;
+                position: relative;
+            }
+            /* Gradiente inferior — suaviza el corte foto → pergamino */
+            .inv-header__frame::after {
+                content: "";
+                position: absolute;
+                inset: auto 0 0 0;
+                height: 18%;
+                background: linear-gradient(to bottom, transparent, rgba(247, 244, 238, 0.55));
+                pointer-events: none;
             }
             .inv-header__photo {
                 width: 100%;
@@ -385,6 +409,7 @@
                 aspect-ratio: 3/4;
                 object-fit: cover;
                 transition: transform 0.9s ease;
+                border-radius: 1px;
             }
             .inv-header__frame:hover .inv-header__photo {
                 transform: scale(1.05);
@@ -426,6 +451,7 @@
                 width: 180px;
                 height: auto;
                 mix-blend-mode: multiply;
+                animation: floral-breathe 12s ease-in-out infinite;
             }
             .ornament-divider--flipped .ornament-divider__img {
                 transform: scaleX(-1) rotate(8deg);
@@ -442,6 +468,7 @@
                 font-family: var(--f-script);
                 font-size: 4.5rem;
                 line-height: 1.1;
+                padding-top: 0.22em;
                 background: linear-gradient(
                     90deg,
                     #7a5a28 0%,
@@ -758,7 +785,7 @@
             .btn {
                 display: inline-block;
                 padding: 0.7rem 2.25rem;
-                font-size: 0.6rem;
+                font-size: 0.72rem;
                 letter-spacing: 0.22em;
                 text-transform: uppercase;
                 text-decoration: none;
@@ -814,7 +841,7 @@
             }
             .btn--lg {
                 padding: 1.1rem 3.75rem;
-                font-size: 0.72rem;
+                font-size: 0.82rem;
                 letter-spacing: 0.25em;
             }
 
@@ -984,7 +1011,7 @@
             }
             .story__text {
                 font-size: 0.8rem;
-                color: var(--c-text-mid);
+                color: #4a3d32;
                 max-width: 280px;
                 line-height: 1.95;
             }
@@ -1055,7 +1082,7 @@
                     0 0 0 1px rgba(0, 0, 0, 0.06);
             }
             .dresscode__swatch--no {
-                opacity: 0.5;
+                opacity: 0.82;
             }
             .dresscode__swatch--no::after {
                 content: "✕";
@@ -1079,6 +1106,10 @@
                 background: var(--c-border);
                 align-self: center;
                 margin: 0 0.25rem;
+            }
+            .dresscode__formal-lbl--no {
+                color: rgba(183, 110, 73, 0.8);
+                margin-top: 1.75rem;
             }
             .dresscode__note {
                 font-size: 0.77rem;
@@ -1219,26 +1250,27 @@
                 color: var(--c-terracotta); margin: 0 auto 1rem;
             }
             .visitas__desc {
-                font-size: 0.78rem; color: var(--c-text-light);
+                font-size: 0.84rem; color: var(--c-text-light);
                 line-height: 1.9; max-width: 280px; margin: 0 auto 2rem;
             }
             .visitas__form-wrap { max-width: 320px; margin: 0 auto; text-align: left; }
             .visitas__input,
             .visitas__textarea {
                 width: 100%;
-                background: var(--c-white);
-                border: 1px solid var(--c-border);
-                padding: 0.85rem 1rem;
+                background: transparent;
+                border: none;
+                border-bottom: 1.5px solid var(--c-border);
+                padding: 0.65rem 0.25rem;
                 font-family: var(--f-sans); font-size: 1rem;
                 color: var(--c-text-dark);
-                margin-bottom: 0.75rem;
                 transition: border-color 0.25s ease;
                 outline: none;
                 box-sizing: border-box;
             }
+            .visitas__input { margin-bottom: 1.25rem; }
             .visitas__input:focus,
             .visitas__textarea:focus { border-color: var(--c-gold); }
-            .visitas__textarea { resize: vertical; min-height: 100px; }
+            .visitas__textarea { resize: none; min-height: 90px; }
             .visitas__count {
                 font-size: 0.55rem; letter-spacing: 0.1em; text-transform: uppercase;
                 color: var(--c-text-light); text-align: right; margin: -0.5rem 0 0.75rem;
@@ -1306,6 +1338,10 @@
             }
             .visitas__msg-text {
                 font-size: 0.8rem; color: var(--c-text-mid); line-height: 1.7;
+            }
+            .visitas__counter {
+                font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase;
+                color: var(--c-gold); text-align: center; margin: 0 0 1.25rem;
             }
             .visitas__empty {
                 font-size: 0.72rem; color: var(--c-text-light);
@@ -1544,15 +1580,15 @@
 
             /* Botones de evento agrupados */
             .event-info__btns {
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                grid-template-rows: auto auto;
+                display: flex;
+                flex-direction: column;
                 gap: 0.75rem;
                 max-width: 320px;
                 margin: 0 auto;
             }
-            .event-info__btns > :last-child {
-                grid-column: 1 / -1;
+            .event-info__btns .btn {
+                width: 100%;
+                text-align: center;
             }
 
             /* Countdown done script glow pulse */
@@ -1652,6 +1688,10 @@
             }
             .rsvp__input:focus {
                 border-color: rgba(201, 169, 110, 0.7);
+            }
+            .rsvp__input--error {
+                border-color: #e08888;
+                box-shadow: 0 0 0 2px rgba(224,136,136,0.18);
             }
             .rsvp__family-welcome {
                 font-family: var(--f-serif);
@@ -2708,14 +2748,14 @@
                 position: absolute;
                 top: 50%;
                 transform: translateY(-50%);
-                background: none;
-                border: 1px solid rgba(201, 169, 110, 0.25);
+                background: rgba(0,0,0,0.35);
+                border: 1px solid rgba(201, 169, 110, 0.45);
                 color: var(--c-gold);
-                width: 3rem;
-                height: 3rem;
+                width: 3.25rem;
+                height: 3.25rem;
                 border-radius: 50%;
                 cursor: pointer;
-                font-size: 1.5rem;
+                font-size: 1.6rem;
                 display: flex;
                 align-items: center;
                 justify-content: center;
@@ -2799,11 +2839,11 @@
                     <!-- Ramo esquina superior derecha: flores-4, asoma parcialmente -->
                     <img class="floral-deco"
                          src="assets/flores-4.webp" alt=""
-                         style="width:210px; top:-30px; right:-55px; opacity:0.88;" aria-hidden="true" />
+                         style="width:170px; top:-30px; right:-70px; opacity:0.88; animation-delay:0s;" aria-hidden="true" />
                     <!-- Ramo esquina superior izquierda: flores-2 espejado, complemento más contenido -->
                     <img class="floral-deco" loading="lazy"
                          src="assets/flores-2.webp" alt=""
-                         style="width:165px; top:-12px; left:-42px; opacity:0.82; transform:scaleX(-1);" aria-hidden="true" />
+                         style="width:165px; top:-12px; left:-42px; opacity:0.68; transform:scaleX(-1); animation-delay:-2.1s;" aria-hidden="true" />
                     <h1 class="inv-header__monogram">K | E</h1>
                     <p class="inv-header__tagline">¡Nos Casamos!</p>
                     <div class="inv-header__divider-line">
@@ -2825,6 +2865,7 @@
                             alt="Karla y Eduardo"
                             src="assets/Karla y Froyland/novios.webp"
                             data-photo-slot="portada"
+                            fetchpriority="high"
                         />
                     </div>
 
@@ -2834,7 +2875,7 @@
                             class="ornament-divider__img" loading="lazy"
                             alt=""
                             src="assets/flores-4.webp"
-                            style="width:190px; transform:rotate(-2deg);"
+                            style="width:190px; transform:rotate(-2deg); animation-delay:-1s;"
                         />
                     </div>
 
@@ -2852,7 +2893,7 @@
                             class="ornament-divider__img" loading="lazy"
                             alt=""
                             src="assets/flores-4.webp"
-                            style="width:190px;"
+                            style="width:190px; animation-delay:-4s;"
                         />
                     </div>
 
@@ -2867,8 +2908,8 @@
                     <div style="margin: 0.5rem 0 2rem;">
                         <p class="inv-header__verse" style="margin-bottom:0;">
                             "Y sobre todas estas cosas,<br />
-                            vístanse de amor, que es el<br />
-                            vínculo perfecto"<br />
+                            vístanse de amor,<br />
+                            que es el vínculo perfecto"<br />
                             <em>Colosenses 3:14</em>
                         </p>
                     </div>
@@ -2888,8 +2929,8 @@
                         <p class="inv-header__parents-label">
                             Padres del novio
                         </p>
-                        <p>Ofelia Martinez Díaz</p>
-                        <p>Froylan Martinez Martinez</p>
+                        <p>Ofelia Martínez Díaz</p>
+                        <p>Froylan Martínez Martínez</p>
                     </div>
 
                     <div class="event-date js-fade">
@@ -2960,7 +3001,7 @@
                     <!-- Floral lateral derecho sutil -->
                     <img class="floral-deco" loading="lazy"
                          src="assets/flores-2.webp" alt=""
-                         style="width:195px; top:15px; right:-55px; opacity:0.62; transform:rotate(-12deg);" aria-hidden="true" />
+                         style="width:195px; top:15px; right:-55px; opacity:0.62; transform:rotate(-12deg); animation-delay:-0.8s;" aria-hidden="true" />
                     <svg
                         class="event-info__icon"
                         fill="none"
@@ -3014,10 +3055,10 @@
 
                 <!-- CÓMO LLEGAR -->
                 <section class="how-to-get js-fade" style="position:relative; overflow:hidden;">
-                    <!-- Floral esquina superior derecha sutil -->
+                    <!-- Floral esquina superior izquierda sutil -->
                     <img class="floral-deco" loading="lazy"
                          src="assets/flores-2.webp" alt=""
-                         style="width:175px; top:-5px; right:-55px; opacity:0.38; transform:rotate(-10deg);" aria-hidden="true" />
+                         style="width:175px; top:-5px; left:-55px; opacity:0.38; transform:scaleX(-1) rotate(10deg); animation-delay:-3.3s;" aria-hidden="true" />
                     <h3 class="section-heading">¿Cómo Llegar?</h3>
                     <div class="how-to-get__cards">
 
@@ -3057,7 +3098,7 @@
 
                         <!-- CÓMO LLEGAR -->
                         <div class="how-to-get__card">
-                            <span class="how-to-get__badge">Cómo llegar</span>
+                            <span class="how-to-get__badge">Rutas</span>
                             <p class="how-to-get__card-title">
                                 <svg class="how-to-get__card-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
@@ -3079,7 +3120,7 @@
                     <!-- Floral esquina izquierda sutil -->
                     <img class="floral-deco" loading="lazy"
                          src="assets/flores-4.webp" alt=""
-                         style="width:155px; top:10px; left:-48px; opacity:0.42; transform:rotate(8deg);" aria-hidden="true" />
+                         style="width:155px; top:10px; left:-48px; opacity:0.42; transform:rotate(8deg); animation-delay:-1.7s;" aria-hidden="true" />
                     <h3 class="section-heading" style="margin-bottom:1.25rem;">Itinerario</h3>
 
                     <div class="timeline__track">
@@ -3156,7 +3197,7 @@
                             </div>
                             <div class="timeline__side timeline__side--right">
                                 <p class="timeline__name">Salida</p>
-                                <p class="timeline__time">1:30 AM</p>
+                                <p class="timeline__time">01:30</p>
                             </div>
                         </div>
                     </div>
@@ -3167,7 +3208,7 @@
                     <img
                         class="photo-break__img" loading="lazy"
                         alt="Karla y Eduardo"
-                        src="assets/Karla y Froyland/brazos.jpg"
+                        src="assets/Karla y Froyland/brazos.webp"
                         data-photo-slot="galeria-0"
                     />
                 </div>
@@ -3177,7 +3218,11 @@
                     <!-- Floral lateral derecho, nuestra historia -->
                     <img class="floral-deco" loading="lazy"
                          src="assets/flores-1.webp" alt=""
-                         style="width:190px; top:10px; right:-50px; opacity:0.56; transform:rotate(-8deg);" aria-hidden="true" />
+                         style="width:145px; top:-5px; right:-45px; opacity:0.50; transform:rotate(-8deg); animation-delay:-4.5s;" aria-hidden="true" />
+                    <!-- Floral lateral izquierdo inferior — balance diagonal -->
+                    <img class="floral-deco" loading="lazy"
+                         src="assets/flores-3.webp" alt=""
+                         style="width:160px; bottom:-15px; left:-42px; opacity:0.38; mix-blend-mode:multiply; transform:scaleX(-1) rotate(6deg); animation-delay:-2.2s;" aria-hidden="true" />
                     <h3 class="section-heading">Nuestra Historia</h3>
                     <div class="story__list">
                         <div class="story__item" style="transition-delay: 0.1s">
@@ -3220,10 +3265,10 @@
 
                 <!-- GALERÍA -->
                 <section class="gallery js-fade" style="position:relative; overflow:hidden;">
-                    <!-- Floral esquina superior izquierda sutil -->
+                    <!-- Floral esquina superior derecha sutil -->
                     <img class="floral-deco" loading="lazy"
                          src="assets/flores-5.webp" alt=""
-                         style="width:160px; top:0px; left:-50px; opacity:0.40; mix-blend-mode:multiply; transform:scaleX(-1) rotate(5deg);" aria-hidden="true" />
+                         style="width:160px; top:0px; right:-50px; opacity:0.40; mix-blend-mode:multiply; transform:rotate(-5deg); animation-delay:-2.6s;" aria-hidden="true" />
                     <h3 class="section-heading">Nuestra Galería</h3>
                     <p style="font-family:var(--f-serif);font-style:italic;font-size:0.85rem;color:var(--c-text-light);margin:-1.25rem 0 2rem;line-height:1.8;">Momentos que atesoran nuestro amor</p>
 
@@ -3233,7 +3278,7 @@
                         <div class="gallery__item gallery__item--wide" data-gallery-index="0">
                             <img
                                 class="gallery__img" loading="lazy"
-                                src="assets/Karla y Froyland/brazos.jpg"
+                                src="assets/Karla y Froyland/brazos.webp"
                                 alt="Karla y Eduardo"
                                 data-photo-slot="galeria-0"
                             />
@@ -3304,7 +3349,7 @@
                         <div class="gallery__item" data-gallery-index="5">
                             <img
                                 class="gallery__img" loading="lazy"
-                                src="assets/Karla y Froyland/1-karla.jpg"
+                                src="assets/Karla y Froyland/1-karla.webp"
                                 alt="Karla"
                                 data-photo-slot="galeria-5"
                             />
@@ -3317,7 +3362,7 @@
                         <div class="gallery__item" data-gallery-index="6">
                             <img
                                 class="gallery__img" loading="lazy"
-                                src="assets/Karla y Froyland/eduardo.jpg"
+                                src="assets/Karla y Froyland/eduardo.webp"
                                 alt="Eduardo"
                                 data-photo-slot="galeria-6"
                             />
@@ -3338,79 +3383,53 @@
                     <!-- Floral esquina superior izquierda — bajado para no tapar el heading -->
                     <img class="floral-deco" loading="lazy"
                          src="assets/flores-4.webp" alt=""
-                         style="width:160px; top:55px; left:-45px; opacity:0.58; transform:rotate(10deg);" aria-hidden="true" />
+                         style="width:160px; top:55px; left:-45px; opacity:0.58; transform:rotate(10deg); animation-delay:-1.3s;" aria-hidden="true" />
                     <h3 class="section-heading">Código de Vestimenta</h3>
                     <p class="dresscode__style">Semi Formal</p>
-                    <span class="dresscode__formal-lbl"
-                        >Paleta de colores sugerida</span
-                    >
-                    <div
-                        class="dresscode__palette"
-                        aria-label="Paleta sugerida y colores a evitar"
-                    >
+                    <!-- FILA 1: Sugeridos -->
+                    <span class="dresscode__formal-lbl">Paleta de colores sugerida</span>
+                    <div class="dresscode__palette" aria-label="Paleta sugerida">
                         <div class="dresscode__swatch-wrap">
-                            <div
-                                class="dresscode__swatch"
-                                style="background: #8b7355"
-                                title="Café dorado"
-                            ></div>
+                            <div class="dresscode__swatch" style="background:#8b7355" title="Café dorado"></div>
                             <span class="dresscode__swatch-lbl">Café</span>
                         </div>
                         <div class="dresscode__swatch-wrap">
-                            <div
-                                class="dresscode__swatch"
-                                style="background: #b76e49"
-                                title="Terracota"
-                            ></div>
-                            <span class="dresscode__swatch-lbl">Terracota</span>
-                        </div>
-                        <div class="dresscode__swatch-wrap">
-                            <div
-                                class="dresscode__swatch"
-                                style="background: #c9a96e"
-                                title="Dorado suave"
-                            ></div>
+                            <div class="dresscode__swatch" style="background:#c9a96e" title="Dorado suave"></div>
                             <span class="dresscode__swatch-lbl">Dorado</span>
                         </div>
                         <div class="dresscode__swatch-wrap">
-                            <div
-                                class="dresscode__swatch"
-                                style="background: #6b7c5c"
-                                title="Verde salvia"
-                            ></div>
+                            <div class="dresscode__swatch" style="background:#6b7c5c" title="Verde salvia"></div>
                             <span class="dresscode__swatch-lbl">Salvia</span>
                         </div>
                         <div class="dresscode__swatch-wrap">
-                            <div
-                                class="dresscode__swatch"
-                                style="background: #4a3728"
-                                title="Café oscuro"
-                            ></div>
+                            <div class="dresscode__swatch" style="background:#4a3728" title="Café oscuro"></div>
                             <span class="dresscode__swatch-lbl">Oscuro</span>
                         </div>
-                        <div
-                            class="dresscode__divider"
-                            aria-hidden="true"
-                        ></div>
+                    </div>
+
+                    <!-- FILA 2: A evitar -->
+                    <span class="dresscode__formal-lbl dresscode__formal-lbl--no">Colores a evitar</span>
+                    <div class="dresscode__palette" aria-label="Colores a evitar">
                         <div class="dresscode__swatch-wrap">
-                            <div
-                                class="dresscode__swatch dresscode__swatch--no"
-                                style="background: #ffffff"
-                                title="Blanco — evitar"
-                            ></div>
-                            <span class="dresscode__swatch-lbl">Blanco ✕</span>
+                            <div class="dresscode__swatch dresscode__swatch--no" style="background:#ffffff" title="Blanco — para la novia"></div>
+                            <span class="dresscode__swatch-lbl">Blanco</span>
                         </div>
                         <div class="dresscode__swatch-wrap">
-                            <div
-                                class="dresscode__swatch dresscode__swatch--no"
-                                style="background: #f0ead6"
-                                title="Beige — evitar"
-                            ></div>
-                            <span class="dresscode__swatch-lbl">Beige ✕</span>
+                            <div class="dresscode__swatch dresscode__swatch--no" style="background:#f0ead6" title="Beige — para la novia"></div>
+                            <span class="dresscode__swatch-lbl">Beige</span>
+                        </div>
+                        <div class="dresscode__swatch-wrap">
+                            <div class="dresscode__swatch dresscode__swatch--no" style="background:#b76e49" title="Terracota — color de los novios"></div>
+                            <span class="dresscode__swatch-lbl">Terracota</span>
+                        </div>
+                        <div class="dresscode__swatch-wrap">
+                            <div class="dresscode__swatch dresscode__swatch--no" style="background:#162B4E" title="Azul marino — color del novio"></div>
+                            <span class="dresscode__swatch-lbl">Marino</span>
                         </div>
                     </div>
+
                     <p class="dresscode__note">
-                        Con mucho cariño les pedimos reservar<br />el blanco y el beige para la novia. ¡Gracias!
+                        Blanco y beige son exclusivos de la novia.<br />Terracota es el color de las damas de honor — déjaselo a ellas.<br />Azul marino está reservado para el cortejo nupcial.
                     </p>
                 </section>
 
@@ -3433,7 +3452,7 @@
                     <p class="gifts__desc">
                         Tu presencia es el regalo más grande<br />que podemos recibir.<br />
                         Si además deseas un detalle,<br />
-                        con cariño te compartimos estas opciones.
+                        con cariño te compartimos nuestra mesa de regalos.
                     </p>
 
                     <!-- Mesa de Regalos Amazon -->
@@ -3470,7 +3489,7 @@
                         <textarea class="visitas__textarea" id="visitas-msg"
                             placeholder="Escribe tu mensaje para Karla y Eduardo…" maxlength="280"></textarea>
                         <p class="visitas__count"><span id="visitas-count">0</span> / 280</p>
-                        <button class="visitas__submit" id="visitas-submit">Dejar mensaje</button>
+                        <button class="visitas__submit" id="visitas-submit">Dejar mi mensaje</button>
                         <p class="visitas__error" id="visitas-error"></p>
                     </div>
 
@@ -3484,13 +3503,8 @@
                         <button class="visitas__otro-btn" id="visitas-otro-btn">Escribir otro</button>
                     </div>
 
-                    <!-- Mensajes recibidos -->
-                    <div class="visitas__sep" id="visitas-sep" style="display:none;"></div>
-                    <div class="visitas__msg-list" id="visitas-msg-list">
-                        <p class="visitas__empty" id="visitas-empty" style="display:none;">
-                            Sé el primero en dejar un mensaje.
-                        </p>
-                    </div>
+                    <!-- Contador de mensajes -->
+                    <p class="visitas__counter" id="visitas-counter" style="display:none;"></p>
                 </section>
 
                 <!-- RSVP -->
@@ -3521,7 +3535,7 @@
                         <p class="rsvp__desc">
                             Para preparar todo con amor,<br>confírmanos tu asistencia
                             <span class="rsvp__deadline"
-                                >antes del 20 de septiembre</span
+                                >antes del 20 de septiembre de 2026</span
                             >
                         </p>
 
@@ -3573,7 +3587,7 @@
                             </p>
                             <a
                                 class="ticket__wa-btn"
-                                href="https://wa.me/527721204509?text=Hola%20Karla%20y%20Eduardo%2C%20quisiera%20consultar%20sobre%20mi%20confirmaci%C3%B3n%20de%20asistencia."
+                                href="https://wa.me/521444382498?text=Hola%20Karla%20y%20Eduardo%2C%20quisiera%20consultar%20sobre%20mi%20confirmaci%C3%B3n%20de%20asistencia."
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 style="margin-top: 1.5rem; display: block"
@@ -3757,6 +3771,17 @@
                                     style="width: 100%; display: block"
                                 ></canvas>
                             </div>
+                            <!-- QR para mostrar en la entrada -->
+                            <div id="already-qr-wrap" style="display:none; margin-top:1.5rem; text-align:center;">
+                                <div id="already-qr" style="display:inline-block; padding:0.5rem; background:#fff; border-radius:4px;"></div>
+                                <p style="font-size:0.48rem; letter-spacing:0.18em; text-transform:uppercase; color:rgba(255,255,255,0.28); margin-top:0.5rem;">Muestra este código en la entrada</p>
+                                <a class="ticket__wa-btn" id="already-wa-btn" href="#" target="_blank" rel="noopener noreferrer" style="display:block; margin-top:0.75rem;">
+                                    Enviar por WhatsApp
+                                </a>
+                                <button class="ticket__wa-btn" id="already-save-img" style="border:none; cursor:pointer; border-top:1px solid rgba(201,169,110,0.15); color:rgba(201,169,110,0.6); display:block; width:100%; text-align:center;">
+                                    Guardar imagen del pase
+                                </button>
+                            </div>
                             <a
                                 class="rsvp__change-link"
                                 id="rsvp-change-link"
@@ -3874,7 +3899,7 @@
                                 </div>
                                 <p class="ticket__qr-hint">Muestra este código en la entrada</p>
                                 <a class="ticket__wa-btn" id="ticket-wa-btn" href="#" target="_blank" rel="noopener noreferrer">
-                                    Enviar confirmación por WhatsApp
+                                    Enviar por WhatsApp
                                 </a>
                                 <button class="ticket__wa-btn" id="ticket-save-img" style="border:none;cursor:pointer;border-top:1px solid rgba(201,169,110,0.15);color:rgba(201,169,110,0.6)">
                                     Guardar imagen del pase
@@ -3936,11 +3961,11 @@
                         <!-- Esquina inferior izquierda -->
                         <img class="floral-deco" loading="lazy"
                              src="assets/flores-1.webp" alt=""
-                             style="width:230px; bottom:-10px; left:-30px; opacity:0.78; mix-blend-mode:screen; transform:scaleX(-1) rotate(5deg);" />
+                             style="width:230px; bottom:-10px; left:-30px; opacity:0.78; mix-blend-mode:screen; transform:scaleX(-1) rotate(5deg); animation-delay:-3.8s;" />
                         <!-- Esquina inferior derecha -->
                         <img class="floral-deco" loading="lazy"
                              src="assets/flores-3.webp" alt=""
-                             style="width:215px; bottom:-10px; right:-30px; opacity:0.76; mix-blend-mode:screen; transform:rotate(-4deg);" />
+                             style="width:215px; bottom:-10px; right:-30px; opacity:0.76; mix-blend-mode:screen; transform:rotate(-4deg); animation-delay:-1.1s;" />
                     </div>
                 </footer>
             </main>
@@ -4151,7 +4176,7 @@
             /* === GUARDAR IMAGEN DEL PASE (canvas directo, sin librerías) === */
             (function () {
                 document.addEventListener("click", function (e) {
-                    if (e.target.id !== "ticket-save-img") return;
+                    if (e.target.id !== "ticket-save-img" && e.target.id !== "already-save-img") return;
                     var btn = e.target;
                     btn.textContent = "Generando…";
                     btn.disabled = true;
@@ -4183,7 +4208,7 @@
                 }
 
                 function buildTicketCanvas() {
-                    var W = 560, H = 840;
+                    var W = 560, H = 800;
                     var dpr = Math.min(window.devicePixelRatio || 1, 2);
                     var c = document.createElement("canvas");
                     c.width = W * dpr;
@@ -4269,6 +4294,22 @@
                         y += 46;
                     });
 
+                    /* Mesa asignada (si existe) */
+                    var mesaEl = document.getElementById("ticket-mesa-num");
+                    if (mesaEl && mesaEl.textContent) {
+                        gLine(ctx, W, y + 4);
+                        y += 34;
+                        ctx.fillStyle = "rgba(255,255,255,0.28)";
+                        ctx.font = '400 9px Montserrat, Arial, sans-serif';
+                        ctx.textAlign = "left";
+                        ctx.fillText("MESA", 58, y);
+                        ctx.fillStyle = "#c9a96e";
+                        ctx.font = 'italic bold 20px "Playfair Display", Georgia, serif';
+                        ctx.textAlign = "right";
+                        ctx.fillText(mesaEl.textContent.replace("Mesa ", ""), W - 58, y);
+                        y += 20;
+                    }
+
                     /* Línea perforada */
                     ctx.setLineDash([4, 7]);
                     ctx.strokeStyle = "rgba(201,169,110,0.2)";
@@ -4310,11 +4351,12 @@
                         if (win) {
                             win.document.write(
                                 "<html><head><title>Pase K&E</title>" +
-                                "<meta name='viewport' content='width=device-width'>" +
-                                "<style>body{margin:0;background:#1e1410;display:flex;justify-content:center;padding:1rem}" +
-                                "img{max-width:100%}</style></head>" +
-                                "<body><img src='" + dataUrl + "'/>" +
-                                "<p style='text-align:center;color:rgba(255,255,255,0.3);font-family:sans-serif;font-size:12px;margin-top:8px'>Mantén presionada la imagen para guardarla</p>" +
+                                "<meta name='viewport' content='width=device-width,initial-scale=1'>" +
+                                "<style>*{box-sizing:border-box}body{margin:0;background:#1e1410;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;min-height:100vh;padding:1.25rem 1rem 2rem}" +
+                                "img{width:100%;max-width:380px;height:auto;border-radius:6px;display:block}" +
+                                "p{color:rgba(255,255,255,0.35);font-family:sans-serif;font-size:11px;margin-top:10px;text-align:center;letter-spacing:0.04em}</style></head>" +
+                                "<body><img src='" + dataUrl + "' alt='Pase Karla & Eduardo'/>" +
+                                "<p>Mantén presionada la imagen para guardarla</p>" +
                                 "<\/body><\/html>"
                             );
                         }
@@ -4601,7 +4643,7 @@
                 var SUPABASE_URL = "https://kdpgdgulrekryxqtewtr.supabase.co";
                 var SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtkcGdkZ3VscmVrcnl4cXRld3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgzNTI0NDEsImV4cCI6MjA5MzkyODQ0MX0.T6_iQjxOWX82QQHPuBI5cewOoT3UWsOQ7bvjX9GP82E";
 
-                var COUPLE_PHONE = "527721204509";
+                var COUPLE_PHONE = "521444382498";
                 var family = null;
                 var guestCount = 1;
                 var selectedMembers = [];
@@ -4749,6 +4791,12 @@
                 }
 
 
+                /* Limpiar error visual al escribir el nombre */
+                document.getElementById("rsvp-name-input").addEventListener("input", function() {
+                    this.classList.remove("rsvp__input--error");
+                    document.getElementById("rsvp-form-error").textContent = "";
+                });
+
                 /* Pre-fill code from URL ?code=GARCIA-01 */
                 var urlCode = new URLSearchParams(
                     window.location.search,
@@ -4827,6 +4875,51 @@
                                     var chMsg = "Hola Karla y Eduardo 👋, necesito hacer un cambio en mi confirmación. Mi código es: *" + family.code + "*";
                                     chLink.href = "https://wa.me/" + COUPLE_PHONE + "?text=" + encodeURIComponent(chMsg);
                                 }
+                                /* QR en pantalla "ya confirmaste" + en #ticket-qr para buildTicketCanvas() */
+                                var _qrConfig = {
+                                    text: family.code,
+                                    width: 130, height: 130,
+                                    colorDark: "#000000", colorLight: "#ffffff",
+                                    correctLevel: QRCode.CorrectLevel.M,
+                                };
+                                var alreadyQrEl = document.getElementById("already-qr");
+                                if (alreadyQrEl && typeof QRCode !== "undefined") {
+                                    alreadyQrEl.innerHTML = "";
+                                    new QRCode(alreadyQrEl, _qrConfig);
+                                }
+                                var ticketQrEl = document.getElementById("ticket-qr");
+                                if (ticketQrEl && typeof QRCode !== "undefined") {
+                                    ticketQrEl.innerHTML = "";
+                                    new QRCode(ticketQrEl, _qrConfig);
+                                }
+                                document.getElementById("already-qr-wrap").style.display = "block";
+
+                                /* Link WhatsApp para reenviar confirmación */
+                                var alreadyWaBtn = document.getElementById("already-wa-btn");
+                                if (alreadyWaBtn) {
+                                    var waMsg = "✅ Mi confirmación de asistencia\n\n" +
+                                        "*" + family.family_name + "*\n" +
+                                        "📅 21 de noviembre de 2026 — 17:30 HRS\n" +
+                                        "📍 Hacienda Zerezotla, San Andrés Cholula\n" +
+                                        "🔑 Código: " + family.code;
+                                    alreadyWaBtn.href = "https://wa.me/?text=" + encodeURIComponent(waMsg);
+                                }
+
+                                /* Poblar datos del ticket para que "Guardar imagen" funcione */
+                                document.getElementById("ticket-family-name").textContent = family.family_name;
+                                var gCount = r ? r.guest_count : family.max_guests;
+                                document.getElementById("ticket-guests-lbl").textContent =
+                                    gCount + (gCount === 1 ? " persona confirmada" : " personas confirmadas");
+                                var ticketNames = document.getElementById("ticket-attending-names");
+                                if (ticketNames && r && r.attending_names) {
+                                    ticketNames.textContent = r.attending_names;
+                                    ticketNames.parentElement.style.display = "block";
+                                }
+                                var ticketMesa = document.getElementById("ticket-mesa-num");
+                                if (ticketMesa && family.table_number) {
+                                    ticketMesa.textContent = "Mesa " + family.table_number;
+                                }
+
                                 showStep("already");
                                 return;
                             }
@@ -4892,14 +4985,15 @@
                         var self = this;
                         var errEl =
                             document.getElementById("rsvp-form-error");
-                        var name = (
-                            document.getElementById("rsvp-name-input").value ||
-                            ""
-                        ).trim();
+                        var nameInput = document.getElementById("rsvp-name-input");
+                        var name = (nameInput.value || "").trim();
                         errEl.textContent = "";
+                        nameInput.classList.remove("rsvp__input--error");
                         if (!name) {
                             errEl.textContent =
                                 "Por favor ingresa tu nombre completo.";
+                            nameInput.classList.add("rsvp__input--error");
+                            nameInput.focus();
                             return;
                         }
                         self.textContent = "Guardando…";
@@ -4947,8 +5041,8 @@
                                     text: family.code,
                                     width: 130,
                                     height: 130,
-                                    colorDark: "#1e1410",
-                                    colorLight: "#f7f4ee",
+                                    colorDark: "#000000",
+                                    colorLight: "#ffffff",
                                     correctLevel: QRCode.CorrectLevel.M,
                                 });
                             } else {
@@ -5245,35 +5339,19 @@
                         .replace(/>/g, "&gt;").replace(/"/g, "&quot;");
                 }
 
-                function renderMessages(msgs) {
-                    var list  = document.getElementById("visitas-msg-list");
-                    var sep   = document.getElementById("visitas-sep");
-                    var empty = document.getElementById("visitas-empty");
-                    if (!msgs || !msgs.length) {
-                        empty.style.display = "block";
-                        return;
-                    }
-                    sep.style.display = "block";
-                    empty.style.display = "none";
-                    list.innerHTML = msgs.map(function (m) {
-                        var d    = new Date(m.created_at);
-                        var date = d.toLocaleDateString("es-MX", { day: "numeric", month: "short", year: "numeric" });
-                        return '<div class="visitas__msg-card">' +
-                            '<div class="visitas__msg-header">' +
-                                '<span class="visitas__msg-name">' + esc(m.name) + '</span>' +
-                                '<span class="visitas__msg-date">' + date + '</span>' +
-                            '</div>' +
-                            '<p class="visitas__msg-text">' + esc(m.message) + '</p>' +
-                        '</div>';
-                    }).join("");
-                }
-
                 function loadMessages() {
-                    fetch(SB_URL + "/rest/v1/messages?select=name,message,created_at&order=created_at.desc&limit=50", {
-                        headers: { apikey: SB_KEY, Authorization: "Bearer " + SB_KEY }
-                    }).then(function (r) { return r.ok ? r.json() : []; })
-                      .then(renderMessages)
-                      .catch(function () {});
+                    fetch(SB_URL + "/rest/v1/messages?select=id", {
+                        headers: { apikey: SB_KEY, Authorization: "Bearer " + SB_KEY, Prefer: "count=exact", "Range-Unit": "items", Range: "0-0" }
+                    }).then(function (r) {
+                        var total = 0;
+                        var cr = r.headers.get("content-range");
+                        if (cr) { var m = cr.match(/\/(\d+)/); if (m) total = parseInt(m[1], 10); }
+                        if (total > 0) {
+                            var counter = document.getElementById("visitas-counter");
+                            counter.textContent = "💬 " + total + (total === 1 ? " mensaje recibido" : " mensajes recibidos");
+                            counter.style.display = "block";
+                        }
+                    }).catch(function () {});
                 }
 
                 /* Contador de caracteres */
@@ -5323,7 +5401,7 @@
                             loadMessages();
                         }).catch(function () {
                             errEl.textContent = "Error al enviar. Intenta de nuevo.";
-                            submitBtn.textContent = "Dejar mensaje";
+                            submitBtn.textContent = "Dejar mi mensaje";
                             submitBtn.disabled = false;
                         });
                     });
