@@ -3443,7 +3443,7 @@
                 var url = (
                     localStorage.getItem("ke-site-url") ||
                     document.getElementById("site-url").value ||
-                    ""
+                    "https://karlayeduardo.netlify.app"
                 ).replace(/\/$/, "");
                 /* Forzar https en URLs de producción (no localhost) */
                 if (/^http:\/\/(?!localhost|127\.)/.test(url)) {
@@ -4996,20 +4996,15 @@
                     warning.classList.toggle("is-visible", isLocal);
                 }
 
+                var PROD_URL = "https://karlayeduardo.netlify.app";
                 var saved = localStorage.getItem("ke-site-url");
-                if (saved) {
-                    input.value = saved;
-                    checkUrl(saved);
-                } else {
-                    var autoUrl = window.location.href
-                        .replace(/admin\.html.*$/, "index.html")
-                        .replace(/\?.*$/, "");
-                    if (autoUrl && autoUrl !== window.location.href) {
-                        input.value = autoUrl;
-                        localStorage.setItem("ke-site-url", autoUrl);
-                        checkUrl(autoUrl);
-                    }
+                /* Si no hay URL guardada, o la guardada es local, usar siempre la de producción */
+                if (!saved || /^file:|localhost|127\.0\.0\.1/.test(saved)) {
+                    localStorage.setItem("ke-site-url", PROD_URL);
+                    saved = PROD_URL;
                 }
+                input.value = saved;
+                checkUrl(saved);
 
                 input.addEventListener("input", function () { checkUrl(this.value); });
 
