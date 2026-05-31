@@ -1611,7 +1611,7 @@
             }
             .inv-header__greeting-name {
                 font-family: var(--f-script);
-                font-size: 2.25rem;
+                font-size: 2.6rem;
                 color: var(--c-terracotta);
                 line-height: 1.2;
                 text-shadow: 0 2px 16px rgba(183, 110, 73, 0.2);
@@ -4608,7 +4608,7 @@
                         var el = document.getElementById("js-greeting");
                         var name = document.getElementById("js-greeting-name");
                         if (!el || !name) return;
-                        name.textContent = rows[0].family_name;
+                        name.textContent = rows[0].family_name.replace(/\b\w/g, function(l){ return l.toUpperCase(); });
                         el.style.display = "block";
                     })
                     .catch(function () {});
