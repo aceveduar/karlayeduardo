@@ -1062,6 +1062,21 @@
             .qr-result-card--error { border-color: rgba(201,112,112,0.3);  background: rgba(201,112,112,0.05); }
             .qr-found__name   { font-family: var(--f-serif); font-size: 1.05rem; color: var(--text); line-height: 1.2; }
             .qr-found__detail { font-size: 0.65rem; color: var(--text-mid); margin-top: 0.15rem; }
+
+            /* QR result card — detalle expandido */
+            .qr-card__header { margin-bottom: 0.6rem; }
+            .qr-card__group  { display: inline-block; font-size: 0.55rem; letter-spacing: 0.1em; text-transform: uppercase; font-family: var(--f-sans); padding: 0.15rem 0.55rem; border-radius: 10px; border: 1px solid; margin-top: 0.3rem; }
+            .qr-card__stats  { display: flex; gap: 0.75rem; margin-bottom: 0.65rem; flex-wrap: wrap; }
+            .qr-card__stat   { display: flex; align-items: center; gap: 0.3rem; font-family: var(--f-sans); font-size: 0.63rem; color: var(--text-mid); }
+            .qr-card__stat strong { color: var(--text); font-weight: 600; }
+            .qr-card__names-lbl  { font-family: var(--f-sans); font-size: 0.52rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-soft); margin-bottom: 0.35rem; }
+            .qr-card__names-list { display: flex; flex-direction: column; gap: 0.2rem; margin-bottom: 0.75rem; }
+            .qr-card__guest      { font-family: var(--f-sans); font-size: 0.68rem; display: flex; align-items: center; gap: 0.35rem; }
+            .qr-card__guest--yes { color: #3a9468; }
+            .qr-card__guest--no  { color: var(--text-soft); text-decoration: line-through; }
+            .qr-card__guest--dot { color: var(--text-soft); }
+            .qr-card__divider    { height: 1px; background: rgba(201,169,110,0.15); margin: 0.5rem 0 0.65rem; }
+
             .qr-scan-next {
                 display: flex; align-items: center; justify-content: center; gap: 0.4rem;
                 width: 100%; padding: 0.65rem; margin-top: 0.5rem;
@@ -4844,25 +4859,75 @@
                     return;
                 }
 
-                var rsvp   = f.rsvps && f.rsvps[0];
-                var detail = (rsvp ? rsvp.guest_count + (rsvp.guest_count === 1 ? " persona" : " personas") : "?") +
-                             (f.table_number ? " · Mesa " + f.table_number : "");
+                var rsvp = f.rsvps && f.rsvps[0];
+
+                /* ── Construir bloque de nombres ── */
+                var allNames     = f.guest_names ? f.guest_names.split(",").map(function(n){ return n.trim(); }).filter(Boolean) : [];
+                var attendingArr = rsvp && rsvp.attending_names ? rsvp.attending_names.split(",").map(function(n){ return n.trim(); }).filter(Boolean) : [];
+                var attendingSet = {};
+                attendingArr.forEach(function(n){ attendingSet[n] = true; });
+
+                var namesHtml = "";
+                if (allNames.length) {
+                    namesHtml = '<p class="qr-card__names-lbl">Invitados</p><div class="qr-card__names-list">' +
+                        allNames.map(function(n) {
+                            var isYes = attendingSet[n];
+                            var cls   = isYes ? "yes" : (rsvp ? "no" : "dot");
+                            var icon  = isYes ? "✓" : (rsvp ? "✗" : "·");
+                            return '<span class="qr-card__guest qr-card__guest--' + cls + '">' + icon + ' ' + esc(n) + '</span>';
+                        }).join("") +
+                    '</div>';
+                } else if (attendingArr.length) {
+                    namesHtml = '<p class="qr-card__names-lbl">Invitados confirmados</p><div class="qr-card__names-list">' +
+                        attendingArr.map(function(n){
+                            return '<span class="qr-card__guest qr-card__guest--yes">✓ ' + esc(n) + '</span>';
+                        }).join("") +
+                    '</div>';
+                }
+
+                /* ── Grupo badge ── */
+                var grp  = f.group_name || "";
+                var grpS = GROUP_COLORS[grp] || GROUP_COLORS["Otros"] || {};
+                var grpHtml = grp
+                    ? '<span class="qr-card__group" style="color:' + (grpS.color||"#888") + ';background:' + (grpS.bg||"transparent") + ';border-color:' + (grpS.border||"#ccc") + '">' + esc(grp) + '</span>'
+                    : "";
+
+                /* ── Stats ── */
+                var paxConf = rsvp && rsvp.attending ? rsvp.guest_count : 0;
+                var statsHtml =
+                    '<div class="qr-card__stats">' +
+                        '<div class="qr-card__stat"><svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>' +
+                        '<span><strong>' + paxConf + '</strong> de ' + f.max_guests + ' pase' + (f.max_guests !== 1 ? 's' : '') + '</span></div>' +
+                        (f.table_number
+                            ? '<div class="qr-card__stat"><svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg><span>Mesa <strong>' + f.table_number + '</strong></span></div>'
+                            : '<div class="qr-card__stat" style="color:#e08888">Sin mesa asignada</div>') +
+                    '</div>';
+
+                var cardBase =
+                    '<div class="qr-card__header">' +
+                        '<p class="qr-found__name">' + esc(f.family_name) + '</p>' +
+                        grpHtml +
+                    '</div>' +
+                    statsHtml +
+                    (namesHtml ? '<div class="qr-card__divider"></div>' + namesHtml : '');
 
                 if (f.checked_in) {
                     var t = f.checked_in_at ? new Date(f.checked_in_at).toLocaleTimeString("es-MX", { hour: "2-digit", minute: "2-digit" }) : "";
                     result.innerHTML =
                         '<div class="qr-result-card qr-result-card--done">' +
-                            '<div><p class="qr-found__name">' + esc(f.family_name) + '</p>' +
-                            '<p class="qr-found__detail">' + detail + '</p></div>' +
-                            '<span class="ci-done-badge">✓ ' + (t || "Ya llegó") + '</span>' +
+                            cardBase +
+                            '<div class="qr-card__divider"></div>' +
+                            '<div style="display:flex;align-items:center;justify-content:space-between">' +
+                                '<span class="ci-done-badge" style="font-size:0.75rem;">✓ Llegó a las ' + (t || "—") + '</span>' +
+                            '</div>' +
                         '</div>' +
                         '<button class="qr-scan-next" onclick="startQrScanner()">↩ Escanear otro</button>';
                 } else {
                     result.innerHTML =
                         '<div class="qr-result-card qr-result-card--found">' +
-                            '<div><p class="qr-found__name">' + esc(f.family_name) + '</p>' +
-                            '<p class="qr-found__detail">' + detail + '</p></div>' +
-                            '<button class="ci-btn" onclick="qrCheckIn(\'' + esc(f.id) + '\',\'' + esc(f.code) + '\')">✓ Llegó</button>' +
+                            cardBase +
+                            '<div class="qr-card__divider"></div>' +
+                            '<button class="ci-btn" style="width:100%;padding:0.75rem;" onclick="qrCheckIn(\'' + esc(f.id) + '\',\'' + esc(f.code) + '\')">✓ Registrar llegada</button>' +
                         '</div>';
                 }
 
