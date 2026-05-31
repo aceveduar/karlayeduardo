@@ -1611,11 +1611,10 @@
             }
             .inv-header__greeting-name {
                 font-family: var(--f-script);
-                font-size: 2.6rem;
+                font-size: 2.25rem;
                 color: var(--c-terracotta);
                 line-height: 1.2;
                 text-shadow: 0 2px 16px rgba(183, 110, 73, 0.2);
-                text-transform: capitalize;
             }
 
             /* Botones de evento agrupados */
@@ -4608,11 +4607,7 @@
                         var el = document.getElementById("js-greeting");
                         var name = document.getElementById("js-greeting-name");
                         if (!el || !name) return;
-                        var words = rows[0].family_name.trim().split(/\s+/);
-                        name.innerHTML = words.map(function(w) {
-                            if (!w) return "";
-                            return '<span style="font-size:1.18em">' + w.charAt(0).toUpperCase() + '</span>' + w.slice(1).toLowerCase();
-                        }).join(" ");
+                        name.textContent = rows[0].family_name;
                         el.style.display = "block";
                     })
                     .catch(function () {});
