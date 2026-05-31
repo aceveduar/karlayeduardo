@@ -244,7 +244,7 @@
             .bottom-nav {
                 flex-shrink: 0;
                 display: grid;
-                grid-template-columns: repeat(6, 1fr);
+                grid-template-columns: repeat(7, 1fr);
                 height: 62px;
                 border-top: 1px solid rgba(201,169,110,0.2);
                 background: var(--nav-bg);
@@ -922,15 +922,61 @@
             .progress-fill--b { background: linear-gradient(to right, var(--gold), #ddb84a); }
 
             /* Reminder section */
-            .reminder-section { display: none; margin-bottom: 1.5rem; border: 1px solid rgba(201,169,110,0.2); background: var(--surface); box-shadow: 0 1px 6px rgba(30,20,16,0.05); }
+            .reminder-section { display: none; margin-bottom: 1.5rem; border: 1px solid rgba(201,169,110,0.2); background: var(--surface); box-shadow: 0 1px 6px rgba(30,20,16,0.05); border-radius: 10px; overflow: hidden; }
             .reminder-header { display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 1.25rem; border-bottom: 1px solid rgba(201,169,110,0.12); }
             .reminder-title { font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text); font-weight: 600; }
             .reminder-close { background: none; border: none; color: var(--text-soft); cursor: pointer; font-size: 1rem; line-height: 1; }
             .reminder-close:hover { color: var(--text); }
+            .reminder-actions { display: flex; gap: 0.5rem; padding: 0.6rem 1.25rem; border-bottom: 1px solid rgba(201,169,110,0.08); background: rgba(201,169,110,0.04); flex-wrap: wrap; }
+            .reminder-act-btn { flex: 1; min-width: 120px; font-family: var(--f-sans); font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 600; padding: 0.5rem 0.75rem; border-radius: 20px; border: 1px solid rgba(201,169,110,0.4); background: transparent; color: var(--gold); cursor: pointer; transition: all 0.2s; text-align: center; }
+            .reminder-act-btn:hover { background: rgba(201,169,110,0.15); }
+            .reminder-act-btn--primary { background: var(--gold); color: #1e1410; border-color: var(--gold); }
+            .reminder-act-btn--primary:hover { background: #b8933c; }
             .reminder-list { max-height: 300px; overflow-y: auto; }
             .reminder-item { display: flex; align-items: center; justify-content: space-between; padding: 0.7rem 1.25rem; border-bottom: 1px solid rgba(201,169,110,0.08); gap: 1rem; }
             .reminder-name { font-family: var(--f-serif); font-size: 0.9rem; color: var(--text); flex: 1; line-height: 1.2; }
             .reminder-code { font-family: monospace; font-size: 0.6rem; color: var(--text-mid); display: block; margin-top: 0.1rem; letter-spacing: 0.04em; }
+
+            /* Banner de urgencia de deadline */
+            .deadline-banner { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; border-radius: 10px; margin-bottom: 0.6rem; border-left: 3px solid; }
+            .deadline-banner__icon { font-size: 1.1rem; flex-shrink: 0; }
+            .deadline-banner__body { flex: 1; }
+            .deadline-banner__title { font-family: var(--f-sans); font-size: 0.65rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
+            .deadline-banner__sub { font-family: var(--f-sans); font-size: 0.6rem; margin-top: 0.15rem; opacity: 0.8; }
+            .deadline-banner--gold  { background: rgba(201,169,110,0.1); border-color: var(--gold); color: #9a7020; }
+            .deadline-banner--amber { background: rgba(220,160,60,0.12); border-color: #dc9f3c; color: #a06010; }
+            .deadline-banner--orange{ background: rgba(220,100,40,0.12); border-color: #dc6428; color: #b04010; }
+            .deadline-banner--red   { background: rgba(224,80,80,0.15); border-color: #e05050; color: #b03030; }
+            [data-theme="dark"] .deadline-banner--gold  { color: var(--gold); }
+            [data-theme="dark"] .deadline-banner--amber { color: #e0b060; }
+            [data-theme="dark"] .deadline-banner--orange{ color: #e08040; }
+            [data-theme="dark"] .deadline-banner--red   { color: #e08080; }
+
+            /* Batch reminder overlay */
+            .batch-overlay { display: none; position: fixed; inset: 0; background: var(--bg); z-index: 600; overflow-y: auto; padding: 1.5rem 1rem 2rem; }
+            .batch-overlay.is-open { display: block; }
+            .batch-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid rgba(201,169,110,0.2); }
+            .batch-title { font-family: var(--f-serif); font-style: italic; font-size: 1.4rem; color: var(--gold); }
+            .batch-close { background: none; border: none; font-size: 1.4rem; color: var(--text-soft); cursor: pointer; padding: 0.25rem; }
+            .batch-progress-wrap { margin-bottom: 1.5rem; }
+            .batch-progress-bar-track { height: 4px; background: rgba(201,169,110,0.15); border-radius: 2px; margin-top: 0.5rem; }
+            .batch-progress-bar-fill { height: 4px; background: var(--gold); border-radius: 2px; transition: width 0.4s ease; }
+            .batch-progress-lbl { font-family: var(--f-sans); font-size: 0.62rem; letter-spacing: 0.1em; color: var(--text-soft); text-transform: uppercase; display: flex; justify-content: space-between; }
+            .batch-card { background: var(--surface); border: 1px solid rgba(201,169,110,0.25); border-radius: 12px; padding: 1.5rem 1.25rem; margin-bottom: 1rem; }
+            .batch-card__num { font-family: var(--f-sans); font-size: 0.58rem; letter-spacing: 0.15em; color: var(--text-soft); text-transform: uppercase; margin-bottom: 0.4rem; }
+            .batch-card__name { font-family: var(--f-serif); font-size: 1.4rem; color: var(--text); margin-bottom: 0.25rem; }
+            .batch-card__meta { font-family: monospace; font-size: 0.65rem; color: var(--text-soft); margin-bottom: 1.25rem; }
+            .batch-card__wa { display: flex; align-items: center; justify-content: center; gap: 0.5rem; width: 100%; padding: 0.9rem; background: #25d366; color: #fff; border-radius: 10px; font-family: var(--f-sans); font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-decoration: none; margin-bottom: 0.5rem; }
+            .batch-card__copy { display: flex; align-items: center; justify-content: center; gap: 0.4rem; width: 100%; padding: 0.6rem; background: transparent; border: 1px solid rgba(201,169,110,0.35); color: var(--gold); border-radius: 8px; font-family: var(--f-sans); font-size: 0.6rem; letter-spacing: 0.1em; cursor: pointer; }
+            .batch-card__copy:hover { background: rgba(201,169,110,0.1); }
+            .batch-nav { display: flex; gap: 0.75rem; margin-top: 0.5rem; }
+            .batch-nav__skip { flex: 1; background: transparent; border: 1px solid rgba(201,169,110,0.2); color: var(--text-soft); border-radius: 8px; font-family: var(--f-sans); font-size: 0.6rem; letter-spacing: 0.08em; padding: 0.7rem; cursor: pointer; }
+            .batch-nav__next { flex: 2; background: var(--gold); color: #1e1410; border: none; border-radius: 8px; font-family: var(--f-sans); font-size: 0.65rem; font-weight: 700; letter-spacing: 0.1em; padding: 0.7rem; cursor: pointer; }
+            .batch-nav__next:hover { background: #b8933c; }
+            .batch-done { text-align: center; padding: 2.5rem 1rem; }
+            .batch-done__icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
+            .batch-done__title { font-family: var(--f-serif); font-style: italic; font-size: 1.5rem; color: var(--gold); margin-bottom: 0.5rem; }
+            .batch-done__sub { font-family: var(--f-sans); font-size: 0.72rem; color: var(--text-soft); }
 
             /* Check-in overlay */
             .checkin-overlay { display: none; position: fixed; inset: 0; background: var(--bg); z-index: 500; overflow-y: auto; padding: 1.5rem 1rem; }
@@ -1081,6 +1127,34 @@
                 transition: color 0.2s ease; font-size: 0.85rem;
             }
             .msgs-del-btn:hover { color: #c97070; }
+
+            /* ── Tab: Recuerdos ─────────────────────────── */
+            .rec-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem; }
+            .rec-title  { font-family: var(--f-serif); font-style: italic; font-size: 1.4rem; color: var(--gold); letter-spacing: 0.01em; }
+            .rec-count  { font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-soft); }
+            .rec-toggle { display: flex; align-items: center; gap: 0.6rem; padding: 0.5rem 0.9rem; border-radius: 20px; border: 1px solid rgba(201,169,110,0.3); background: transparent; cursor: pointer; font-family: var(--f-sans); font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-mid); transition: all 0.2s; }
+            .rec-toggle:hover { border-color: var(--gold); }
+            .rec-toggle.is-on  { background: rgba(126,200,160,0.15); border-color: #7ec8a0; color: #3a9060; }
+            .rec-toggle.is-off { background: rgba(224,136,136,0.1);  border-color: #e08888; color: #c05050; }
+            [data-theme="dark"] .rec-toggle.is-on  { color: #7ec8a0; }
+            [data-theme="dark"] .rec-toggle.is-off { color: #e08888; }
+            .rec-setup-banner { background: rgba(201,169,110,0.07); border: 1px solid rgba(201,169,110,0.25); border-radius: 10px; padding: 1rem 1.25rem; margin-bottom: 1rem; font-family: var(--f-sans); font-size: 0.62rem; color: var(--text-mid); line-height: 1.6; }
+            .rec-setup-banner code { background: rgba(201,169,110,0.15); padding: 0.1em 0.4em; border-radius: 3px; font-size: 0.9em; color: var(--gold); }
+            .rec-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.6rem; margin-top: 0.5rem; }
+            .rec-card  { position: relative; border-radius: 8px; overflow: hidden; background: var(--surface); border: 1px solid rgba(201,169,110,0.15); }
+            .rec-card__img { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; }
+            .rec-card__info { padding: 0.5rem 0.6rem 0.4rem; }
+            .rec-card__name { font-family: var(--f-serif); font-size: 0.8rem; color: var(--text); line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+            .rec-card__caption { font-size: 0.58rem; color: var(--text-soft); margin-top: 0.1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+            .rec-card__date { font-family: monospace; font-size: 0.52rem; color: var(--text-soft); margin-top: 0.15rem; }
+            .rec-card__del { position: absolute; top: 4px; right: 4px; background: rgba(30,20,16,0.75); border: none; color: #fff; border-radius: 50%; width: 22px; height: 22px; font-size: 0.6rem; cursor: pointer; display: flex; align-items: center; justify-content: center; line-height: 1; }
+            .rec-card__del:hover { background: #c05050; }
+            .rec-empty { text-align: center; padding: 2.5rem 1rem; font-size: 0.7rem; color: var(--text-soft); font-style: italic; }
+            .rec-lightbox { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.94); z-index: 700; align-items: center; justify-content: center; flex-direction: column; gap: 0.75rem; padding: 1rem; }
+            .rec-lightbox.is-open { display: flex; }
+            .rec-lightbox__img { max-width: 100%; max-height: 75vh; object-fit: contain; border-radius: 6px; }
+            .rec-lightbox__info { color: rgba(255,255,255,0.7); font-family: var(--f-sans); font-size: 0.65rem; text-align: center; }
+            .rec-lightbox__close { position: absolute; top: 1rem; right: 1rem; background: none; border: none; color: rgba(255,255,255,0.6); font-size: 1.5rem; cursor: pointer; }
             .msgs-empty {
                 font-size: 0.65rem; color: var(--text-mid);
                 text-align: center; padding: 1rem 0; letter-spacing: 0.06em;
@@ -1660,6 +1734,53 @@
                 background: rgba(201,169,110,0.22);
                 font-weight: 600;
             }
+            .gf-btn--pending.is-active {
+                border-color: #e08888;
+                color: #c05050;
+                background: rgba(224,136,136,0.15);
+            }
+            [data-theme="dark"] .gf-btn--pending.is-active {
+                color: #e08888;
+                background: rgba(224,136,136,0.12);
+            }
+
+            /* Barra de acción masiva para pendientes */
+            .bulk-action-bar {
+                display: none;
+                align-items: center;
+                justify-content: space-between;
+                gap: 0.75rem;
+                background: rgba(224,136,136,0.08);
+                border: 1px solid rgba(224,136,136,0.3);
+                border-radius: 10px;
+                padding: 0.65rem 1rem;
+                margin-bottom: 0.75rem;
+            }
+            .bulk-action-bar.is-visible { display: flex; }
+            .bulk-action-bar__label {
+                font-family: var(--f-sans);
+                font-size: 0.6rem;
+                letter-spacing: 0.1em;
+                color: #c05050;
+                text-transform: uppercase;
+            }
+            [data-theme="dark"] .bulk-action-bar__label { color: #e08888; }
+            .bulk-action-bar__btn {
+                flex-shrink: 0;
+                background: #c05050;
+                color: #fff;
+                border: none;
+                border-radius: 20px;
+                font-family: var(--f-sans);
+                font-size: 0.58rem;
+                letter-spacing: 0.1em;
+                text-transform: uppercase;
+                font-weight: 600;
+                padding: 0.45rem 1rem;
+                cursor: pointer;
+                transition: background 0.2s;
+            }
+            .bulk-action-bar__btn:hover { background: #a03030; }
 
             /* Guest name rows */
             .guest-names-list {
@@ -2631,6 +2752,7 @@
                             <span class="reminder-title">Familias pendientes de confirmar</span>
                             <button class="reminder-close" onclick="hideReminders()">✕</button>
                         </div>
+                        <div class="reminder-actions" id="reminder-actions"></div>
                         <div class="reminder-list" id="reminder-list"></div>
                     </div>
 
@@ -2685,7 +2807,14 @@
                             <button class="gf-btn" data-group="Amigos novio">Amigos novio</button>
                             <button class="gf-btn" data-group="Trabajo / Compañeros">Trabajo</button>
                             <button class="gf-btn" data-group="Otros">Otros</button>
+                            <button class="gf-btn gf-btn--pending" data-group="__pending__">Sin confirmar</button>
                         </div>
+                    </div>
+
+                    <!-- Acción masiva (solo visible con chip "Sin confirmar") -->
+                    <div class="bulk-action-bar" id="bulk-action-bar">
+                        <span class="bulk-action-bar__label" id="bulk-action-label">X familias sin respuesta</span>
+                        <button class="bulk-action-bar__btn" onclick="markAllPendingAsDeclined()">Marcar todas como No asiste</button>
                     </div>
 
                     <!-- Búsqueda -->
@@ -2776,6 +2905,33 @@
                 </div>
 
                 <!-- ── TAB 5: MENSAJES ─────────────────────── -->
+                <!-- ── TAB 6: RECUERDOS ────────────────────── -->
+                <div class="tab-panel" id="tab-recuerdos">
+                    <div class="rec-header">
+                        <div>
+                            <p class="rec-title">Libro de Recuerdos</p>
+                            <span class="rec-count" id="rec-count">Cargando…</span>
+                        </div>
+                        <button class="rec-toggle" id="rec-toggle-btn" onclick="toggleRecuerdos()">
+                            <span id="rec-toggle-icon">●</span>
+                            <span id="rec-toggle-lbl">Cargando…</span>
+                        </button>
+                    </div>
+                    <div class="rec-setup-banner" id="rec-setup-banner" style="display:none">
+                        ⚠ Para usar esta función necesitas crear en Supabase:<br>
+                        1. Tabla <code>photos</code> — <code>id uuid pk</code>, <code>storage_path text</code>, <code>uploader_name text</code>, <code>caption text</code>, <code>created_at timestamptz default now()</code><br>
+                        2. Tabla <code>settings</code> — <code>key text pk</code>, <code>value text</code> + fila: <code>('recuerdos_enabled','true')</code><br>
+                        3. Bucket Storage <code>recuerdos-boda</code> con acceso público + políticas SELECT/INSERT/DELETE para <code>anon</code>
+                    </div>
+                    <!-- Botón notificar invitados -->
+                    <button class="reminder-act-btn reminder-act-btn--primary" style="width:100%;margin-bottom:0.75rem;justify-content:center;display:flex;align-items:center;gap:0.5rem;" onclick="startRecBatch()">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                        Notificar invitados — "Sube tus fotos"
+                    </button>
+                    <div class="rec-grid" id="rec-grid"></div>
+                    <p class="rec-empty" id="rec-empty" style="display:none">Ninguna foto subida aún.</p>
+                </div>
+
                 <div class="tab-panel" id="tab-mensajes">
                     <div class="msgs-tab-header">
                         <p class="msgs-tab-title">Libro de Visitas</p>
@@ -2842,6 +2998,11 @@
                     <svg class="bottom-nav__icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                     <span class="bottom-nav__lbl">Fotos</span>
                 </button>
+                <button class="bottom-nav__item" id="nav-recuerdos" onclick="switchTab('recuerdos')" aria-label="Recuerdos">
+                    <svg class="bottom-nav__icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                    <span class="bottom-nav__lbl">Recuerdos</span>
+                    <span class="bottom-nav__badge" id="rec-badge" style="display:none;"></span>
+                </button>
                 <button class="bottom-nav__item" id="nav-mensajes" onclick="switchTab('mensajes')" aria-label="Mensajes">
                     <span style="position:relative;display:inline-flex;">
                         <svg class="bottom-nav__icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
@@ -2859,6 +3020,31 @@
             </nav>
 
         </div><!-- end #panel -->
+
+        <!-- ═══ RECUERDOS LIGHTBOX ══════════════════════════ -->
+        <div class="rec-lightbox" id="rec-lightbox" onclick="if(event.target===this)closeRecLightbox()">
+            <button class="rec-lightbox__close" onclick="closeRecLightbox()">✕</button>
+            <img class="rec-lightbox__img" id="rec-lightbox-img" src="" alt="" />
+            <p class="rec-lightbox__info" id="rec-lightbox-info"></p>
+        </div>
+
+        <!-- ═══ BATCH REMINDER OVERLAY ══════════════════════ -->
+        <div class="batch-overlay" id="batch-overlay">
+            <div class="batch-header">
+                <p class="batch-title">Recordatorios</p>
+                <button class="batch-close" onclick="closeBatchReminder()">✕</button>
+            </div>
+            <div class="batch-progress-wrap">
+                <div class="batch-progress-lbl">
+                    <span id="batch-lbl-sent">0 enviados</span>
+                    <span id="batch-lbl-total">de 0</span>
+                </div>
+                <div class="batch-progress-bar-track">
+                    <div class="batch-progress-bar-fill" id="batch-progress-fill" style="width:0%"></div>
+                </div>
+            </div>
+            <div id="batch-body"></div>
+        </div>
 
         <!-- ═══ SETTINGS MODAL (URL config) ═══════════════ -->
         <div class="settings-overlay" id="settings-overlay" onclick="closeSettingsIfBackdrop(event)">
@@ -3071,6 +3257,14 @@
                 });
             }
 
+            function toTitleCase(str) {
+                /* Partículas que permanecen en minúsculas */
+                var lower = { "de":1, "del":1, "la":1, "las":1, "los":1, "y":1, "e":1 };
+                return str.toLowerCase().split(" ").map(function(w, i) {
+                    return (!w) ? w : (i === 0 || !lower[w]) ? w.charAt(0).toUpperCase() + w.slice(1) : w;
+                }).join(" ");
+            }
+
             function esc(s) {
                 return String(s || "")
                     .replace(/&/g, "&amp;")
@@ -3192,12 +3386,37 @@
                     var mMap = typeof buildMesaMap === "function" ? buildMesaMap() : {};
                     var overCount = Object.keys(mMap).filter(function(k) { return mMap[k] && mMap[k].over; }).length;
                     var items = [];
+
+                    /* Banner de urgencia de deadline RSVP */
+                    var RSVP_DL = new Date("2026-09-20T23:59:00");
+                    var daysToDeadline = Math.ceil((RSVP_DL - Date.now()) / 86400000);
+                    if (pending > 0 && daysToDeadline > 0 && daysToDeadline <= 30) {
+                        var dlVariant = daysToDeadline <= 3  ? "red"
+                                      : daysToDeadline <= 7  ? "orange"
+                                      : daysToDeadline <= 14 ? "amber"
+                                      : "gold";
+                        var dlIcon = daysToDeadline <= 3 ? "🚨" : daysToDeadline <= 7 ? "⚠️" : daysToDeadline <= 14 ? "⏰" : "📅";
+                        var dlTitle = daysToDeadline <= 3
+                            ? "¡Últimos " + daysToDeadline + " día" + (daysToDeadline > 1 ? "s" : "") + " para confirmar!"
+                            : daysToDeadline <= 7
+                                ? "Semana crítica — " + daysToDeadline + " días al deadline"
+                                : "Faltan " + daysToDeadline + " días para el cierre de confirmaciones";
+                        items.push(
+                            '<div class="deadline-banner deadline-banner--' + dlVariant + '">' +
+                            '<span class="deadline-banner__icon">' + dlIcon + '</span>' +
+                            '<div class="deadline-banner__body">' +
+                            '<p class="deadline-banner__title">' + dlTitle + '</p>' +
+                            '<p class="deadline-banner__sub">' + pending + ' familia' + (pending > 1 ? 's' : '') + ' sin respuesta · Deadline: 20 de septiembre</p>' +
+                            '</div></div>'
+                        );
+                    }
+
                     if (pending > 0) {
                         showReminders();
                         items.push(
                         '<div class="resumen-alert resumen-alert--warn">' +
                         '<div class="resumen-alert__body"><p class="resumen-alert__main">' + pending + ' familia' + (pending > 1 ? 's' : '') + ' sin confirmar asistencia</p>' +
-                        '<p class="resumen-alert__sub">Envíales WhatsApp individualmente desde la lista de abajo</p></div>' +
+                        '<p class="resumen-alert__sub">Envíales recordatorio desde la lista de abajo</p></div>' +
                         '<button class="resumen-alert__cta" onclick="showReminders()">Ver lista</button></div>');
                     }
                     if (sinMesaCount > 0) items.push(
@@ -3221,11 +3440,16 @@
             }
 
             function getSiteUrl() {
-                return (
+                var url = (
                     localStorage.getItem("ke-site-url") ||
                     document.getElementById("site-url").value ||
                     ""
                 ).replace(/\/$/, "");
+                /* Forzar https en URLs de producción (no localhost) */
+                if (/^http:\/\/(?!localhost|127\.)/.test(url)) {
+                    url = url.replace(/^http:\/\//, "https://");
+                }
+                return url;
             }
 
             function buildLink(code) {
@@ -3566,9 +3790,9 @@
                 var btn = document.getElementById("ef-save-" + id);
                 btn.textContent = "Guardando…";
                 btn.disabled = true;
-                var rawName = document.getElementById("ef-name-" + id).value.trim().replace(/^familia\s+/i, "");
+                var rawName = toTitleCase(document.getElementById("ef-name-" + id).value.trim().replace(/^familia\s+/i, ""));
                 var payload = {
-                    family_name: rawName ? "Familia " + rawName : document.getElementById("ef-name-" + id).value.trim(),
+                    family_name: rawName ? "Familia " + rawName : toTitleCase(document.getElementById("ef-name-" + id).value.trim()),
                     max_guests: parseInt(document.getElementById("ef-guests-" + id).value) || 2,
                     group_name: document.getElementById("ef-group-" + id).value,
                     phone: document.getElementById("ef-phone-" + id).value.trim().replace(/\D/g, ""),
@@ -3713,7 +3937,7 @@
 
                 addBtn.addEventListener("click", async function () {
                     var self = this;
-                    var raw = nameInput.value.trim().replace(/^familia\s+/i, "");
+                    var raw = toTitleCase(nameInput.value.trim().replace(/^familia\s+/i, ""));
                     var name = raw ? "Familia " + raw : "";
                     var code = codeInput.value.trim().toUpperCase();
                     var guests = parseInt(guestsInput.value);
@@ -4112,14 +4336,28 @@
             /* ── Recordatorios ────────────────────────── */
             function showReminders() {
                 var pending = allData.filter(function(f) { return !f.confirmed; });
-                var list = document.getElementById("reminder-list");
+                var list    = document.getElementById("reminder-list");
+                var actions = document.getElementById("reminder-actions");
+
+                /* Botones de acción masiva */
+                if (actions) {
+                    var withPhone = pending.filter(function(f) { return f.phone; }).length;
+                    actions.innerHTML = pending.length
+                        ? '<button class="reminder-act-btn reminder-act-btn--primary" onclick="startBatchReminder()">' +
+                          _SVG_WA + ' &nbsp;Recordar a todos (' + pending.length + ')</button>' +
+                          (withPhone > 0
+                              ? '<button class="reminder-act-btn" onclick="copyPendingPhones()">📋 Copiar números (' + withPhone + ')</button>'
+                              : '')
+                        : '';
+                }
+
                 if (!pending.length) {
-                    list.innerHTML = '<p style="padding:1.5rem;text-align:center;font-size:0.72rem;color:rgba(255,255,255,0.3)">¡Todas las familias han confirmado! 🎉</p>';
+                    list.innerHTML = '<p style="padding:1.5rem;text-align:center;font-size:0.72rem;color:var(--text-soft)">¡Todas las familias han confirmado! 🎉</p>';
                 } else {
                     list.innerHTML = pending.map(function(f) {
                         return '<div class="reminder-item">' +
                             '<div><span class="reminder-name">' + esc(f.family_name) + '</span>' +
-                            '<span class="reminder-code">' + esc(f.code) + (f.phone ? " · " + f.phone : "") + '</span></div>' +
+                            '<span class="reminder-code">' + esc(f.code) + (f.phone ? " · " + f.phone : " · sin teléfono") + '</span></div>' +
                             '<a class="wa-btn" href="' + esc(buildWaUrl(f.family_name, f.code, f.phone, f.table_number)) + '" target="_blank">' + _SVG_WA + ' WhatsApp</a>' +
                             '</div>';
                     }).join("");
@@ -4128,6 +4366,172 @@
                 document.getElementById("reminder-section").scrollIntoView({ behavior: "smooth", block: "nearest" });
             }
             function hideReminders() { document.getElementById("reminder-section").style.display = "none"; }
+
+            /* ── Recordatorio en lote ─────────────────────── */
+            var _batchFamilies = [];
+            var _batchIndex    = 0;
+            var _batchSent     = 0;
+
+            function startBatchReminder() {
+                _batchFamilies = allData.filter(function(f) { return !f.confirmed; });
+                if (!_batchFamilies.length) { showToast("No hay familias pendientes"); return; }
+                _batchIndex = 0;
+                _batchSent  = 0;
+                document.getElementById("batch-overlay").classList.add("is-open");
+                document.body.style.overflow = "hidden";
+                showBatchFamily(0);
+            }
+
+            function closeBatchReminder() {
+                document.getElementById("batch-overlay").classList.remove("is-open");
+                document.body.style.overflow = "";
+            }
+
+            function showBatchFamily(index) {
+                var total  = _batchFamilies.length;
+                var body   = document.getElementById("batch-body");
+                var fill   = document.getElementById("batch-progress-fill");
+                var lblSent= document.getElementById("batch-lbl-sent");
+                var lblTot = document.getElementById("batch-lbl-total");
+
+                lblSent.textContent = _batchSent + " enviado" + (_batchSent !== 1 ? "s" : "");
+                lblTot.textContent  = "de " + total;
+                if (fill) fill.style.width = (total > 0 ? Math.round(_batchSent / total * 100) : 0) + "%";
+
+                if (index >= total) {
+                    /* Pantalla de completado */
+                    body.innerHTML =
+                        '<div class="batch-done">' +
+                        '<div class="batch-done__icon">🎉</div>' +
+                        '<p class="batch-done__title">¡Listo!</p>' +
+                        '<p class="batch-done__sub">Enviaste recordatorio a ' + _batchSent + ' de ' + total + ' familias.</p>' +
+                        '<button onclick="closeBatchReminder()" style="margin-top:1.5rem;padding:0.75rem 2rem;background:var(--gold);color:#1e1410;border:none;border-radius:20px;font-family:var(--f-sans);font-size:0.65rem;font-weight:700;letter-spacing:0.1em;cursor:pointer;">Cerrar</button>' +
+                        '</div>';
+                    if (fill) fill.style.width = "100%";
+                    return;
+                }
+
+                var f    = _batchFamilies[index];
+                var waUrl = buildWaUrl(f.family_name, f.code, f.phone, f.table_number);
+                var remaining = total - index;
+
+                body.innerHTML =
+                    '<div class="batch-card">' +
+                    '<p class="batch-card__num">Familia ' + (index + 1) + ' de ' + total + ' · ' + remaining + ' restante' + (remaining !== 1 ? 's' : '') + '</p>' +
+                    '<p class="batch-card__name">' + esc(f.family_name) + '</p>' +
+                    '<p class="batch-card__meta">' + esc(f.code) + (f.phone ? ' · ' + f.phone : ' · sin teléfono registrado') + '</p>' +
+                    '<a class="batch-card__wa" href="' + esc(waUrl) + '" target="_blank" onclick="nextBatchFamily()">' +
+                    _SVG_WA + ' Abrir WhatsApp y enviar' +
+                    '</a>' +
+                    '<button class="batch-card__copy" onclick="famCopyLink(\'' + esc(f.code) + '\',\'' + esc(f.id) + '\')">' +
+                    _SVG_COPY + ' Copiar link de invitación' +
+                    '</button>' +
+                    '</div>' +
+                    '<div class="batch-nav">' +
+                    '<button class="batch-nav__skip" onclick="showBatchFamily(' + (index + 1) + ')">Saltar →</button>' +
+                    '<button class="batch-nav__next" onclick="nextBatchFamily()">✓ Enviado · Siguiente</button>' +
+                    '</div>';
+            }
+
+            function nextBatchFamily() {
+                _batchSent++;
+                _batchIndex++;
+                showBatchFamily(_batchIndex);
+            }
+
+            /* ── Notificación post-boda: "Sube tus fotos" ──── */
+            var _recBatchFamilies = [];
+            var _recBatchIndex    = 0;
+            var _recBatchSent     = 0;
+
+            function buildRecWaUrl(family, code, phone) {
+                var link = buildLink(code) + "#memories";
+                var msg  = "¡Hola, " + family + "! 📷\n\n" +
+                           "Fue un honor tenerte en nuestra boda. 🥂\n\n" +
+                           "Comparte tus fotos del gran día en nuestro *Libro de Recuerdos*:\n" + link + "\n\n" +
+                           "¡Ábrelo y sube tus fotos favoritas!";
+                var cleanPhone = phone ? phone.replace(/\D/g, "") : "";
+                var dest = cleanPhone ? (cleanPhone.length > 10 ? cleanPhone : "52" + cleanPhone) : "";
+                return "https://wa.me/" + dest + "?text=" + encodeURIComponent(msg);
+            }
+
+            function startRecBatch() {
+                _recBatchFamilies = allData.filter(function(f) {
+                    return f.confirmed && f.rsvps && f.rsvps[0] && f.rsvps[0].attending && f.phone;
+                });
+                if (!_recBatchFamilies.length) {
+                    showToast("Ningún invitado confirmado tiene teléfono registrado");
+                    return;
+                }
+                _recBatchIndex = 0;
+                _recBatchSent  = 0;
+                document.getElementById("batch-overlay").classList.add("is-open");
+                document.body.style.overflow = "hidden";
+                showRecBatchFamily(0);
+            }
+
+            function showRecBatchFamily(index) {
+                var total   = _recBatchFamilies.length;
+                var body    = document.getElementById("batch-body");
+                var fill    = document.getElementById("batch-progress-fill");
+                var lblSent = document.getElementById("batch-lbl-sent");
+                var lblTot  = document.getElementById("batch-lbl-total");
+
+                lblSent.textContent = _recBatchSent + " notificado" + (_recBatchSent !== 1 ? "s" : "");
+                lblTot.textContent  = "de " + total;
+                if (fill) fill.style.width = (total > 0 ? Math.round(_recBatchSent / total * 100) : 0) + "%";
+
+                if (index >= total) {
+                    body.innerHTML =
+                        '<div class="batch-done">' +
+                        '<div class="batch-done__icon">📷</div>' +
+                        '<p class="batch-done__title">¡Listo!</p>' +
+                        '<p class="batch-done__sub">Notificaste a ' + _recBatchSent + ' de ' + total + ' invitados.</p>' +
+                        '<button onclick="closeBatchReminder()" style="margin-top:1.5rem;padding:0.75rem 2rem;background:var(--gold);color:#1e1410;border:none;border-radius:20px;font-family:var(--f-sans);font-size:0.65rem;font-weight:700;letter-spacing:0.1em;cursor:pointer;">Cerrar</button>' +
+                        '</div>';
+                    if (fill) fill.style.width = "100%";
+                    return;
+                }
+
+                var f         = _recBatchFamilies[index];
+                var waUrl     = buildRecWaUrl(f.family_name, f.code, f.phone);
+                var remaining = total - index;
+
+                body.innerHTML =
+                    '<div class="batch-card">' +
+                    '<p class="batch-card__num">Invitado ' + (index + 1) + ' de ' + total + ' · ' + remaining + ' restante' + (remaining !== 1 ? 's' : '') + '</p>' +
+                    '<p class="batch-card__name">' + esc(f.family_name) + '</p>' +
+                    '<p class="batch-card__meta">' + esc(f.code) + ' · ' + f.phone + '</p>' +
+                    '<a class="batch-card__wa" href="' + esc(waUrl) + '" target="_blank" onclick="nextRecBatchFamily()">' +
+                    _SVG_WA + ' Enviar — "Sube tus fotos"' +
+                    '</a>' +
+                    '</div>' +
+                    '<div class="batch-nav">' +
+                    '<button class="batch-nav__skip" onclick="showRecBatchFamily(' + (index + 1) + ')">Saltar →</button>' +
+                    '<button class="batch-nav__next" onclick="nextRecBatchFamily()">✓ Enviado · Siguiente</button>' +
+                    '</div>';
+            }
+
+            function nextRecBatchFamily() {
+                _recBatchSent++;
+                _recBatchIndex++;
+                showRecBatchFamily(_recBatchIndex);
+            }
+
+            /* ── Copiar todos los teléfonos pendientes ──────── */
+            function copyPendingPhones() {
+                var pending = allData.filter(function(f) { return !f.confirmed && f.phone; });
+                if (!pending.length) { showToast("Ninguna familia pendiente tiene teléfono registrado"); return; }
+                var text = pending.map(function(f) {
+                    var clean = f.phone.replace(/\D/g, "");
+                    return (clean.length > 10 ? "+" : "+52") + clean + "  " + f.family_name;
+                }).join("\n");
+                navigator.clipboard.writeText(text).then(function() {
+                    showToast("✓ " + pending.length + " número" + (pending.length !== 1 ? "s" : "") + " copiado" + (pending.length !== 1 ? "s" : "") + " al portapapeles");
+                }).catch(function() {
+                    prompt("Copia estos números:", text);
+                });
+            }
 
             /* ── Check-in mode ────────────────────────── */
             var ciData = [];
@@ -4631,17 +5035,70 @@
                 document.querySelectorAll(".gf-btn").forEach(function (b) { b.classList.remove("is-active"); });
                 btn.classList.add("is-active");
                 activeGroup = btn.dataset.group;
+                var bulkBar = document.getElementById("bulk-action-bar");
+                if (activeGroup === "__pending__") {
+                    var count = allData.filter(function(f){ return !f.confirmed; }).length;
+                    document.getElementById("bulk-action-label").textContent = count + " familia" + (count !== 1 ? "s" : "") + " sin respuesta";
+                    bulkBar.classList.add("is-visible");
+                } else {
+                    bulkBar.classList.remove("is-visible");
+                }
                 applyFilters();
             });
 
             function applyFilters() {
                 var q = document.getElementById("search").value.toLowerCase();
                 var filtered = allData.filter(function (f) {
-                    var matchGroup = !activeGroup || f.group_name === activeGroup;
+                    var matchGroup = activeGroup === "__pending__"
+                        ? !f.confirmed
+                        : (!activeGroup || f.group_name === activeGroup);
                     var matchSearch = !q || f.family_name.toLowerCase().includes(q) || f.code.toLowerCase().includes(q);
                     return matchGroup && matchSearch;
                 });
                 renderTable(filtered);
+            }
+
+            async function markAllPendingAsDeclined() {
+                var pending = allData.filter(function(f){ return !f.confirmed; });
+                if (!pending.length) { showToast("No hay familias pendientes"); return; }
+
+                /* Bloqueo antes del deadline RSVP */
+                var RSVP_DL      = new Date("2026-09-20T23:59:00");
+                var beforeDeadline = Date.now() < RSVP_DL.getTime();
+                if (beforeDeadline) {
+                    var daysLeft = Math.ceil((RSVP_DL - Date.now()) / 86400000);
+                    var typed = prompt(
+                        "⚠️ ATENCIÓN — Aún faltan " + daysLeft + " días para el deadline de confirmaciones (20 sep 2026).\n\n" +
+                        "Esta acción marcará " + pending.length + " familia" + (pending.length !== 1 ? "s" : "") + " como No asiste de forma PERMANENTE.\n\n" +
+                        "Si realmente quieres continuar antes del deadline, escribe CONFIRMAR:"
+                    );
+                    if ((typed || "").trim().toUpperCase() !== "CONFIRMAR") {
+                        showToast("Acción cancelada");
+                        return;
+                    }
+                } else {
+                    if (!confirm("¿Marcar " + pending.length + " familia" + (pending.length !== 1 ? "s" : "") + " como No asiste?\n\nEsto registrará que no confirmarán su asistencia. No se puede deshacer fácilmente.")) return;
+                }
+                try {
+                    var headers = { apikey: SUPABASE_ANON_KEY, Authorization: "Bearer " + SUPABASE_ANON_KEY, "Content-Type": "application/json" };
+                    await Promise.all(pending.map(async function(f) {
+                        await fetch(SUPABASE_URL + "/rest/v1/families?id=eq." + f.id, {
+                            method: "PATCH", headers: headers,
+                            body: JSON.stringify({ confirmed: true })
+                        });
+                        await fetch(SUPABASE_URL + "/rest/v1/rsvps", {
+                            method: "POST", headers: headers,
+                            body: JSON.stringify({ family_id: f.id, contact_name: "Sin respuesta", guest_count: 0, attending: false, attending_names: null })
+                        });
+                    }));
+                    await loadData();
+                    document.getElementById("bulk-action-bar").classList.remove("is-visible");
+                    document.querySelectorAll(".gf-btn").forEach(function(b){ b.classList.remove("is-active"); });
+                    document.querySelector(".gf-btn[data-group='']").classList.add("is-active");
+                    activeGroup = "";
+                    applyFilters();
+                    showToast("✓ " + pending.length + " familia" + (pending.length !== 1 ? "s" : "") + " marcadas como No asiste");
+                } catch(e) { showToast("⚠ Error al actualizar familias"); }
             }
 
             /* ── Refresh ──────────────────────────────── */
@@ -4758,9 +5215,10 @@
                 if (btn)   btn.classList.add("is-active");
                 var tc = document.querySelector(".tab-content");
                 if (tc) tc.scrollTop = 0;
-                if (name === "mesas")    renderMesasGrid();
-                if (name === "fotos")    loadPhotos();
-                if (name === "mensajes") loadMsgs();
+                if (name === "mesas")     renderMesasGrid();
+                if (name === "fotos")     loadPhotos();
+                if (name === "mensajes")  loadMsgs();
+                if (name === "recuerdos") loadRecuerdos();
                 localStorage.setItem("ke-tab", name);
             }
 
@@ -5007,6 +5465,136 @@
                     alert("Error al eliminar: " + e.message);
                 }
             }
+
+            /* ── Tab: Recuerdos ─────────────────────────────── */
+            var REC_BUCKET  = "recuerdos-boda";
+            var _recEnabled = true;
+            var _allRec     = [];
+
+            function recStorageUrl(path) {
+                return SUPABASE_URL + "/storage/v1/object/public/" + REC_BUCKET + "/" + encodeURIComponent(path);
+            }
+
+            async function loadRecuerdos() {
+                var grid   = document.getElementById("rec-grid");
+                var empty  = document.getElementById("rec-empty");
+                var count  = document.getElementById("rec-count");
+                var banner = document.getElementById("rec-setup-banner");
+                var badge  = document.getElementById("rec-badge");
+                if (grid) grid.innerHTML = '<p style="font-size:0.65rem;color:var(--text-soft);padding:0.5rem 0;">Cargando…</p>';
+                if (empty) empty.style.display = "none";
+
+                /* Leer estado del toggle desde settings */
+                try {
+                    var sr = await fetch(SUPABASE_URL + "/rest/v1/settings?key=eq.recuerdos_enabled&select=value", {
+                        headers: { apikey: SUPABASE_ANON_KEY, Authorization: "Bearer " + SUPABASE_ANON_KEY }
+                    });
+                    var srows = sr.ok ? await sr.json() : [];
+                    _recEnabled = !srows.length || srows[0].value !== "false";
+                    if (banner) banner.style.display = !srows.length ? "block" : "none";
+                } catch(e) { _recEnabled = true; if (banner) banner.style.display = "block"; }
+                updateRecToggleUI();
+
+                /* Leer fotos */
+                try {
+                    var r = await fetch(SUPABASE_URL + "/rest/v1/photos?select=*&order=created_at.desc&limit=200", {
+                        headers: { apikey: SUPABASE_ANON_KEY, Authorization: "Bearer " + SUPABASE_ANON_KEY }
+                    });
+                    _allRec = r.ok ? await r.json() : [];
+                } catch(e) { _allRec = []; }
+
+                if (count) count.textContent = _allRec.length + " foto" + (_allRec.length !== 1 ? "s" : "");
+                if (badge) { badge.textContent = _allRec.length; badge.style.display = _allRec.length ? "inline-flex" : "none"; }
+
+                if (!grid) return;
+                if (!_allRec.length) {
+                    grid.innerHTML = "";
+                    if (empty) empty.style.display = "block";
+                    return;
+                }
+                grid.innerHTML = _allRec.map(function(p) {
+                    var url  = recStorageUrl(p.storage_path);
+                    var date = new Date(p.created_at).toLocaleDateString("es-MX", { day:"numeric", month:"short", year:"numeric" });
+                    return '<div class="rec-card">' +
+                        '<img class="rec-card__img" src="' + esc(url) + '" alt="Foto de ' + esc(p.uploader_name) + '" loading="lazy" onclick="openRecLightbox(\'' + esc(url) + '\',\'' + esc(p.uploader_name) + '\',\'' + esc(p.caption || '') + '\',\'' + esc(date) + '\')" />' +
+                        '<div class="rec-card__info">' +
+                            '<p class="rec-card__name">' + esc(p.uploader_name) + '</p>' +
+                            (p.caption ? '<p class="rec-card__caption">' + esc(p.caption) + '</p>' : '') +
+                            '<p class="rec-card__date">' + date + '</p>' +
+                        '</div>' +
+                        '<button class="rec-card__del" onclick="deleteRecuerdo(\'' + esc(p.id) + '\',\'' + esc(p.storage_path) + '\')" title="Eliminar">✕</button>' +
+                    '</div>';
+                }).join("");
+            }
+
+            async function deleteRecuerdo(id, storagePath) {
+                if (!confirm("¿Eliminar esta foto de \"" + storagePath + "\"?\nNo se puede deshacer.")) return;
+                try {
+                    /* Borrar de storage */
+                    await fetch(SUPABASE_URL + "/storage/v1/object/" + REC_BUCKET, {
+                        method: "DELETE",
+                        headers: { apikey: SUPABASE_ANON_KEY, Authorization: "Bearer " + SUPABASE_ANON_KEY, "Content-Type": "application/json" },
+                        body: JSON.stringify({ prefixes: [storagePath] })
+                    });
+                    /* Borrar de la tabla */
+                    await fetch(SUPABASE_URL + "/rest/v1/photos?id=eq." + id, {
+                        method: "DELETE",
+                        headers: { apikey: SUPABASE_ANON_KEY, Authorization: "Bearer " + SUPABASE_ANON_KEY }
+                    });
+                    await loadRecuerdos();
+                    showToast("✓ Foto eliminada");
+                } catch(e) { showToast("⚠ Error al eliminar"); }
+            }
+
+            async function toggleRecuerdos() {
+                var next = !_recEnabled;
+                try {
+                    var r = await fetch(SUPABASE_URL + "/rest/v1/settings?key=eq.recuerdos_enabled", {
+                        method: "PATCH",
+                        headers: { apikey: SUPABASE_ANON_KEY, Authorization: "Bearer " + SUPABASE_ANON_KEY, "Content-Type": "application/json" },
+                        body: JSON.stringify({ value: next ? "true" : "false" })
+                    });
+                    if (!r.ok) throw new Error("HTTP " + r.status);
+                    _recEnabled = next;
+                    updateRecToggleUI();
+                    showToast(next ? "✓ Libro de Recuerdos activado" : "✓ Libro de Recuerdos desactivado");
+                } catch(e) {
+                    showToast("⚠ No se pudo cambiar — crea la tabla settings primero");
+                    document.getElementById("rec-setup-banner").style.display = "block";
+                }
+            }
+
+            function updateRecToggleUI() {
+                var btn = document.getElementById("rec-toggle-btn");
+                var lbl = document.getElementById("rec-toggle-lbl");
+                if (!btn || !lbl) return;
+                if (_recEnabled) {
+                    btn.className = "rec-toggle is-on";
+                    lbl.textContent = "Activo";
+                } else {
+                    btn.className = "rec-toggle is-off";
+                    lbl.textContent = "Desactivado";
+                }
+            }
+
+            function openRecLightbox(url, name, caption, date) {
+                var lb  = document.getElementById("rec-lightbox");
+                var img = document.getElementById("rec-lightbox-img");
+                var inf = document.getElementById("rec-lightbox-info");
+                if (!lb) return;
+                img.src = url;
+                inf.textContent = name + (caption ? " · " + caption : "") + "  ·  " + date;
+                lb.classList.add("is-open");
+                document.body.style.overflow = "hidden";
+            }
+            function closeRecLightbox() {
+                var lb = document.getElementById("rec-lightbox");
+                if (lb) lb.classList.remove("is-open");
+                document.body.style.overflow = "";
+            }
+            document.addEventListener("keydown", function(e) {
+                if (e.key === "Escape" && document.getElementById("rec-lightbox").classList.contains("is-open")) closeRecLightbox();
+            });
 
             /* ── Tema claro / oscuro ─────────────────────────── */
             function toggleTheme() {
