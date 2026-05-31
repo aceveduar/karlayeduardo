@@ -4608,7 +4608,11 @@
                         var el = document.getElementById("js-greeting");
                         var name = document.getElementById("js-greeting-name");
                         if (!el || !name) return;
-                        name.textContent = rows[0].family_name.replace(/\b\w/g, function(l){ return l.toUpperCase(); });
+                        var words = rows[0].family_name.trim().split(/\s+/);
+                        name.innerHTML = words.map(function(w) {
+                            if (!w) return "";
+                            return '<span style="font-size:1.18em">' + w.charAt(0).toUpperCase() + '</span>' + w.slice(1).toLowerCase();
+                        }).join(" ");
                         el.style.display = "block";
                     })
                     .catch(function () {});
