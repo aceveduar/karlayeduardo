@@ -348,7 +348,7 @@
                 color: var(--gold);
                 line-height: 1;
                 text-align: right;
-                letter-spacing: -0.02em;
+                letter-spacing: 0;
             }
             .resumen-hero__days-lbl {
                 font-size: 0.62rem;
@@ -356,6 +356,7 @@
                 text-transform: uppercase;
                 color: var(--text-mid);
                 text-align: right;
+                margin-top: 0.35rem;
             }
             /* Alertas contextuales del Resumen */
             .resumen-alerts { display: flex; flex-direction: column; gap: 0.45rem; margin-bottom: 1.25rem; }
@@ -914,10 +915,10 @@
 
             /* Progress bars */
             .progress-section { margin-bottom: 1rem; display: flex; flex-direction: column; gap: 0.5rem; }
-            .progress-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.2rem; }
-            .progress-lbl { font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text); font-weight: 600; }
+            .progress-header { display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; margin-bottom: 0.18rem; }
+            .progress-lbl { font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text); font-weight: 600; font-family: var(--f-sans); line-height:1; }
             .progress-val { font-family: var(--f-serif); font-size: 0.95rem; color: var(--gold); text-align: right; display:inline-block; min-width:90px; }
-            .progress-pct { font-size: 0.65rem; color: var(--text-soft); margin-left: 0.3rem; }
+            .progress-pct { font-size: 0.65rem; color: var(--text-soft); margin-left: 0.3rem; font-family: var(--f-sans); line-height:1; }
             .progress-track { height: 7px; background: rgba(30,20,16,0.07); border-radius: 4px; overflow: hidden; position: relative; margin-bottom: 0.15rem; }
             .progress-fill { height: 100%; border-radius: 4px; background: linear-gradient(to right, var(--terra), var(--gold)); transition: width 0.6s ease; width: 0%; will-change: width; }
             .progress-fill--b { background: linear-gradient(to right, var(--gold), #ddb84a); }
@@ -948,6 +949,14 @@
 
             /* stat numeric unit */
             .stat__num::after { content: attr(data-unit); display: block; font-size: 0.62rem; color: var(--text-soft); margin-top: 0.25rem; font-family: var(--f-sans); }
+
+            /* responsive tweaks for small screens to avoid layout shifts on Android */
+            @media (max-width: 480px) {
+                .progress-val { min-width: 60px; font-size: 0.9rem; }
+                .resumen-hero__days { font-size: 2rem; }
+                .resumen-hero__days-lbl { margin-top: 0.2rem; }
+                .progress-section { gap: 0.35rem; }
+            }
 
             /* previously showed labels inside tracks via ::after — removed because it overlapped content */
 
