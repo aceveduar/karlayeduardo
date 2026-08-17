@@ -2892,6 +2892,7 @@
                         <span class="bulk-action-bar__label" id="bulk-action-label">X familias sin respuesta</span>
                         <button class="bulk-action-bar__btn" onclick="markAllPendingAsDeclined()">Marcar todas como No asiste</button>
                     </div>
+                    <div id="checkedin-legend" style="display:none;margin-top:0.6rem;font-size:0.85rem;color:var(--text-soft);background:rgba(126,200,160,0.03);padding:0.55rem 0.9rem;border-radius:6px;border:1px solid rgba(126,200,160,0.06);">Nota: la lista de familias "Llegaron" solo está disponible hasta el día del evento. En el día del evento la leyenda se ocultará automáticamente.</div>
 
                     <!-- Búsqueda -->
                     <div class="search-wrap">
@@ -5228,6 +5229,8 @@
                     bulkBtn.textContent = "Marcar todas como No asiste";
                     bulkBtn.setAttribute('onclick', 'markAllPendingAsDeclined()');
                     bulkBar.classList.add("is-visible");
+                    // hide checked-in legend
+                    var chLegend = document.getElementById('checkedin-legend'); if (chLegend) chLegend.style.display = 'none';
                 } else if (activeGroup === "__con_mesa__") {
                     var cmCount = allData.filter(function(f){ return f.confirmed && f.rsvps && f.rsvps[0] && f.rsvps[0].attending && f.table_number; }).length;
                     bulkLabel.textContent = cmCount + " familia" + (cmCount !== 1 ? "s" : "") + " con mesa";
@@ -5240,6 +5243,13 @@
                     bulkBtn.textContent = "Abrir Check-in";
                     bulkBtn.setAttribute('onclick', "openCheckin()");
                     bulkBar.classList.add("is-visible");
+                    // show legend unless it's the event day or later
+                    var eventDate = new Date(2026,10,21); // months 0-based -> 10 = Nov
+                    var today = new Date();
+                    var chLegend = document.getElementById('checkedin-legend');
+                    if (chLegend) {
+                        if (today >= eventDate) chLegend.style.display = 'none'; else chLegend.style.display = 'block';
+                    }
                 } else if (activeGroup === "__sin_mesa__") {
                     var smCount = allData.filter(function(f){ return f.confirmed && f.rsvps && f.rsvps[0] && f.rsvps[0].attending && !f.table_number; }).length;
                     bulkLabel.textContent = smCount + " familia" + (smCount !== 1 ? "s" : "") + " sin mesa";
