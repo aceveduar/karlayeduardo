@@ -2881,6 +2881,7 @@
                             <button class="gf-btn" data-group="Otros">Otros</button>
                             <button class="gf-btn" data-group="__sin_mesa__">Sin mesa</button>
                             <button class="gf-btn" data-group="__con_mesa__">Con mesa</button>
+                            <button class="gf-btn" data-group="__checked_in__">Llegaron</button>
                             <button class="gf-btn gf-btn--declined" data-group="__declined__">No asiste</button>
                             <button class="gf-btn gf-btn--pending" data-group="__pending__">Sin confirmar</button>
                         </div>
@@ -5233,6 +5234,12 @@
                     bulkBtn.textContent = "Ir a Mesas";
                     bulkBtn.setAttribute('onclick', "switchTab('mesas')");
                     bulkBar.classList.add("is-visible");
+                } else if (activeGroup === "__checked_in__") {
+                    var ciCount = allData.filter(function(f){ return f.checked_in; }).length;
+                    bulkLabel.textContent = ciCount + " familia" + (ciCount !== 1 ? "s" : "") + " registradas";
+                    bulkBtn.textContent = "Abrir Check-in";
+                    bulkBtn.setAttribute('onclick', "openCheckin()");
+                    bulkBar.classList.add("is-visible");
                 } else if (activeGroup === "__sin_mesa__") {
                     var smCount = allData.filter(function(f){ return f.confirmed && f.rsvps && f.rsvps[0] && f.rsvps[0].attending && !f.table_number; }).length;
                     bulkLabel.textContent = smCount + " familia" + (smCount !== 1 ? "s" : "") + " sin mesa";
@@ -5249,14 +5256,16 @@
                 var q = document.getElementById("search").value.toLowerCase();
                 var filtered = allData.filter(function (f) {
                     var matchGroup = activeGroup === "__pending__"
-                            ? !f.confirmed
-                            : activeGroup === "__declined__"
-                                ? (f.rsvps && f.rsvps[0] && f.rsvps[0].attending === false)
-                                : activeGroup === "__con_mesa__"
-                                    ? (f.confirmed && f.rsvps && f.rsvps[0] && f.rsvps[0].attending && f.table_number)
-                                    : activeGroup === "__sin_mesa__"
-                                        ? (f.confirmed && f.rsvps && f.rsvps[0] && f.rsvps[0].attending && !f.table_number)
-                                    : (!activeGroup || f.group_name === activeGroup);
+                        ? !f.confirmed
+                        : activeGroup === "__declined__"
+                            ? (f.rsvps && f.rsvps[0] && f.rsvps[0].attending === false)
+                            : activeGroup === "__con_mesa__"
+                                ? (f.confirmed && f.rsvps && f.rsvps[0] && f.rsvps[0].attending && f.table_number)
+                                : activeGroup === "__sin_mesa__"
+                                    ? (f.confirmed && f.rsvps && f.rsvps[0] && f.rsvps[0].attending && !f.table_number)
+                                    : activeGroup === "__checked_in__"
+                                        ? !!f.checked_in
+                                        : (!activeGroup || f.group_name === activeGroup);
                     var matchSearch = !q || f.family_name.toLowerCase().includes(q) || f.code.toLowerCase().includes(q);
                     return matchGroup && matchSearch;
                 });
