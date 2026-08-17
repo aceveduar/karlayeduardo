@@ -958,7 +958,11 @@
                 .progress-section { gap: 0.35rem; }
             }
 
+            /* percentage label inside fill for desktop (removed) */
+
             /* previously showed labels inside tracks via ::after — removed because it overlapped content */
+
+            
 
             /* Reminder section */
             .reminder-section { display: none; margin-bottom: 1.5rem; border: 1px solid rgba(201,169,110,0.2); background: var(--surface); box-shadow: 0 1px 6px rgba(30,20,16,0.05); border-radius: 10px; overflow: hidden; }
@@ -2737,6 +2741,8 @@
                         </div>
                     </div>
 
+                    
+
                     <!-- Alertas contextuales -->
                     <div class="resumen-alerts" id="resumen-alerts"></div>
 
@@ -4374,6 +4380,7 @@
                         el.setAttribute('title', labelText);
                         if (el.parentElement) el.parentElement.setAttribute('data-label', labelText);
                     }
+                    // (no in-fill percentage — intentionally left blank)
                 }
 
                 // Familias
