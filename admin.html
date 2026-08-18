@@ -1791,9 +1791,16 @@
             .group-filter {
                 display: flex;
                 gap: 0.5rem;
-                flex-wrap: wrap;
+                /* horizontal scrollable chips for touch devices */
+                flex-wrap: nowrap;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
                 margin-bottom: 0;
+                padding-bottom: 0.25rem;
+                scroll-snap-type: x proximity;
             }
+            .group-filter.is-dragging { cursor: grabbing; }
+            .gf-btn { flex: 0 0 auto; scroll-snap-align: start; }
             .gf-btn {
                 background: var(--surface);
                 border: 1px solid rgba(30,20,16,0.14);
@@ -5288,6 +5295,35 @@
                 }
                 applyFilters();
             });
+
+            // Enable drag-to-scroll for the group filter (touch and pointer friendly)
+            (function enableChipDrag(){
+                var container = document.querySelector('.group-filter');
+                if (!container) return;
+                var isDown = false, startX = 0, scrollLeft = 0, moved = false;
+                container.addEventListener('pointerdown', function(e){
+                    isDown = true;
+                    moved = false;
+                    startX = e.clientX;
+                    scrollLeft = container.scrollLeft;
+                    container.setPointerCapture(e.pointerId);
+                    container.classList.add('is-dragging');
+                });
+                container.addEventListener('pointermove', function(e){
+                    if (!isDown) return;
+                    var dx = e.clientX - startX;
+                    if (Math.abs(dx) > 5) moved = true;
+                    container.scrollLeft = scrollLeft - dx;
+                });
+                function up(e){
+                    isDown = false; moved = false; try { container.releasePointerCapture && container.releasePointerCapture(e.pointerId); } catch (err) {}
+                    container.classList.remove('is-dragging');
+                }
+                container.addEventListener('pointerup', up);
+                container.addEventListener('pointercancel', up);
+                // Prevent clicks when the user was dragging
+                container.addEventListener('click', function(e){ if (moved) { e.stopPropagation(); e.preventDefault(); } }, true);
+            })();
 
             function applyFilters() {
                 var q = document.getElementById("search").value.toLowerCase();
