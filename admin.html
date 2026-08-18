@@ -237,7 +237,8 @@
             .tab-panel {
                 display: none;
                 padding: 1.25rem;
-                padding-bottom: 1.5rem;
+                /* espacio extra al final para no quedar bajo el bottom-nav */
+                padding-bottom: 5.5rem;
                 min-height: 100%;
             }
             .tab-panel.is-active { display: block; }
@@ -1423,7 +1424,7 @@
             .mesas-grid {
                 display: grid;
                 grid-template-columns: repeat(2, 1fr);
-                gap: 0.65rem;
+                gap: 1.15rem;
             }
             @media (min-width: 480px) { .mesas-grid { grid-template-columns: repeat(3, 1fr); } }
             @media (min-width: 720px) { .mesas-grid { grid-template-columns: repeat(4, 1fr); gap: 0.85rem; } }
@@ -1435,11 +1436,13 @@
                 background: var(--surface);
                 border: 1px solid rgba(201,169,110,0.15);
                 border-left: 4px solid rgba(201,169,110,0.2);
-                padding: 0.9rem 0.85rem 0.75rem;
+                /* tarjetas más compactas para mobile */
+                padding: 0.7rem 0.7rem 0.55rem;
                 cursor: pointer;
                 transition: box-shadow 0.15s ease, border-color 0.15s ease;
                 position: relative;
                 box-shadow: 0 1px 5px rgba(30,20,16,0.05);
+                border-radius: 8px;
             }
             .mesa-card:hover  { box-shadow: 0 3px 12px rgba(30,20,16,0.1); border-color: rgba(201,169,110,0.3); }
             .mesa-card:active { opacity: 0.85; }
@@ -1456,10 +1459,35 @@
             }
             .mesa-card__num {
                 font-family: var(--f-serif);
-                font-size: 1.65rem;
+                /* número ligeramente más pequeño para evitar saturación visual */
+                font-size: 1.35rem;
                 line-height: 1;
                 color: rgba(30,20,16,0.18);
                 letter-spacing: -0.01em;
+            }
+
+            .mesas-stats-row { margin-bottom: 0.9rem; }
+
+            /* Responsive refinements para móviles */
+            @media (max-width: 480px) {
+                .mesas-grid {
+                    grid-template-columns: 1fr;
+                    gap: 1rem;
+                }
+                .mesa-card {
+                    padding: 0.6rem 0.6rem 0.45rem;
+                    border-left-width: 3px;
+                }
+                .mesa-card__num { font-size: 1.1rem; }
+                .mesa-card__title { font-size: 0.95rem; }
+                .tab-panel { padding: 1rem; padding-bottom: 7.2rem; }
+                .bottom-nav { height: 68px; }
+                .gf-btn { padding: 0.7rem 1.05rem; font-size: 0.9rem; min-width: 84px; }
+            }
+
+            @media (max-width: 360px) {
+                .bottom-nav__lbl { font-size: 0.56rem; }
+                .mesas-grid { gap: 1.05rem; }
             }
             .mesa-card--partial .mesa-card__num { color: var(--gold); }
             .mesa-card--full    .mesa-card__num { color: #3a9468; }
@@ -1825,23 +1853,34 @@
             }
             .group-filter {
                 display: flex;
-                gap: 0.5rem;
-                flex-wrap: wrap;
+                gap: 0.75rem;
+                /* horizontal scrollable chips for touch devices */
+                flex-wrap: nowrap;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
                 margin-bottom: 0;
+                padding-bottom: 0.5rem;
+                scroll-snap-type: x proximity;
+                align-items: center;
             }
+            .group-filter.is-dragging { cursor: grabbing; }
+            .gf-btn { flex: 0 0 auto; scroll-snap-align: start; }
             .gf-btn {
                 background: var(--surface);
                 border: 1px solid rgba(30,20,16,0.14);
                 color: var(--text-mid);
                 font-family: var(--f-sans);
-                font-size: 0.65rem;
+                font-size: 0.78rem;
                 letter-spacing: 0.12em;
                 text-transform: uppercase;
-                padding: 0.4rem 0.9rem;
+                padding: 0.55rem 1rem;
+                min-width: 72px;
+                text-align: center;
                 cursor: pointer;
-                transition: all 0.25s ease;
-                border-radius: 20px;
-                box-shadow: 0 1px 3px rgba(30,20,16,0.05);
+                transition: all 0.2s ease;
+                border-radius: 22px;
+                box-shadow: 0 2px 6px rgba(30,20,16,0.06);
+                flex: 0 0 auto;
             }
             .gf-btn:hover {
                 border-color: rgba(201,169,110,0.5);
@@ -2740,6 +2779,33 @@
                 if (t !== "light") {
                     document.documentElement.setAttribute("data-theme", "dark");
                 }
+            })();
+
+            // Configure chip viewport: show N visible chips and M partially visible (peek)
+            (function chipViewport(){
+                var wrap = document.querySelector('.group-filter-wrap');
+                var container = document.querySelector('.group-filter');
+                if (!wrap || !container) return;
+
+                function compute() {
+                    var btn = container.querySelector('.gf-btn');
+                    if (!btn) return;
+                    var btnRect = btn.getBoundingClientRect();
+                    var btnWidth = btnRect.width;
+                    var gap = parseFloat(getComputedStyle(container).gap) || 12;
+                    var visible = 5; // number of fully visible chips
+                    var peekCount = 2; // number of partially visible chips to hint
+                    var peekRatio = 0.35; // fraction of each peek chip shown
+                    var peekWidth = btnWidth * peekRatio;
+                    var total = Math.round(visible * btnWidth + (visible - 1) * gap + peekCount * peekWidth);
+                    wrap.style.maxWidth = total + 'px';
+                    wrap.style.overflow = 'hidden';
+                }
+
+                var resizeTimer;
+                window.addEventListener('resize', function(){ clearTimeout(resizeTimer); resizeTimer = setTimeout(compute, 120); });
+                // run after a short delay to allow fonts/images to layout
+                setTimeout(compute, 80);
             })();
         </script>
         <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js" async></script>
@@ -5323,6 +5389,35 @@
                 }
                 applyFilters();
             });
+
+            // Enable drag-to-scroll for the group filter (touch and pointer friendly)
+            (function enableChipDrag(){
+                var container = document.querySelector('.group-filter');
+                if (!container) return;
+                var isDown = false, startX = 0, scrollLeft = 0, moved = false;
+                container.addEventListener('pointerdown', function(e){
+                    isDown = true;
+                    moved = false;
+                    startX = e.clientX;
+                    scrollLeft = container.scrollLeft;
+                    container.setPointerCapture(e.pointerId);
+                    container.classList.add('is-dragging');
+                });
+                container.addEventListener('pointermove', function(e){
+                    if (!isDown) return;
+                    var dx = e.clientX - startX;
+                    if (Math.abs(dx) > 5) moved = true;
+                    container.scrollLeft = scrollLeft - dx;
+                });
+                function up(e){
+                    isDown = false; moved = false; try { container.releasePointerCapture && container.releasePointerCapture(e.pointerId); } catch (err) {}
+                    container.classList.remove('is-dragging');
+                }
+                container.addEventListener('pointerup', up);
+                container.addEventListener('pointercancel', up);
+                // Prevent clicks when the user was dragging
+                container.addEventListener('click', function(e){ if (moved) { e.stopPropagation(); e.preventDefault(); } }, true);
+            })();
 
             function applyFilters() {
                 var q = document.getElementById("search").value.toLowerCase();
