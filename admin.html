@@ -232,6 +232,7 @@
                 overflow-y: auto;
                 -webkit-overflow-scrolling: touch;
                 overscroll-behavior: contain;
+                padding-bottom: calc(62px + 1rem); /* evitar que el contenido quede oculto bajo la nav */
             }
             .tab-panel {
                 display: none;
@@ -324,14 +325,37 @@
                     padding: 0 0.6rem;
                     grid-template-columns: none;
                     align-items: center;
+                    scroll-snap-type: x mandatory;
                 }
                 .bottom-nav__item {
                     flex: 0 0 22%; /* ~4.5 items visible, gives peek */
-                    min-width: 88px;
+                    min-width: 78px;
                     box-sizing: border-box;
-                    padding: 0.45rem 0.6rem;
+                    padding: 0.6rem 0.8rem; /* larger touch target */
+                    scroll-snap-align: center;
                 }
                 .bottom-nav::-webkit-scrollbar { display: none; }
+            }
+
+            /* Gradients to hint more content left/right on mobile */
+            .bottom-nav-wrap { position: relative; }
+            .bottom-nav-wrap::before,
+            .bottom-nav-wrap::after {
+                content: '';
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                width: 2.2rem;
+                pointer-events: none;
+                z-index: 905;
+            }
+            .bottom-nav-wrap::before {
+                left: 0;
+                background: linear-gradient(90deg, rgba(30,20,16,0.95), rgba(30,20,16,0));
+            }
+            .bottom-nav-wrap::after {
+                right: 0;
+                background: linear-gradient(270deg, rgba(30,20,16,0.95), rgba(30,20,16,0));
             }
 
             /* Drag-to-scroll for touch devices (mobile) */
@@ -5482,6 +5506,15 @@
                 if (name === "mensajes")  loadMsgs();
                 if (name === "recuerdos") loadRecuerdos();
                 localStorage.setItem("ke-tab", name);
+                // Auto-center active nav item on mobile so user sees the active tab
+                try {
+                    if (window.innerWidth <= 900) {
+                        var btn = document.getElementById("nav-" + name);
+                        if (btn && btn.scrollIntoView) {
+                            btn.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+                        }
+                    }
+                } catch (e) { /* ignore */ }
             }
 
             /* ── Countdown hero en Resumen ──────────────────── */
