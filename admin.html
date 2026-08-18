@@ -236,7 +236,8 @@
             .tab-panel {
                 display: none;
                 padding: 1.25rem;
-                padding-bottom: 1.5rem;
+                /* espacio extra al final para no quedar bajo el bottom-nav */
+                padding-bottom: 5.5rem;
                 min-height: 100%;
             }
             .tab-panel.is-active { display: block; }
@@ -1361,7 +1362,7 @@
             .mesas-grid {
                 display: grid;
                 grid-template-columns: repeat(2, 1fr);
-                gap: 0.65rem;
+                gap: 0.9rem;
             }
             @media (min-width: 480px) { .mesas-grid { grid-template-columns: repeat(3, 1fr); } }
             @media (min-width: 720px) { .mesas-grid { grid-template-columns: repeat(4, 1fr); gap: 0.85rem; } }
@@ -1373,7 +1374,8 @@
                 background: var(--surface);
                 border: 1px solid rgba(201,169,110,0.15);
                 border-left: 4px solid rgba(201,169,110,0.2);
-                padding: 0.9rem 0.85rem 0.75rem;
+                /* tarjetas más compactas para mobile */
+                padding: 0.7rem 0.7rem 0.55rem;
                 cursor: pointer;
                 transition: box-shadow 0.15s ease, border-color 0.15s ease;
                 position: relative;
@@ -1394,7 +1396,8 @@
             }
             .mesa-card__num {
                 font-family: var(--f-serif);
-                font-size: 1.65rem;
+                /* número ligeramente más pequeño para evitar saturación visual */
+                font-size: 1.35rem;
                 line-height: 1;
                 color: rgba(30,20,16,0.18);
                 letter-spacing: -0.01em;
