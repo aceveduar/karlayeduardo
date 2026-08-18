@@ -2718,6 +2718,33 @@
                     document.documentElement.setAttribute("data-theme", "dark");
                 }
             })();
+
+            // Configure chip viewport: show N visible chips and M partially visible (peek)
+            (function chipViewport(){
+                var wrap = document.querySelector('.group-filter-wrap');
+                var container = document.querySelector('.group-filter');
+                if (!wrap || !container) return;
+
+                function compute() {
+                    var btn = container.querySelector('.gf-btn');
+                    if (!btn) return;
+                    var btnRect = btn.getBoundingClientRect();
+                    var btnWidth = btnRect.width;
+                    var gap = parseFloat(getComputedStyle(container).gap) || 12;
+                    var visible = 5; // number of fully visible chips
+                    var peekCount = 2; // number of partially visible chips to hint
+                    var peekRatio = 0.35; // fraction of each peek chip shown
+                    var peekWidth = btnWidth * peekRatio;
+                    var total = Math.round(visible * btnWidth + (visible - 1) * gap + peekCount * peekWidth);
+                    wrap.style.maxWidth = total + 'px';
+                    wrap.style.overflow = 'hidden';
+                }
+
+                var resizeTimer;
+                window.addEventListener('resize', function(){ clearTimeout(resizeTimer); resizeTimer = setTimeout(compute, 120); });
+                // run after a short delay to allow fonts/images to layout
+                setTimeout(compute, 80);
+            })();
         </script>
         <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js" async></script>
     </head>
