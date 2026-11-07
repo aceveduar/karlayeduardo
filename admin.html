@@ -3874,9 +3874,111 @@
                         '<p class="detail-field__lbl">Notas</p>' +
                         '<p class="detail-field__val">' + (f.notes ? esc(f.notes) : "—") + "</p>" +
                     "</div>" +
-                    '<div style="grid-column:1/-1;display:flex;justify-content:flex-end;margin-top:0.25rem">' +
+                    '<div style="grid-column:1/-1;display:flex;flex-wrap:wrap;gap:0.5rem;justify-content:flex-end;margin-top:0.25rem">' +
+                        '<button class="action-btn" style="font-size:0.5rem;padding:0.4rem 1rem" onclick="startAttendanceEdit(\'' + esc(f.id) + '\')">Cambiar asistencia</button>' +
                         '<button class="action-btn" style="font-size:0.5rem;padding:0.4rem 1rem" onclick="startEdit(\'' + esc(f.id) + '\')">Editar familia</button>' +
                     '</div>';
+            }
+
+            /* ── Cambiar asistencia (cancelaciones totales o parciales) ──
+               No se borra nada: se actualiza el RSVP, se libera la mesa si ya
+               nadie asiste y se deja constancia en las notas internas. */
+            function startAttendanceEdit(id) {
+                var f = allData.find(function(x) { return x.id === id; });
+                if (!f) return;
+                var rsvp = f.rsvps && f.rsvps[0];
+                var allNames = f.guest_names ? f.guest_names.split(",").map(function(n){return n.trim();}).filter(Boolean) : [];
+                var attendingArr = rsvp && rsvp.attending && rsvp.attending_names
+                    ? rsvp.attending_names.split(",").map(function(n){return n.trim();}).filter(Boolean) : [];
+                var attendingSet = {}; attendingArr.forEach(function(n){ attendingSet[n] = true; });
+                var currentPax = rsvp && rsvp.attending ? (rsvp.guest_count || 0) : 0;
+                /* Si los nombres confirmados no cuadran con el conteo (RSVP sin nombres o
+                   nombres editados después), las casillas saldrían mal marcadas y "Guardar"
+                   cancelaría por error → usar modo numérico. */
+                var matched = allNames.filter(function(n){ return attendingSet[n]; }).length;
+                var useNames = allNames.length && (!rsvp || !rsvp.attending || matched === currentPax);
+
+                var body;
+                if (useNames) {
+                    body = '<div class="member-status-list">' + allNames.map(function(name, i) {
+                        return '<label class="ms-row" style="cursor:pointer;gap:0.6rem;min-height:44px">' +
+                            '<input type="checkbox" class="att-chk-' + id + '" data-i="' + i + '"' + (attendingSet[name] ? " checked" : "") + ' style="width:20px;height:20px;accent-color:var(--gold)">' +
+                            '<span class="ms-name">' + esc(name) + '</span></label>';
+                    }).join("") + '</div>';
+                } else {
+                    body = '<input class="config-input" type="number" id="att-pax-' + id + '" value="' + currentPax + '" min="0" max="' + f.max_guests + '" style="width:100%" />' +
+                        '<p class="detail-field__lbl" style="margin-top:0.35rem;text-transform:none;letter-spacing:0">Personas que sí asistirán (0 = nadie)</p>';
+                }
+
+                document.getElementById("di-" + id).innerHTML =
+                    '<div style="grid-column:1/-1">' +
+                        '<p class="detail-field__lbl">¿Quiénes sí asistirán?</p>' + body +
+                        (f.table_number ? '<p class="detail-field__lbl" style="margin-top:0.6rem;text-transform:none;letter-spacing:0">Si nadie asiste, se libera la Mesa ' + f.table_number + '.</p>' : '') +
+                    '</div>' +
+                    '<div style="grid-column:1/-1;display:flex;flex-wrap:wrap;gap:0.5rem;justify-content:flex-end;margin-top:0.25rem">' +
+                        '<button class="action-btn" onclick="saveAttendance(\'' + id + '\', true)" style="font-size:0.5rem;padding:0.4rem 1rem;min-height:44px;color:#e08888;border-color:rgba(224,136,136,0.45)">Nadie asistirá</button>' +
+                        '<button class="action-btn" id="att-save-' + id + '" onclick="saveAttendance(\'' + id + '\', false)" style="font-size:0.5rem;padding:0.4rem 1rem;min-height:44px">Guardar</button>' +
+                        '<button class="action-btn" onclick="loadData()" style="font-size:0.5rem;padding:0.4rem 1rem;min-height:44px;opacity:0.5">Cancelar</button>' +
+                    '</div>';
+            }
+
+            async function saveAttendance(id, nobody) {
+                var f = allData.find(function(x) { return x.id === id; });
+                if (!f) return;
+                var rsvp = f.rsvps && f.rsvps[0];
+                var prevPax = rsvp && rsvp.attending ? (rsvp.guest_count || 0) : 0;
+
+                var allNames = f.guest_names ? f.guest_names.split(",").map(function(n){return n.trim();}).filter(Boolean) : [];
+                var names = [], pax = 0, numericMode = false;
+                if (!nobody) {
+                    var chks = document.querySelectorAll(".att-chk-" + id);
+                    if (chks.length) {
+                        chks.forEach(function(c){ if (c.checked) names.push(allNames[+c.getAttribute("data-i")]); });
+                        pax = names.length;
+                    } else {
+                        numericMode = true;
+                        var paxEl = document.getElementById("att-pax-" + id);
+                        pax = Math.max(0, Math.min(f.max_guests, parseInt(paxEl && paxEl.value) || 0));
+                    }
+                }
+                var attending = pax > 0;
+                /* En modo numérico sin cambio de conteo, conservar los nombres existentes */
+                if (numericMode && attending && pax === prevPax && rsvp && rsvp.attending_names) names = [rsvp.attending_names];
+
+                if (rsvp && rsvp.attending === attending && pax === prevPax && (numericMode || names.join(", ") === (rsvp.attending_names || ""))) {
+                    showToast("Sin cambios");
+                    return;
+                }
+
+                if (!attending && !confirm('¿Registrar que "' + f.family_name + '" no asistirá?' + (f.table_number ? "\nSe liberará la Mesa " + f.table_number + "." : ""))) return;
+
+                /* return=representation: si RLS bloquea el UPDATE, Supabase responde 200 con []
+                   en vez de error — así lo detectamos y no fingimos que se guardó. */
+                var hdrs = { apikey: SUPABASE_ANON_KEY, Authorization: "Bearer " + SUPABASE_ANON_KEY, "Content-Type": "application/json", Prefer: "return=representation" };
+                var rsvpPayload = { guest_count: pax, attending: attending, attending_names: names.length ? names.join(", ") : null };
+                var fecha = new Date().toLocaleDateString("es-MX", { day: "numeric", month: "short" });
+                var log = "[" + fecha + "] Asistencia: " + prevPax + " → " + pax + (attending ? "" : " (no asiste)");
+                var famPayload = { confirmed: true, notes: f.notes ? f.notes + "\n" + log : log };
+                if (!attending) famPayload.table_number = null;
+
+                var btn = document.getElementById("att-save-" + id);
+                if (btn) { btn.textContent = "Guardando…"; btn.disabled = true; }
+                try {
+                    var r1 = rsvp
+                        ? await fetch(SUPABASE_URL + "/rest/v1/rsvps?family_id=eq." + id, { method: "PATCH", headers: hdrs, body: JSON.stringify(rsvpPayload) })
+                        : await fetch(SUPABASE_URL + "/rest/v1/rsvps", { method: "POST", headers: hdrs, body: JSON.stringify(Object.assign({ family_id: id, contact_name: "Registrado por admin" }, rsvpPayload)) });
+                    if (!r1.ok) throw new Error("HTTP " + r1.status);
+                    if (!(await r1.json()).length) throw new Error("rls");
+                    var r2 = await fetch(SUPABASE_URL + "/rest/v1/families?id=eq." + id, { method: "PATCH", headers: hdrs, body: JSON.stringify(famPayload) });
+                    if (!r2.ok) throw new Error("HTTP " + r2.status);
+                    showToast(attending ? "✓ Asistencia actualizada: " + pax + (pax === 1 ? " persona" : " personas") : "✓ " + f.family_name + " marcada como No asiste");
+                    await loadData();
+                } catch (e) {
+                    if (btn) { btn.textContent = "Guardar"; btn.disabled = false; }
+                    showToast(e.message === "rls"
+                        ? "⚠ Supabase no permitió actualizar el RSVP (permisos de la tabla rsvps)."
+                        : "⚠ Error al guardar. Intenta nuevamente.");
+                }
             }
 
             var GROUP_OPTIONS = ["Familia novia","Familia novio","Amigos novia","Amigos novio","Trabajo / Compañeros","Otros"];
