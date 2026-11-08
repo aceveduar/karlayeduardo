@@ -2971,6 +2971,10 @@
 
                     <!-- Modo Check-in -->
                     <p class="resumen-section-title">Día del Evento</p>
+                    <button class="reminder-act-btn reminder-act-btn--primary" id="pass-batch-btn" style="width:100%;margin-bottom:0.4rem;justify-content:center;display:flex;align-items:center;gap:0.5rem;min-height:48px;" onclick="startPassBatch()">
+                        🎫 Enviar recordatorio con pase
+                    </button>
+                    <p id="pass-batch-sub" style="font-size:0.68rem;color:var(--text-soft);text-align:center;margin:0 0 1rem;line-height:1.5;">Mándalo 2–3 días antes. Puedes enviarlo en varias tandas: se recuerda a quién ya le llegó.</p>
                     <button class="ci-cta-btn" onclick="openCheckin()">
                         <div class="ci-cta-icon">
                             <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
@@ -3438,7 +3442,7 @@
             <p class="qr-hint" id="qr-hint"></p>
             <div id="qr-result"></div>
 
-            <input class="search-input" id="ci-search" placeholder="O buscar familia / código manualmente…" style="width:100%;max-width:100%;margin-bottom:0" oninput="filterCheckin(this.value)" />
+            <input class="search-input" id="ci-search" placeholder="¿Sin QR? Busca por nombre de la persona, familia o código…" style="width:100%;max-width:100%;margin-bottom:0" oninput="filterCheckin(this.value)" />
             <div class="ci-list" id="ci-list"></div>
         </div>
 
@@ -3642,6 +3646,7 @@
                 }
                 /* Badge en el nav tab de Resumen */
                 updatePendingBadge(pending);
+                updatePassBatchBtn();
             }
 
             function getSiteUrl() {
@@ -4809,6 +4814,115 @@
                 showBatchFamily(_batchIndex);
             }
 
+            /* ── Recordatorio pre-boda con pase de entrada ────
+               - Se guarda en localStorage a quién ya se envió → se puede mandar en tandas
+               - 3 variantes de texto rotando + nombre y link únicos por familia:
+                 los mensajes no son idénticos (menos riesgo de que WhatsApp lo marque) */
+            var _passBatch = [], _passIdx = 0, _passSent = 0;
+
+            function _passSentSet() {
+                try { return JSON.parse(localStorage.getItem("ke-pass-sent") || "{}"); } catch (e) { return {}; }
+            }
+            function _markPassSent(id) {
+                var s = _passSentSet(); s[id] = Date.now();
+                try { localStorage.setItem("ke-pass-sent", JSON.stringify(s)); } catch (e) {}
+            }
+            function _passEligible() {
+                return allData.filter(function(f) {
+                    return f.confirmed && f.rsvps && f.rsvps[0] && f.rsvps[0].attending && f.phone;
+                });
+            }
+            function updatePassBatchBtn() {
+                var btn = document.getElementById("pass-batch-btn");
+                if (!btn) return;
+                var all = _passEligible(), sent = _passSentSet();
+                var left = all.filter(function(f){ return !sent[f.id]; }).length;
+                btn.textContent = left
+                    ? "🎫 Enviar recordatorio con pase (" + left + (left < all.length ? " de " + all.length : "") + ")"
+                    : "🎫 Recordatorio enviado a todos ✓";
+            }
+
+            function buildPassWaUrl(f, i) {
+                var link = buildLink(f.code);
+                var pax  = f.rsvps[0].guest_count;
+                var saludo = ["¡Hola, " + f.family_name + "! 💍", "Hola " + f.family_name + " 👋", "¡" + f.family_name + ", ya casi! ✨"][i % 3];
+                var intro  = [
+                    "Ya falta muy poco para nuestra boda y nos da mucho gusto que nos acompañen.",
+                    "Les escribimos para recordarles que ya casi es nuestra boda. ¡Gracias por confirmar!",
+                    "Estamos contando los días para celebrar con ustedes."
+                ][i % 3];
+                var msg = saludo + "\n\n" + intro + "\n\n" +
+                    "📅 *Sábado 21 de noviembre · 5:30 PM*\n" +
+                    "📍 Hacienda Zerezotla, San Andrés Cholula\n" +
+                    "👥 " + pax + (pax === 1 ? " lugar" : " lugares") + (f.table_number ? " · 🪑 Mesa " + f.table_number : "") + "\n\n" +
+                    "🎫 Su pase de entrada (QR):\n" + link + "\n\n" +
+                    "👉 Ábranlo una vez antes del día: así queda guardado en su celular aunque no haya señal en la hacienda.\n\n" +
+                    "Con cariño,\nKarla & Eduardo";
+                var p = f.phone.replace(/\D/g, "");
+                return "https://wa.me/" + (p.length > 10 ? p : "52" + p) + "?text=" + encodeURIComponent(msg);
+            }
+
+            function startPassBatch() {
+                var sent = _passSentSet();
+                var all = _passEligible();
+                _passBatch = all.filter(function(f){ return !sent[f.id]; });
+                if (!all.length) { showToast("Ningún confirmado tiene teléfono registrado"); return; }
+                if (!_passBatch.length) {
+                    if (!confirm("Ya enviaste el recordatorio a las " + all.length + " familias.\n¿Quieres empezar de nuevo?")) return;
+                    try { localStorage.removeItem("ke-pass-sent"); } catch (e) {}
+                    _passBatch = all;
+                }
+                _passIdx = 0; _passSent = 0;
+                document.getElementById("batch-overlay").classList.add("is-open");
+                document.body.style.overflow = "hidden";
+                showPassBatchFamily(0);
+            }
+
+            function showPassBatchFamily(index) {
+                var total = _passBatch.length;
+                var body  = document.getElementById("batch-body");
+                var fill  = document.getElementById("batch-progress-fill");
+                document.getElementById("batch-lbl-sent").textContent = _passSent + " enviado" + (_passSent !== 1 ? "s" : "");
+                document.getElementById("batch-lbl-total").textContent = "de " + total;
+                if (fill) fill.style.width = (total ? Math.round(_passSent / total * 100) : 0) + "%";
+                updatePassBatchBtn();
+
+                if (index >= total) {
+                    body.innerHTML =
+                        '<div class="batch-done"><div class="batch-done__icon">🎫</div>' +
+                        '<p class="batch-done__title">¡Listo!</p>' +
+                        '<p class="batch-done__sub">Enviaste el pase a ' + _passSent + ' de ' + total + ' familias.</p>' +
+                        '<button onclick="closeBatchReminder()" style="margin-top:1.5rem;padding:0.75rem 2rem;background:var(--gold);color:#1e1410;border:none;border-radius:20px;font-family:var(--f-sans);font-size:0.65rem;font-weight:700;letter-spacing:0.1em;cursor:pointer;">Cerrar</button></div>';
+                    if (fill) fill.style.width = "100%";
+                    return;
+                }
+                var f = _passBatch[index];
+                var remaining = total - index;
+                /* Pausa sugerida cada 20 envíos: enviar en ráfaga es lo que más levanta sospecha */
+                var pausa = _passSent > 0 && _passSent % 20 === 0
+                    ? '<p style="background:rgba(201,169,110,0.12);border:1px solid rgba(201,169,110,0.35);border-radius:8px;padding:0.6rem 0.8rem;font-size:0.72rem;line-height:1.5;margin-bottom:0.75rem;">☕ Llevas ' + _passSent + '. Buen momento para una pausa de unos minutos — puedes cerrar y seguir después, se guarda tu avance.</p>'
+                    : '';
+                body.innerHTML = pausa +
+                    '<div class="batch-card">' +
+                    '<p class="batch-card__num">Familia ' + (index + 1) + ' de ' + total + ' · ' + remaining + ' restante' + (remaining !== 1 ? 's' : '') + '</p>' +
+                    '<p class="batch-card__name">' + esc(f.family_name) + '</p>' +
+                    '<p class="batch-card__meta">' + esc(f.code) + ' · ' + esc(f.phone) + (f.table_number ? ' · Mesa ' + f.table_number : ' · sin mesa') + '</p>' +
+                    '<a class="batch-card__wa" href="' + esc(buildPassWaUrl(f, index)) + '" target="_blank" onclick="nextPassBatchFamily(true)">' +
+                    _SVG_WA + ' Enviar pase por WhatsApp</a>' +
+                    '</div>' +
+                    '<div class="batch-nav">' +
+                    '<button class="batch-nav__skip" style="flex:1" onclick="nextPassBatchFamily(false)">Saltar esta familia →</button>' +
+                    '</div>' +
+                    '<p style="font-size:0.68rem;color:var(--text-soft);text-align:center;margin-top:0.75rem;line-height:1.5;">Al tocar "Enviar" se abre WhatsApp y aquí pasa a la siguiente familia. Envía el mensaje y regresa.</p>';
+            }
+
+            function nextPassBatchFamily(sent) {
+                var f = _passBatch[_passIdx];
+                if (sent && f) { _markPassSent(f.id); _passSent++; }
+                _passIdx++;
+                showPassBatchFamily(_passIdx);
+            }
+
             /* ── Notificación post-boda: "Sube tus fotos" ──── */
             var _recBatchFamilies = [];
             var _recBatchIndex    = 0;
@@ -4921,9 +5035,14 @@
                 loadData();
             }
 
+            /* Busca por familia, código o NOMBRE DE CADA PERSONA (sin importar acentos):
+               plan B si el invitado llega sin QR y no sabe cómo está registrada su familia */
+            function _norm(s) { return String(s || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/\s+/g, " "); }
             function filterCheckin(q) {
-                var filtered = q ? ciData.filter(function(f) {
-                    return f.family_name.toLowerCase().includes(q.toLowerCase()) || f.code.toLowerCase().includes(q.toLowerCase());
+                var nq = _norm(q).trim();
+                var filtered = nq ? ciData.filter(function(f) {
+                    var rsvp = f.rsvps && f.rsvps[0];
+                    return _norm(f.family_name + " " + f.code + " " + (f.guest_names || "") + " " + (rsvp && rsvp.attending_names || "") + " " + (rsvp && rsvp.contact_name || "")).indexOf(nq) !== -1;
                 }) : ciData;
                 renderCheckin(filtered, true);
             }

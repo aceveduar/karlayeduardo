@@ -2058,6 +2058,46 @@
             }
             .pass-btn svg { width: 18px; height: 18px; }
 
+            .phone-lookup__toggle {
+                display: block;
+                margin: 1.25rem auto 0;
+                min-height: 44px;
+                padding: 0.5rem 1rem;
+                background: none;
+                border: none;
+                color: rgba(201, 169, 110, 0.85);
+                font-family: var(--f-sans);
+                font-size: 0.78rem;
+                text-decoration: underline;
+                text-underline-offset: 3px;
+                cursor: pointer;
+            }
+            .phone-lookup {
+                margin-top: 1rem;
+                padding-top: 1.25rem;
+                border-top: 1px solid rgba(201, 169, 110, 0.18);
+            }
+            .phone-lookup__pick {
+                display: block;
+                width: 100%;
+                min-height: 48px;
+                margin-bottom: 0.5rem;
+                padding: 0.65rem 1rem;
+                background: rgba(201, 169, 110, 0.08);
+                border: 1px solid rgba(201, 169, 110, 0.35);
+                border-radius: 8px;
+                color: #fff;
+                font-family: var(--f-serif);
+                font-size: 1rem;
+                cursor: pointer;
+            }
+            .phone-lookup__help {
+                display: inline-block;
+                margin: 0.5rem 0 1rem;
+                color: #4cd480;
+                font-size: 0.78rem;
+            }
+
             /* Pase en pantalla completa (hijo de <body>, ver bug del lightbox) */
             .pass-overlay {
                 position: fixed;
@@ -3766,6 +3806,18 @@
                             >
                                 Verificar código
                             </button>
+
+                            <!-- Recuperar pase/código con el WhatsApp registrado -->
+                            <button type="button" class="phone-lookup__toggle" id="phone-lookup-toggle">
+                                ¿No tienes tu código? Búscalo con tu WhatsApp
+                            </button>
+                            <div class="phone-lookup" id="phone-lookup" hidden>
+                                <label class="rsvp__label" for="phone-lookup-input">Tu número de WhatsApp (10 dígitos)</label>
+                                <input class="rsvp__input" type="tel" id="phone-lookup-input" inputmode="numeric" autocomplete="tel-national" placeholder="Ej: 222 123 4567" />
+                                <p class="rsvp__error-msg" id="phone-lookup-error"></p>
+                                <div id="phone-lookup-results"></div>
+                                <button class="btn btn--gold btn--lg" type="button" id="phone-lookup-btn">Buscar mi invitación</button>
+                            </div>
                         </div>
 
                         <!-- PASO 2: Formulario -->
@@ -5216,6 +5268,68 @@
                 if (urlCode) {
                     setTimeout(function () { document.getElementById("rsvp-code-btn").click(); }, 0);
                 }
+
+                /* ── Recuperar invitación con el WhatsApp registrado ──────────
+                   Busca por los últimos 10 dígitos (cubre números guardados con o sin 52).
+                   Solo se muestran las familias de ESE número, nunca una lista general. */
+                (function () {
+                    var toggle = document.getElementById("phone-lookup-toggle");
+                    var box = document.getElementById("phone-lookup");
+                    var input = document.getElementById("phone-lookup-input");
+                    var btn = document.getElementById("phone-lookup-btn");
+                    var err = document.getElementById("phone-lookup-error");
+                    var results = document.getElementById("phone-lookup-results");
+                    if (!toggle || !box) return;
+
+                    toggle.addEventListener("click", function () {
+                        box.hidden = !box.hidden;
+                        if (!box.hidden) input.focus();
+                    });
+                    input.addEventListener("input", function () { err.textContent = ""; results.innerHTML = ""; });
+                    input.addEventListener("keydown", function (e) { if (e.key === "Enter") btn.click(); });
+
+                    function openCode(code) {
+                        document.getElementById("rsvp-code-input").value = code;
+                        box.hidden = true;
+                        document.getElementById("rsvp-code-btn").click();
+                    }
+
+                    function helpLink() {
+                        var msg = "Hola Karla y Eduardo 👋, no encuentro mi invitación. Mi número es " + input.value.trim();
+                        return '<a class="phone-lookup__help" href="https://wa.me/' + COUPLE_PHONE + '?text=' + encodeURIComponent(msg) + '" target="_blank" rel="noopener">Escríbenos por WhatsApp y te ayudamos →</a>';
+                    }
+
+                    btn.addEventListener("click", async function () {
+                        var digits = input.value.replace(/\D/g, "");
+                        err.textContent = ""; results.innerHTML = "";
+                        if (digits.length < 10) { err.textContent = "Escribe tu número a 10 dígitos."; input.focus(); return; }
+                        var last10 = digits.slice(-10);
+                        btn.disabled = true; btn.textContent = "Buscando…";
+                        try {
+                            var rows = await api("families?phone=like.*" + last10 + "&select=code,family_name&order=family_name.asc");
+                            if (!rows.length) {
+                                err.innerHTML = "No encontramos invitaciones con ese número.<br>" + helpLink();
+                            } else if (rows.length === 1) {
+                                openCode(rows[0].code);
+                            } else {
+                                /* Un mismo número con varias familias (p.ej. papás e hijos) */
+                                results.innerHTML = '<p class="rsvp__label" style="margin-bottom:0.6rem">Elige tu invitación:</p>';
+                                rows.forEach(function (r) {
+                                    var b = document.createElement("button");
+                                    b.type = "button";
+                                    b.className = "phone-lookup__pick";
+                                    b.textContent = r.family_name;
+                                    b.addEventListener("click", function () { openCode(r.code); });
+                                    results.appendChild(b);
+                                });
+                            }
+                        } catch (e) {
+                            err.textContent = navigator.onLine ? "Error del servidor. Intenta en unos segundos." : "Sin conexión a internet.";
+                        } finally {
+                            btn.disabled = false; btn.textContent = "Buscar mi invitación";
+                        }
+                    });
+                })();
 
                 /* ── PASO 1: verificar código ─────────────── */
                 document
