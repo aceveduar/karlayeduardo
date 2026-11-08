@@ -3061,6 +3061,12 @@
             .mesa-fam-row__open .mesa-fam-row__pax { font-size: 0.74rem; color: var(--text-mid); line-height: 1.4; }
             .mesa-fam-row__remove { min-height: 40px; }
 
+            /* Recuerdos: qué significa el estado del interruptor */
+            .rec-hint { font-size: 0.8rem; line-height: 1.5; color: #e08888; background: rgba(224,136,136,0.08); border: 1px solid rgba(224,136,136,0.3); border-radius: 8px; padding: 0.6rem 0.8rem; margin: 0 0 0.85rem; }
+            .rec-hint.is-on { color: #7ec8a0; background: rgba(126,200,160,0.08); border-color: rgba(126,200,160,0.3); }
+            .rec-hint:empty { display: none; }
+            .rec-toggle { min-height: 40px; }
+
             /* Menú: Check-in en verde (mismo color que "Abrir Check-in" del Resumen) */
             .bottom-nav__item--checkin { color: #2a7a52; }
             .bottom-nav__item--checkin .bottom-nav__lbl { color: #2a7a52; font-weight: 700; }
@@ -3463,6 +3469,7 @@
                             <span id="rec-toggle-lbl">Cargando…</span>
                         </button>
                     </div>
+                    <p class="rec-hint" id="rec-hint"></p>
                     <div class="rec-setup-banner" id="rec-setup-banner" style="display:none">
                         ⚠ Para usar esta función necesitas crear en Supabase:<br>
                         1. Tabla <code>photos</code> — <code>id uuid pk</code>, <code>storage_path text</code>, <code>uploader_name text</code>, <code>caption text</code>, <code>created_at timestamptz default now()</code><br>
@@ -3918,6 +3925,7 @@
                     /* Refresco automático con un formulario abierto: actualizar datos y números,
                        pero no tocar la lista (se redibuja en el siguiente ciclo libre) */
                     allData = fresh;
+                    await refreshRecStatus();   /* para el aviso "Recuerdos desactivado" del Resumen */
                     lastConfirmedCount = allData.filter(function(f) { return f.confirmed; }).length;
                     renderStats(allData);
                     renderProgress(allData);
@@ -4051,6 +4059,13 @@
                         '<div class="resumen-alert__body"><p class="resumen-alert__main">' + overCount + ' mesa' + (overCount > 1 ? 's' : '') + ' con capacidad excedida</p>' +
                         '<p class="resumen-alert__sub">Redistribuye las familias afectadas</p></div>' +
                         '<span class="resumen-alert__cta">Ver →</span></div>');
+                    /* Desde el 20 nov: Recuerdos desactivado = los invitados no podrán subir fotos
+                       (en settings está "false" y así NO se activa solo el día de la boda) */
+                    if (!_recEnabled && Date.now() >= REC_REMIND_FROM.getTime()) items.unshift(
+                        '<div class="resumen-alert resumen-alert--red is-link" role="button" tabindex="0" data-go="recuerdos">' +
+                        '<div class="resumen-alert__body"><p class="resumen-alert__main">📷 Libro de Recuerdos desactivado</p>' +
+                        '<p class="resumen-alert__sub">Los invitados no pueden subir fotos. No se activa solo: actívalo el día de la boda.</p></div>' +
+                        '<span class="resumen-alert__cta">Activar →</span></div>');
                     if (items.length === 0) items.push(
                         '<div class="resumen-alert resumen-alert--ok">' +
                         '<div class="resumen-alert__body"><p class="resumen-alert__main">✓ Todo en orden</p>' +
@@ -6631,6 +6646,7 @@
             function handleGo(target) {
                 if (target === "sinmesa") return openSinMesaSheet();
                 if (target === "mesas") return switchTab("mesas");
+                if (target === "recuerdos") return switchTab("recuerdos");
                 if (target.indexOf("fam:") === 0) return goToFamilias(target.slice(4));
             }
             document.addEventListener("click", function (e) {
@@ -7085,18 +7101,25 @@
             async function toggleRecuerdos() {
                 var next = !_recEnabled;
                 try {
+                    /* return=representation: si RLS bloquea el UPDATE, Supabase responde 200 con []
+                       y antes el admin decía "activado" sin que cambiara nada para los invitados */
                     var r = await fetch(SUPABASE_URL + "/rest/v1/settings?key=eq.recuerdos_enabled", {
                         method: "PATCH",
-                        headers: { apikey: SUPABASE_ANON_KEY, Authorization: "Bearer " + SUPABASE_ANON_KEY, "Content-Type": "application/json" },
+                        headers: { apikey: SUPABASE_ANON_KEY, Authorization: "Bearer " + SUPABASE_ANON_KEY, "Content-Type": "application/json", Prefer: "return=representation" },
                         body: JSON.stringify({ value: next ? "true" : "false" })
                     });
                     if (!r.ok) throw new Error("HTTP " + r.status);
+                    var rows = await r.json();
+                    if (!rows.length || rows[0].value !== (next ? "true" : "false")) throw new Error("rls");
                     _recEnabled = next;
                     updateRecToggleUI();
-                    showToast(next ? "✓ Libro de Recuerdos activado" : "✓ Libro de Recuerdos desactivado");
+                    if (typeof renderStats === "function" && allData.length) renderStats(allData);
+                    showToast(next ? "✓ Libro de Recuerdos activado — los invitados ya pueden subir fotos" : "✓ Libro de Recuerdos desactivado");
                 } catch(e) {
-                    showToast("⚠ No se pudo cambiar — crea la tabla settings primero");
-                    document.getElementById("rec-setup-banner").style.display = "block";
+                    showToast(e.message === "rls"
+                        ? "⚠ Supabase no permitió el cambio (permisos de la tabla settings). No se activó."
+                        : "⚠ No se pudo cambiar — revisa la conexión");
+                    if (e.message !== "rls") document.getElementById("rec-setup-banner").style.display = "block";
                 }
             }
 
@@ -7111,6 +7134,26 @@
                     btn.className = "rec-toggle is-off";
                     lbl.textContent = "Desactivado";
                 }
+                /* Explicar qué significa: estando en "Desactivado" NO se abre solo el día de la boda */
+                var hint = document.getElementById("rec-hint");
+                if (hint) {
+                    hint.className = "rec-hint" + (_recEnabled ? " is-on" : "");
+                    hint.textContent = _recEnabled
+                        ? "✓ Los invitados pueden subir fotos desde su invitación."
+                        : "Los invitados ven \"disponible después de la boda\". No se activa solo: actívalo el día de la boda (toca el botón de arriba).";
+                }
+            }
+
+            /* Estado de Recuerdos para el aviso del Resumen (sin abrir la pestaña) */
+            var REC_REMIND_FROM = new Date("2026-11-20T00:00:00");
+            async function refreshRecStatus() {
+                try {
+                    var sr = await fetch(SUPABASE_URL + "/rest/v1/settings?key=eq.recuerdos_enabled&select=value", {
+                        headers: { apikey: SUPABASE_ANON_KEY, Authorization: "Bearer " + SUPABASE_ANON_KEY }
+                    });
+                    var srows = sr.ok ? await sr.json() : [];
+                    _recEnabled = !srows.length || srows[0].value !== "false";
+                } catch (e) {}
             }
 
             function openRecLightbox(url, name, caption, date) {
