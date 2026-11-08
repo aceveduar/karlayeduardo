@@ -361,23 +361,6 @@
                 background: linear-gradient(270deg, rgba(30,20,16,0.95), rgba(30,20,16,0));
             }
 
-            /* Drag-to-scroll for touch devices (mobile) */
-            (function(){
-                function enableDrag(){
-                    var nav = document.querySelector('.bottom-nav');
-                    if(!nav) return;
-                    var isDown=false, startX, scrollLeft, moved=false;
-                    nav.addEventListener('pointerdown', function(e){
-                        if(window.innerWidth>900) return;
-                        isDown=true; moved=false; startX=e.clientX; scrollLeft=nav.scrollLeft; nav.setPointerCapture && nav.setPointerCapture(e.pointerId); nav.classList.add('is-dragging');
-                    });
-                    nav.addEventListener('pointermove', function(e){ if(!isDown) return; var dx=e.clientX-startX; if(Math.abs(dx)>5) moved=true; nav.scrollLeft = scrollLeft - dx; });
-                    function up(e){ isDown=false; moved=false; try{ nav.releasePointerCapture && nav.releasePointerCapture(e.pointerId); }catch(_){} nav.classList.remove('is-dragging'); }
-                    nav.addEventListener('pointerup', up); nav.addEventListener('pointercancel', up);
-                    nav.addEventListener('click', function(e){ if(moved){ e.stopPropagation(); e.preventDefault(); } }, true);
-                }
-                if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', enableDrag); else enableDrag();
-            })();
 
             /* ── Tab: Resumen ────────────────────────────── */
             .resumen-hero {
@@ -2910,6 +2893,10 @@
             /* "Sin mesa" = pendiente de resolver → mismo rojo que en el check-in */
             .fam-meta-mesa--none { color: #e08888 !important; }
             :root:not([data-theme="dark"]) .fam-meta-mesa--none { color: #b03a3a !important; }
+
+            /* Al arrastrar con mouse, scroll-snap regresaba la fila a 0 en cada movimiento */
+            .group-filter.is-dragging, .bottom-nav.is-dragging { scroll-snap-type: none !important; scroll-behavior: auto !important; cursor: grabbing; }
+            .group-filter.is-dragging *, .bottom-nav.is-dragging * { user-select: none; }
 
             /* Filtros de Familias: la barra de scroll nativa (blanca) rompía el diseño en escritorio */
             .group-filter { scrollbar-width: none; }
@@ -5952,34 +5939,44 @@
                 applyFilters();
             });
 
-            // Enable drag-to-scroll for the group filter (touch and pointer friendly)
-            (function enableChipDrag(){
-                var container = document.querySelector('.group-filter');
-                if (!container) return;
-                var isDown = false, startX = 0, scrollLeft = 0, moved = false;
-                container.addEventListener('pointerdown', function(e){
-                    isDown = true;
-                    moved = false;
-                    startX = e.clientX;
-                    scrollLeft = container.scrollLeft;
-                    container.setPointerCapture(e.pointerId);
-                    container.classList.add('is-dragging');
+            /* Arrastrar con MOUSE para desplazar filas horizontales (filtros, menú inferior).
+               BUGS previos: (1) setPointerCapture en pointerdown mandaba el clic al contenedor →
+               los filtros no respondían al clic; (2) `moved` se reiniciaba antes del click;
+               (3) el código del menú inferior estaba DENTRO de <style> y nunca se ejecutaba
+               (y anulaba la regla CSS .resumen-hero que le seguía).
+               Con dedo se usa el scroll nativo; con mouse solo se captura tras 6px. */
+            function makeDragScroll(el, guard) {
+                if (!el || el._dragScroll) return;
+                el._dragScroll = true;
+                var down = false, startX = 0, startScroll = 0, dragged = false, pid = null;
+                el.addEventListener('pointerdown', function (e) {
+                    dragged = false;
+                    if (e.pointerType !== 'mouse' || e.button !== 0) return;
+                    if (guard && !guard()) return;
+                    down = true; startX = e.clientX; startScroll = el.scrollLeft; pid = e.pointerId;
                 });
-                container.addEventListener('pointermove', function(e){
-                    if (!isDown) return;
+                el.addEventListener('pointermove', function (e) {
+                    if (!down) return;
                     var dx = e.clientX - startX;
-                    if (Math.abs(dx) > 5) moved = true;
-                    container.scrollLeft = scrollLeft - dx;
+                    if (!dragged && Math.abs(dx) > 6) {
+                        dragged = true;
+                        try { el.setPointerCapture(pid); } catch (_) {}
+                        el.classList.add('is-dragging');
+                    }
+                    if (dragged) el.scrollLeft = startScroll - dx;
                 });
-                function up(e){
-                    isDown = false; moved = false; try { container.releasePointerCapture && container.releasePointerCapture(e.pointerId); } catch (err) {}
-                    container.classList.remove('is-dragging');
+                function up() {
+                    down = false;
+                    try { el.releasePointerCapture(pid); } catch (_) {}
+                    el.classList.remove('is-dragging');
+                    setTimeout(function () { dragged = false; }, 0);  /* vale para el click que sigue */
                 }
-                container.addEventListener('pointerup', up);
-                container.addEventListener('pointercancel', up);
-                // Prevent clicks when the user was dragging
-                container.addEventListener('click', function(e){ if (moved) { e.stopPropagation(); e.preventDefault(); } }, true);
-            })();
+                el.addEventListener('pointerup', up);
+                el.addEventListener('pointercancel', up);
+                el.addEventListener('click', function (e) { if (dragged) { e.stopPropagation(); e.preventDefault(); } }, true);
+            }
+            makeDragScroll(document.querySelector('.group-filter'));
+            makeDragScroll(document.querySelector('.bottom-nav'), function () { return window.innerWidth <= 900; });
 
             function applyFilters() {
                 var q = _norm(document.getElementById("search").value).trim();
