@@ -3075,7 +3075,17 @@
             .rec-hint { font-size: 0.8rem; line-height: 1.5; color: #e08888; background: rgba(224,136,136,0.08); border: 1px solid rgba(224,136,136,0.3); border-radius: 8px; padding: 0.6rem 0.8rem; margin: 0 0 0.85rem; }
             .rec-hint.is-on { color: #7ec8a0; background: rgba(126,200,160,0.08); border-color: rgba(126,200,160,0.3); }
             .rec-hint:empty { display: none; }
-            .rec-toggle { min-height: 40px; }
+            .rec-hint.is-auto { color: var(--gold); background: rgba(201,169,110,0.08); border-color: rgba(201,169,110,0.3); }
+            .rec-mode { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.4rem; margin: 0 0 0.6rem; }
+            .rec-mode button { min-height: 52px; padding: 0.45rem 0.3rem; border-radius: 10px; border: 1px solid rgba(201,169,110,0.3); background: transparent; color: var(--text-mid); font-family: var(--f-sans); font-size: 0.78rem; font-weight: 600; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.15rem; transition: all 0.2s; }
+            .rec-mode button small { font-size: 0.68rem; font-weight: 400; opacity: 0.8; }
+            .rec-mode button:hover { border-color: var(--gold); }
+            .rec-mode button[disabled] { opacity: 0.55; cursor: wait; }
+            .rec-mode button.is-sel[data-mode="auto"] { background: rgba(201,169,110,0.15); border-color: var(--gold); color: var(--gold); }
+            .rec-mode button.is-sel[data-mode="on"]   { background: rgba(126,200,160,0.15); border-color: #7ec8a0; color: #3a9060; }
+            .rec-mode button.is-sel[data-mode="off"]  { background: rgba(224,136,136,0.1);  border-color: #e08888; color: #c05050; }
+            [data-theme="dark"] .rec-mode button.is-sel[data-mode="on"]  { color: #7ec8a0; }
+            [data-theme="dark"] .rec-mode button.is-sel[data-mode="off"] { color: #e08888; }
 
             /* Menú: Check-in en verde (mismo color que "Abrir Check-in" del Resumen) */
             .bottom-nav__item--checkin { color: #2a7a52; }
@@ -3474,16 +3484,17 @@
                             <p class="rec-title">Libro de Recuerdos</p>
                             <span class="rec-count" id="rec-count">Cargando…</span>
                         </div>
-                        <button class="rec-toggle" id="rec-toggle-btn" onclick="toggleRecuerdos()">
-                            <span id="rec-toggle-icon">●</span>
-                            <span id="rec-toggle-lbl">Cargando…</span>
-                        </button>
+                    </div>
+                    <div class="rec-mode" id="rec-mode" role="radiogroup" aria-label="Apertura del Libro de Recuerdos">
+                        <button type="button" data-mode="auto" onclick="setRecMode('auto')">⏱ Automático<small>se abre el 21</small></button>
+                        <button type="button" data-mode="on"   onclick="setRecMode('on')">● Abierto<small>ya mismo</small></button>
+                        <button type="button" data-mode="off"  onclick="setRecMode('off')">✕ Cerrado<small>no se abre</small></button>
                     </div>
                     <p class="rec-hint" id="rec-hint"></p>
                     <div class="rec-setup-banner" id="rec-setup-banner" style="display:none">
                         ⚠ Para usar esta función necesitas crear en Supabase:<br>
                         1. Tabla <code>photos</code> — <code>id uuid pk</code>, <code>storage_path text</code>, <code>uploader_name text</code>, <code>caption text</code>, <code>created_at timestamptz default now()</code><br>
-                        2. Tabla <code>settings</code> — <code>key text pk</code>, <code>value text</code> + fila: <code>('recuerdos_enabled','true')</code><br>
+                        2. Tabla <code>settings</code> — <code>key text pk</code>, <code>value text</code> + fila: <code>('recuerdos_enabled','auto')</code><br>
                         3. Bucket Storage <code>recuerdos-boda</code> con acceso público + políticas SELECT/INSERT/DELETE para <code>anon</code>
                     </div>
                     <!-- Botón notificar invitados -->
@@ -4076,13 +4087,12 @@
                         '<div class="resumen-alert__body"><p class="resumen-alert__main">' + overCount + ' mesa' + (overCount > 1 ? 's' : '') + ' con capacidad excedida</p>' +
                         '<p class="resumen-alert__sub">Redistribuye las familias afectadas</p></div>' +
                         '<span class="resumen-alert__cta">Ver →</span></div>');
-                    /* Desde el 20 nov: Recuerdos desactivado = los invitados no podrán subir fotos
-                       (en settings está "false" y así NO se activa solo el día de la boda) */
-                    if (!_recEnabled && Date.now() >= REC_REMIND_FROM.getTime()) items.unshift(
+                    /* Desde el 20 nov: solo avisar si lo dejaron en "Cerrado" (en Automático se abre solo el 21) */
+                    if (_recMode === "off" && Date.now() >= REC_REMIND_FROM.getTime()) items.unshift(
                         '<div class="resumen-alert resumen-alert--red is-link" role="button" tabindex="0" data-go="recuerdos">' +
-                        '<div class="resumen-alert__body"><p class="resumen-alert__main">📷 Libro de Recuerdos desactivado</p>' +
-                        '<p class="resumen-alert__sub">Los invitados no pueden subir fotos. No se activa solo: actívalo el día de la boda.</p></div>' +
-                        '<span class="resumen-alert__cta">Activar →</span></div>');
+                        '<div class="resumen-alert__body"><p class="resumen-alert__main">📷 Libro de Recuerdos cerrado</p>' +
+                        '<p class="resumen-alert__sub">Está en "Cerrado" y no se abrirá solo el día de la boda.</p></div>' +
+                        '<span class="resumen-alert__cta">Abrir →</span></div>');
                     if (items.length === 0) items.push(
                         '<div class="resumen-alert resumen-alert--ok">' +
                         '<div class="resumen-alert__body"><p class="resumen-alert__main">✓ Todo en orden</p>' +
@@ -5642,7 +5652,9 @@
             function startRecBatch() {
                 /* Con Recuerdos desactivado el link lleva a una sección cerrada */
                 if (typeof _recEnabled !== "undefined" && !_recEnabled) {
-                    alert("El Libro de Recuerdos está DESACTIVADO.\n\nActívalo primero (botón arriba a la derecha) para que los invitados puedan subir sus fotos al abrir el link.");
+                    alert(_recMode === "auto"
+                        ? "El Libro de Recuerdos aún no está abierto: se abrirá solo el sábado 21 de noviembre.\n\nEnvía el link a partir de ese día, o elige \"Abierto\" para abrirlo ya."
+                        : "El Libro de Recuerdos está CERRADO.\n\nElige \"Automático\" o \"Abierto\" primero para que los invitados puedan subir sus fotos al abrir el link.");
                     return;
                 }
                 _recBatchFamilies = allData.filter(function(f) {
@@ -7071,8 +7083,18 @@
 
             /* ── Tab: Recuerdos ─────────────────────────────── */
             var REC_BUCKET  = "recuerdos-boda";
-            var _recEnabled = true;
+            var _recEnabled = true;   /* estado efectivo: ¿los invitados pueden subir ahora? */
+            var _recMode    = "auto"; /* "auto" | "on" | "off" — lo que eligieron los novios */
             var _allRec     = [];
+            /* Misma regla que index.html: automático = abre el sábado 21 nov 00:00 (Puebla) */
+            var REC_OPEN_AT = new Date("2026-11-21T00:00:00-06:00");
+            var REC_MODE_VALUE = { auto: "auto", on: "true", off: "off" };
+
+            function recModeFromValue(v) { return v === "true" ? "on" : v === "off" ? "off" : "auto"; }
+            function applyRecMode(mode) {
+                _recMode = mode;
+                _recEnabled = mode === "on" || (mode === "auto" && Date.now() >= REC_OPEN_AT.getTime());
+            }
 
             function recStorageUrl(path) {
                 return SUPABASE_URL + "/storage/v1/object/public/" + REC_BUCKET + "/" + encodeURIComponent(path);
@@ -7093,9 +7115,9 @@
                         headers: { apikey: SUPABASE_ANON_KEY, Authorization: "Bearer " + SUPABASE_ANON_KEY }
                     });
                     var srows = sr.ok ? await sr.json() : [];
-                    _recEnabled = !srows.length || srows[0].value !== "false";
+                    applyRecMode(recModeFromValue(srows.length ? srows[0].value : "auto"));
                     if (banner) banner.style.display = !srows.length ? "block" : "none";
-                } catch(e) { _recEnabled = true; if (banner) banner.style.display = "block"; }
+                } catch(e) { applyRecMode("auto"); if (banner) banner.style.display = "block"; }
                 updateRecToggleUI();
 
                 /* Leer fotos */
@@ -7212,50 +7234,60 @@
                 } catch(e) { showToast("⚠ Error al eliminar"); }
             }
 
-            async function toggleRecuerdos() {
-                var next = !_recEnabled;
+            async function setRecMode(mode) {
+                if (mode === _recMode) return;
+                if (mode === "off" && Date.now() >= REC_OPEN_AT.getTime() &&
+                    !confirm("¿Cerrar el Libro de Recuerdos?\n\nLos invitados ya no podrán subir fotos hasta que lo vuelvas a abrir.")) return;
+                var value = REC_MODE_VALUE[mode];
+                var btns = document.querySelectorAll("#rec-mode button");
+                btns.forEach(function(b) { b.disabled = true; });
                 try {
                     /* return=representation: si RLS bloquea el UPDATE, Supabase responde 200 con []
-                       y antes el admin decía "activado" sin que cambiara nada para los invitados */
+                       y el admin diría "cambiado" sin que cambiara nada para los invitados */
                     var r = await fetch(SUPABASE_URL + "/rest/v1/settings?key=eq.recuerdos_enabled", {
                         method: "PATCH",
                         headers: { apikey: SUPABASE_ANON_KEY, Authorization: "Bearer " + SUPABASE_ANON_KEY, "Content-Type": "application/json", Prefer: "return=representation" },
-                        body: JSON.stringify({ value: next ? "true" : "false" })
+                        body: JSON.stringify({ value: value })
                     });
                     if (!r.ok) throw new Error("HTTP " + r.status);
                     var rows = await r.json();
-                    if (!rows.length || rows[0].value !== (next ? "true" : "false")) throw new Error("rls");
-                    _recEnabled = next;
+                    if (!rows.length || rows[0].value !== value) throw new Error("rls");
+                    applyRecMode(mode);
                     updateRecToggleUI();
                     if (typeof renderStats === "function" && allData.length) renderStats(allData);
-                    showToast(next ? "✓ Libro de Recuerdos activado — los invitados ya pueden subir fotos" : "✓ Libro de Recuerdos desactivado");
+                    showToast(mode === "on"  ? "✓ Libro de Recuerdos abierto — los invitados ya pueden subir fotos"
+                            : mode === "off" ? "✓ Libro de Recuerdos cerrado"
+                            : "✓ Automático — se abrirá solo el sábado 21 de noviembre");
                 } catch(e) {
                     showToast(e.message === "rls"
-                        ? "⚠ Supabase no permitió el cambio (permisos de la tabla settings). No se activó."
+                        ? "⚠ Supabase no permitió el cambio (permisos de la tabla settings). No se guardó."
                         : "⚠ No se pudo cambiar — revisa la conexión");
                     if (e.message !== "rls") document.getElementById("rec-setup-banner").style.display = "block";
+                } finally {
+                    btns.forEach(function(b) { b.disabled = false; });
                 }
             }
 
             function updateRecToggleUI() {
-                var btn = document.getElementById("rec-toggle-btn");
-                var lbl = document.getElementById("rec-toggle-lbl");
-                if (!btn || !lbl) return;
-                if (_recEnabled) {
-                    btn.className = "rec-toggle is-on";
-                    lbl.textContent = "Activo";
-                } else {
-                    btn.className = "rec-toggle is-off";
-                    lbl.textContent = "Desactivado";
-                }
-                /* Explicar qué significa: estando en "Desactivado" NO se abre solo el día de la boda */
+                document.querySelectorAll("#rec-mode button").forEach(function(b) {
+                    var sel = b.getAttribute("data-mode") === _recMode;
+                    b.classList.toggle("is-sel", sel);
+                    b.setAttribute("aria-pressed", sel ? "true" : "false");
+                });
                 var hint = document.getElementById("rec-hint");
-                if (hint) {
-                    hint.className = "rec-hint" + (_recEnabled ? " is-on" : "");
-                    hint.textContent = _recEnabled
-                        ? "✓ Los invitados pueden subir fotos desde su invitación."
-                        : "Los invitados ven \"disponible después de la boda\". No se activa solo: actívalo el día de la boda (toca el botón de arriba).";
+                if (!hint) return;
+                var cls = "", txt;
+                if (_recMode === "on") {
+                    cls = " is-on"; txt = "✓ Abierto: los invitados pueden subir fotos desde su invitación.";
+                } else if (_recMode === "off") {
+                    txt = "Cerrado: los invitados no pueden subir fotos y NO se abrirá solo. Elige \"Automático\" o \"Abierto\" para habilitarlo.";
+                } else if (_recEnabled) {
+                    cls = " is-on"; txt = "✓ Abierto automáticamente desde el 21 de noviembre. Los invitados pueden subir fotos.";
+                } else {
+                    cls = " is-auto"; txt = "⏱ Se abrirá solo el sábado 21 de noviembre a las 00:00. Mientras, los invitados ven \"¡Vuelve el 21 de noviembre!\".";
                 }
+                hint.className = "rec-hint" + cls;
+                hint.textContent = txt;
             }
 
             /* Estado de Recuerdos para el aviso del Resumen (sin abrir la pestaña) */
@@ -7266,7 +7298,7 @@
                         headers: { apikey: SUPABASE_ANON_KEY, Authorization: "Bearer " + SUPABASE_ANON_KEY }
                     });
                     var srows = sr.ok ? await sr.json() : [];
-                    _recEnabled = !srows.length || srows[0].value !== "false";
+                    applyRecMode(recModeFromValue(srows.length ? srows[0].value : "auto"));
                 } catch (e) {}
             }
 

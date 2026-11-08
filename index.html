@@ -6048,25 +6048,22 @@
 
                 /* ── Verificar si la sección está habilitada ── */
                 var WEDDING_DATE = new Date("2026-11-21T17:30:00");
+                /* Apertura automática: sábado 21 nov 00:00, hora de Puebla (UTC-6, sin horario de verano) */
+                var REC_OPEN_AT  = new Date("2026-11-21T00:00:00-06:00");
 
+                /* settings.recuerdos_enabled:
+                   "true"  → abierto ya (los novios lo abrieron a mano)
+                   "off"   → cerrado aunque ya sea el día (los novios lo cerraron a mano)
+                   otro ("auto", "false" o sin fila) → automático: se abre solo el 21 */
                 async function checkEnabled() {
-                    var afterWedding = Date.now() >= WEDDING_DATE.getTime();
+                    var openByDate = Date.now() >= REC_OPEN_AT.getTime();
                     try {
                         var r = await fetch(SUPABASE_URL + "/rest/v1/settings?key=eq.recuerdos_enabled&select=value", { headers: hdrs });
                         var rows = r.ok ? await r.json() : [];
-                        if (rows.length && rows[0].value === "false") {
-                            /* Admin explícitamente desactivó — respetar siempre */
-                            _memEnabled = false;
-                        } else if (rows.length && rows[0].value === "true") {
-                            /* Admin explícitamente activó (ej. para pruebas) */
-                            _memEnabled = true;
-                        } else {
-                            /* Sin setting explícito: activar solo después de la boda */
-                            _memEnabled = afterWedding;
-                        }
+                        var v = rows.length ? rows[0].value : "auto";
+                        _memEnabled = v === "true" ? true : v === "off" ? false : openByDate;
                     } catch(e) {
-                        /* Sin conexión a settings: activar automáticamente post-boda */
-                        _memEnabled = afterWedding;
+                        _memEnabled = openByDate;
                     }
                 }
 
@@ -6087,7 +6084,7 @@
                         if (disabled) {
                             disabled.style.display = "block";
                             /* Ya es el día (o después) y sigue cerrado: no decir "vuelve el 21" */
-                            if (Date.now() >= WEDDING_DATE.getTime()) {
+                            if (Date.now() >= REC_OPEN_AT.getTime()) {
                                 disabled.innerHTML = '📷 En un momento podrás compartir aquí<br>tus fotos de la boda.<br><br>' +
                                     '<span style="color:var(--c-gold);font-style:italic;">¡Vuelve en un ratito!</span>';
                             }
