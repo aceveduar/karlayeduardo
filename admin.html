@@ -3075,7 +3075,8 @@
             .mesa-fam-row__remove { min-height: 40px; }
 
             /* Mensajes */
-            .msgs-tab-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 0.75rem; }
+            .msgs-tab-header { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.75rem; }
+            .msgs-tab-title { white-space: nowrap; }
             .msgs-card--new { border-left-color: #7ec8a0 !important; }
             .msgs-new {
                 display: inline-block; vertical-align: middle; margin-left: 0.4rem; padding: 0.05rem 0.45rem; flex-shrink: 0;
@@ -3088,6 +3089,24 @@
             .rec-hint { font-size: 0.8rem; line-height: 1.5; color: #e08888; background: rgba(224,136,136,0.08); border: 1px solid rgba(224,136,136,0.3); border-radius: 8px; padding: 0.6rem 0.8rem; margin: 0 0 0.85rem; }
             .rec-hint.is-on { color: #7ec8a0; background: rgba(126,200,160,0.08); border-color: rgba(126,200,160,0.3); }
             .rec-hint:empty { display: none; }
+            /* Menú inferior en celular: 5 botones que caben completos (antes 7 con scroll y pestañas escondidas) */
+            #nav-mas { display: none; }
+            @media (max-width: 900px) {
+                #nav-mas { display: flex; }
+                #nav-fotos, #nav-recuerdos, #nav-mensajes { display: none; }
+                .bottom-nav { overflow-x: visible; gap: 0; padding: 0; scroll-snap-type: none; }
+                .bottom-nav__item { flex: 1 1 0; min-width: 0; padding: 0.5rem 0.1rem; }
+            }
+            .mas-list { display: flex; flex-direction: column; gap: 0.5rem; padding-bottom: 0.5rem; }
+            .mas-item { display: flex; align-items: center; gap: 0.9rem; width: 100%; text-align: left; min-height: 64px; padding: 0.75rem 0.9rem; border-radius: 12px; border: 1px solid rgba(201,169,110,0.22); background: rgba(201,169,110,0.05); color: var(--text); font-family: var(--f-sans); cursor: pointer; }
+            .mas-item:hover, .mas-item:focus-visible { border-color: var(--gold); }
+            .mas-item.is-current { border-color: var(--gold); background: rgba(201,169,110,0.12); }
+            .mas-item__icon { width: 1.5rem; height: 1.5rem; color: var(--gold); flex-shrink: 0; }
+            .mas-item__txt { flex: 1; min-width: 0; }
+            .mas-item__title { display: block; font-size: 0.95rem; font-weight: 600; }
+            .mas-item__sub { display: block; font-size: 0.78rem; color: var(--text-mid); margin-top: 0.15rem; }
+            .mas-item__badge { background: #e08888; color: #fff; font-size: 0.7rem; font-weight: 700; border-radius: 10px; padding: 0.1rem 0.5rem; }
+            .mas-item__chev { color: var(--text-soft); }
             .rec-hint.is-auto { color: var(--gold); background: rgba(201,169,110,0.08); border-color: rgba(201,169,110,0.3); }
             .rec-mode { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.4rem; margin: 0 0 0.6rem; }
             .rec-mode button { min-height: 52px; padding: 0.45rem 0.3rem; border-radius: 10px; border: 1px solid rgba(201,169,110,0.3); background: transparent; color: var(--text-mid); font-family: var(--f-sans); font-size: 0.78rem; font-weight: 600; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.15rem; transition: all 0.2s; }
@@ -3253,10 +3272,10 @@
                             <p class="stat__num" id="stat-total" data-unit="familias">—</p>
                             <p class="stat__lbl">Familias</p>
                         </div>
-                        <div class="stat is-link" role="button" tabindex="0" data-go="fam:__confirmed__" aria-label="Ver familias confirmadas">
+                        <div class="stat is-link" role="button" tabindex="0" data-go="fam:__confirmed__" aria-label="Ver familias que asisten">
                             <svg class="stat__icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                             <p class="stat__num" id="stat-confirmed" data-unit="familias">—</p>
-                            <p class="stat__lbl">Familias confirmadas</p>
+                            <p class="stat__lbl">Familias que asisten</p>
                         </div>
                         <div class="stat is-link" role="button" tabindex="0" data-go="fam:__pending__" aria-label="Ver familias pendientes">
                             <svg class="stat__icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
@@ -3275,7 +3294,7 @@
                     <div class="progress-section">
                         <div>
                             <div class="progress-header is-link" role="button" tabindex="0" data-go="fam:__confirmed__">
-                                <span class="progress-lbl">Familias confirmadas</span>
+                                <span class="progress-lbl">Familias que asisten</span>
                                 <span><span class="progress-val" id="prog-fam-val">—</span><span class="progress-pct" id="prog-fam-pct"></span></span>
                             </div>
                             <div class="progress-track"><div class="progress-fill" id="prog-fam-fill" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="Familias confirmadas"></div></div>
@@ -3311,7 +3330,7 @@
                     <!-- Sin mesa -->
                     <div class="sinmesa-row is-link" id="sinmesa-row" role="button" tabindex="0" data-go="sinmesa">
                         <div>
-                            <p class="sinmesa-lbl">Confirmadas sin mesa asignada</p>
+                            <p class="sinmesa-lbl">Asisten y no tienen mesa</p>
                             <p class="sinmesa-hint">Recuerda asignarles mesa antes del evento</p>
                         </div>
                         <span class="sinmesa-num" id="sinmesa-num">0</span>
@@ -3367,7 +3386,7 @@
                     <div class="group-filter-wrap" style="margin-bottom:0.75rem;">
                         <div class="group-filter" id="group-filter">
                             <button class="gf-btn is-active" data-group="">Todos</button>
-                            <button class="gf-btn" data-group="__confirmed__">Confirmadas</button>
+                            <button class="gf-btn" data-group="__confirmed__">Asisten</button>
                             <button class="gf-btn" data-group="Familia novia">Novia</button>
                             <button class="gf-btn" data-group="Familia novio">Novio</button>
                             <button class="gf-btn" data-group="Amigos novia">Amigos novia</button>
@@ -3420,7 +3439,7 @@
                     </div>
                     <!-- Buscar en qué mesa está alguien (antes había que ir a Familias) -->
                     <div class="mesas-search">
-                        <input class="search-input" type="search" id="mesas-search" autocomplete="off" placeholder="¿En qué mesa está…? Escribe un nombre" oninput="filterMesas(this.value)" />
+                        <input class="search-input" type="search" id="mesas-search" autocomplete="off" placeholder="¿En qué mesa está…?" aria-label="Buscar en qué mesa está una persona o familia" oninput="filterMesas(this.value)" />
                         <div class="mesas-search-results" id="mesas-search-results"></div>
                     </div>
                     <!-- Stats rápidos -->
@@ -3442,7 +3461,7 @@
                     <div class="mesas-sinmesa-banner is-link" id="mesas-sinmesa-banner" role="button" tabindex="0" data-go="sinmesa">
                         <span class="mesas-sinmesa-count" id="mesas-sinmesa-count">0</span>
                         <div class="mesas-sinmesa-txt">
-                            <p>familias confirmadas sin mesa</p>
+                            <p>familias que asisten sin mesa</p>
                             <p>Toca aquí para asignarles mesa</p>
                         </div>
                         <span class="mesas-sinmesa-chev" aria-hidden="true">›</span>
@@ -3582,6 +3601,18 @@
                 </div>
             </div>
 
+            <!-- Hoja "Más" (celular): Fotos, Recuerdos y Mensajes -->
+            <div class="mesa-detail-overlay" id="mas-overlay" onclick="if(event.target===this)closeSheet('mas-overlay')">
+                <div class="mesa-detail-sheet" role="dialog" aria-modal="true" aria-labelledby="mas-title">
+                    <div class="sheet-grip" aria-hidden="true"></div>
+                    <div class="mesa-detail-header">
+                        <p class="mesa-detail-num" id="mas-title">Más</p>
+                        <button class="mesa-detail-close" onclick="closeSheet('mas-overlay')" aria-label="Cerrar">✕</button>
+                    </div>
+                    <div class="mas-list" id="mas-list"></div>
+                </div>
+            </div>
+
             <!-- Hoja: detalle de una familia (antes era un panel que se abría dentro de la lista) -->
             <div class="mesa-detail-overlay" id="fam-sheet-overlay" onclick="if(event.target===this)closeSheet('fam-sheet-overlay')">
                 <div class="mesa-detail-sheet fam-sheet" role="dialog" aria-modal="true" aria-labelledby="fs-name">
@@ -3622,6 +3653,12 @@
                 <button class="bottom-nav__item" id="nav-mesas" onclick="switchTab('mesas')" aria-label="Mesas">
                     <svg class="bottom-nav__icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
                     <span class="bottom-nav__lbl">Mesas</span>
+                </button>
+                <!-- Celular: Fotos, Recuerdos y Mensajes viven en "Más" (7 pestañas no caben en 390px) -->
+                <button class="bottom-nav__item" id="nav-mas" onclick="openMasSheet()" aria-label="Más: Fotos, Recuerdos y Mensajes">
+                    <svg class="bottom-nav__icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.6" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none"/><circle cx="19" cy="12" r="1.6" fill="currentColor" stroke="none"/></svg>
+                    <span class="bottom-nav__lbl">Más</span>
+                    <span class="bottom-nav__badge" id="mas-badge"></span>
                 </button>
                 <button class="bottom-nav__item" id="nav-fotos" onclick="switchTab('fotos')" aria-label="Fotos">
                     <svg class="bottom-nav__icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
@@ -3831,7 +3868,7 @@
             </div>
             <div class="ci-stats">
                 <div class="ci-stat"><p class="ci-stat__num" id="ci-n-checked">0</p><p class="ci-stat__lbl">Llegaron</p></div>
-                <div class="ci-stat"><p class="ci-stat__num" id="ci-n-total">0</p><p class="ci-stat__lbl">Confirmadas</p></div>
+                <div class="ci-stat"><p class="ci-stat__num" id="ci-n-total">0</p><p class="ci-stat__lbl">Familias</p></div>
                 <div class="ci-stat"><p class="ci-stat__num" id="ci-n-guests">0</p><p class="ci-stat__lbl">Personas</p></div>
             </div>
             <div class="ci-progress">
@@ -3967,6 +4004,7 @@
                        pero no tocar la lista (se redibuja en el siguiente ciclo libre) */
                     allData = fresh;
                     await refreshRecStatus();   /* para el aviso "Recuerdos desactivado" del Resumen */
+                    refreshMsgsBadge();         /* contador de mensajes nuevos en el menú */
                     lastConfirmedCount = allData.filter(function(f) { return f.confirmed; }).length;
                     renderStats(allData);
                     renderProgress(allData);
@@ -4092,7 +4130,7 @@
                     }
                     if (sinMesaCount > 0) items.push(
                         '<div class="resumen-alert resumen-alert--gold is-link" role="button" tabindex="0" data-go="sinmesa">' +
-                        '<div class="resumen-alert__body"><p class="resumen-alert__main">' + sinMesaCount + ' familia' + (sinMesaCount > 1 ? 's confirmadas' : ' confirmada') + ' sin mesa asignada</p>' +
+                        '<div class="resumen-alert__body"><p class="resumen-alert__main">' + sinMesaCount + ' familia' + (sinMesaCount > 1 ? 's asisten' : ' asiste') + ' sin mesa asignada</p>' +
                         '<p class="resumen-alert__sub">Asígnales mesa aquí mismo</p></div>' +
                         '<span class="resumen-alert__cta">Asignar →</span></div>');
                     if (overCount > 0) items.push(
@@ -4203,7 +4241,8 @@
                 var confirmed = data.filter(function(f) { return f.confirmed && f.rsvps && f.rsvps[0] && f.rsvps[0].attending; }).length;
                 var pending   = data.filter(function(f) { return !f.confirmed; }).length;
                 var countEl   = document.getElementById("fam-count-bar");
-                if (countEl) countEl.textContent = total + (total === 1 ? " familia" : " familias") + "  ·  " + confirmed + (confirmed === 1 ? " confirmada" : " confirmadas") + "  ·  " + pending + (pending === 1 ? " pendiente" : " pendientes");
+                var declined  = total - confirmed - pending;   /* incluye las marcadas sin respuesta registrada */
+                if (countEl) countEl.textContent = total + (total === 1 ? " familia" : " familias") + "  ·  " + confirmed + (confirmed === 1 ? " asiste" : " asisten") + "  ·  " + declined + " no " + (declined === 1 ? "asiste" : "asisten") + "  ·  " + pending + (pending === 1 ? " pendiente" : " pendientes");
 
                 /* Pendientes primero, luego confirmadas, luego declinadas — dentro de cada grupo, alfabético */
                 data.slice().sort(function(a, b) {
@@ -4215,7 +4254,7 @@
                 }).forEach(function(f) {
                     var rsvp   = f.rsvps && f.rsvps[0];
                     var status = !f.confirmed ? "pending" : rsvp && rsvp.attending ? "confirmed" : "declined";
-                    var statusLbl = { pending: "Pendiente", confirmed: "Confirmada", declined: "No asiste" }[status];
+                    var statusLbl = { pending: "Pendiente", confirmed: "Asiste", declined: "No asiste" }[status];
                     var canDelete = !f.confirmed;
 
                     /* "Sin mesa" solo en confirmadas — en pendientes no tiene sentido */
@@ -4312,7 +4351,7 @@
                 if (!f) { if (famSheetOpen()) closeSheet("fam-sheet-overlay"); return; }
                 var rsvp = f.rsvps && f.rsvps[0];
                 var status = !f.confirmed ? "pending" : rsvp && rsvp.attending ? "confirmed" : "declined";
-                var statusLbl = { pending: "Pendiente", confirmed: "Confirmada", declined: "No asiste" }[status];
+                var statusLbl = { pending: "Pendiente", confirmed: "Asiste", declined: "No asiste" }[status];
                 var attending = status === "confirmed";
 
                 document.getElementById("fs-name").textContent = f.family_name;
@@ -6276,6 +6315,32 @@
                 }).join("");
             }
 
+            /* Contador de mensajes nuevos en el menú (pestaña Mensajes y botón "Más" del celular) */
+            var _msgsNew = 0;
+            function setMsgsNewCount(n) {
+                _msgsNew = n;
+                ["msgs-badge", "mas-badge"].forEach(function (id) {
+                    var b = document.getElementById(id);
+                    if (!b) return;
+                    b.textContent = n;
+                    b.style.display = n ? "inline-flex" : "none";
+                });
+            }
+            /* Ligero (solo fechas): para avisar de mensajes nuevos sin abrir la pestaña */
+            async function refreshMsgsBadge() {
+                try {
+                    var rows = await fetch(SUPABASE_URL + "/rest/v1/messages?select=created_at&order=created_at.desc&limit=200", {
+                        headers: { apikey: SUPABASE_ANON_KEY, Authorization: "Bearer " + SUPABASE_ANON_KEY }
+                    }).then(function (r) { return r.ok ? r.json() : []; });
+                    var seenAt = localStorage.getItem("ke-msgs-seen-at");
+                    var activeTab = document.querySelector(".tab-panel.is-active");
+                    if (activeTab && activeTab.id === "tab-mensajes") return;   /* ya los está viendo */
+                    setMsgsNewCount(seenAt
+                        ? rows.filter(function (m) { return new Date(m.created_at) > new Date(seenAt); }).length
+                        : rows.length);
+                } catch (e) {}
+            }
+
             async function loadMsgs() {
                 var empty = document.getElementById("msgs-empty");
                 var badge = document.getElementById("msgs-badge");
@@ -6294,11 +6359,11 @@
                     var newCount = seenAt
                         ? _allMsgs.filter(function(m) { return new Date(m.created_at) > new Date(seenAt); }).length
                         : total;
-                    if (badge) { badge.textContent = newCount; badge.style.display = newCount ? "inline-flex" : "none"; }
-
                     /* Recordar la visita anterior (para marcar "Nuevo") y marcar como vistos ahora */
                     if (_msgsPrevSeen === undefined) _msgsPrevSeen = seenAt;
                     localStorage.setItem("ke-msgs-seen-at", new Date().toISOString());
+                    /* Ya los está viendo (cada uno trae su etiqueta "Nuevo"): quitar el contador del menú */
+                    setMsgsNewCount(0);
 
                     var q = (document.getElementById("msgs-search") || {}).value || "";
                     filterMsgs(q);
@@ -6371,8 +6436,8 @@
                     var newCount = seenAt
                         ? _allMsgs.filter(function(m) { return new Date(m.created_at) > new Date(seenAt); }).length
                         : total;
-                    if (badge) { badge.textContent = newCount; badge.style.display = newCount ? "inline-flex" : "none"; }
-                    var q = (document.getElementById("msgs-search") || {}).value || "";
+                    setMsgsNewCount(newCount);
+                    var q =(document.getElementById("msgs-search") || {}).value || "";
                     filterMsgs(q);
                 } catch(e) { showToast("⚠ Error al eliminar mensaje"); }
             }
@@ -6511,7 +6576,8 @@
                         : activeGroup === "__pending__"
                         ? !f.confirmed
                         : activeGroup === "__declined__"
-                            ? (f.rsvps && f.rsvps[0] && f.rsvps[0].attending === false)
+                            /* Igual que la etiqueta de la tarjeta: respondió y no asiste, o quedó marcada sin respuesta registrada */
+                            ? !!(f.confirmed && !(f.rsvps && f.rsvps[0] && f.rsvps[0].attending))
                             : activeGroup === "__con_mesa__"
                                 ? (f.confirmed && f.rsvps && f.rsvps[0] && f.rsvps[0].attending && f.table_number)
                                 : activeGroup === "__sin_mesa__"
@@ -6621,7 +6687,7 @@
                         var status = !f.confirmed
                             ? "Pendiente"
                             : rsvp && rsvp.attending
-                              ? "Confirmada"
+                              ? "Asiste"
                               : "No asiste";
                         var date = rsvp
                             ? new Date(rsvp.created_at).toLocaleDateString(
@@ -6669,6 +6735,36 @@
                 });
 
             /* ── Tab navigation ────────────────────────────── */
+            /* ── Hoja "Más" (celular) ── */
+            var MAS_TABS = ["fotos", "recuerdos", "mensajes"];
+            function openMasSheet() {
+                var cur = document.querySelector(".tab-panel.is-active");
+                cur = cur ? cur.id.replace("tab-", "") : "";
+                var recSub = _recMode === "on" ? "Abierto · los invitados suben fotos"
+                           : _recMode === "off" ? "Cerrado"
+                           : _recEnabled ? "Abierto automáticamente" : "Se abre solo el 21 de noviembre";
+                var items = [
+                    { tab: "fotos", title: "Fotos de la invitación", sub: "Galería que ven los invitados",
+                      icon: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>' },
+                    { tab: "recuerdos", title: "Libro de Recuerdos", sub: recSub,
+                      icon: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M5 3v18l7-5 7 5V3a2 2 0 00-2-2H7a2 2 0 00-2 2z"/>' },
+                    { tab: "mensajes", title: "Mensajes", sub: _msgsNew ? _msgsNew + (_msgsNew === 1 ? " mensaje nuevo" : " mensajes nuevos") : "Libro de visitas de los invitados", badge: _msgsNew,
+                      icon: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>' }
+                ];
+                document.getElementById("mas-list").innerHTML = items.map(function (it) {
+                    return '<button type="button" class="mas-item' + (it.tab === cur ? ' is-current' : '') + '" onclick="goMas(\'' + it.tab + '\')">' +
+                        '<svg class="mas-item__icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">' + it.icon + '</svg>' +
+                        '<span class="mas-item__txt"><span class="mas-item__title">' + it.title + '</span><span class="mas-item__sub">' + esc(it.sub) + '</span></span>' +
+                        (it.badge ? '<span class="mas-item__badge">' + it.badge + '</span>' : '') +
+                        '<span class="mas-item__chev" aria-hidden="true">›</span></button>';
+                }).join("");
+                openSheet("mas-overlay");
+            }
+            function goMas(tab) {
+                closeSheet("mas-overlay");
+                switchTab(tab);
+            }
+
             function switchTab(name) {
                 var back = document.getElementById("back-resumen");
                 if (back) back.hidden = true;
@@ -6682,6 +6778,9 @@
                 var btn   = document.getElementById("nav-" + name);
                 if (panel) panel.classList.add("is-active");
                 if (btn)   btn.classList.add("is-active");
+                /* En celular estas 3 viven dentro de "Más": marcarlo para saber dónde estás */
+                var mas = document.getElementById("nav-mas");
+                if (mas) mas.classList.toggle("is-active", MAS_TABS.indexOf(name) !== -1);
                 var tc = document.querySelector(".tab-content");
                 if (tc) tc.scrollTop = 0;
                 if (name === "mesas")     renderMesasGrid();
@@ -6703,7 +6802,7 @@
             /* ── Resumen interactivo: cada número lleva a donde se resuelve ──────
                data-go="fam:<filtro>" → Familias con ese filtro · "mesas" → Mesas
                data-go="sinmesa"     → hoja para asignar mesa ahí mismo */
-            var GO_LABELS = { "": "Todas", "__confirmed__": "Confirmadas", "__pending__": "Sin confirmar", "__declined__": "No asisten", "__sin_mesa__": "Sin mesa" };
+            var GO_LABELS = { "": "Todas", "__confirmed__": "Asisten", "__pending__": "Sin confirmar", "__declined__": "No asisten", "__sin_mesa__": "Sin mesa" };
             function goToFamilias(group) {
                 switchTab("familias");
                 var s = document.getElementById("search");
@@ -6796,7 +6895,7 @@
                 }).sort(function (a, b) { return a.family_name.localeCompare(b.family_name, "es"); });
                 if (!fams.length) {
                     sub.textContent = "";
-                    list.innerHTML = '<p class="sm-empty">✓ Todas las familias confirmadas tienen mesa</p>';
+                    list.innerHTML = '<p class="sm-empty">✓ Todas las familias que asisten tienen mesa</p>';
                     return;
                 }
                 sub.textContent = fams.length + (fams.length === 1 ? " familia" : " familias") + " · elige una mesa para cada una";
