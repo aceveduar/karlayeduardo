@@ -3002,6 +3002,11 @@
             }
             .pass-btn { font-size: 0.78rem; }
 
+            /* Recuerdos: miniaturas al elegir varias fotos */
+            .mem-thumbs { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin: 0.6rem 0; }
+            .mem-thumbs:empty { display: none; }
+            .mem-thumb { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 6px; border: 1px solid rgba(201,169,110,0.35); }
+
             /* FAB "Mi pase": transición al ocultarse al bajar */
             .rsvp-fab { transition: transform 0.3s ease, opacity 0.3s ease; }
         </style>
@@ -4212,9 +4217,10 @@
                         <input class="mem-form__input" id="mem-name" type="text" placeholder="Tu nombre *" maxlength="60" autocomplete="name" />
                         <textarea class="mem-form__textarea" id="mem-caption" placeholder="Un mensaje o pie de foto (opcional)" maxlength="160"></textarea>
                         <button class="mem-pick-btn" id="mem-pick-btn" onclick="document.getElementById('mem-file-input').click()">
-                            📷 Elegir foto
+                            📷 Elegir fotos (hasta 10)
                         </button>
-                        <input type="file" id="mem-file-input" accept="image/*" style="display:none" onchange="onMemFileSelected(this)" />
+                        <input type="file" id="mem-file-input" accept="image/*" multiple style="display:none" onchange="onMemFileSelected(this)" />
+                        <div class="mem-thumbs" id="mem-thumbs"></div>
                         <img class="mem-preview" id="mem-preview" alt="Vista previa" />
                         <div class="mem-progress-wrap" id="mem-progress-wrap">
                             <div class="mem-progress-track"><div class="mem-progress-fill" id="mem-progress-fill" style="width:0%"></div></div>
@@ -6078,7 +6084,14 @@
                         gallery.innerHTML = "";
                         if (emptyEl)  emptyEl.style.display  = "none";
                         if (uploadWr) uploadWr.style.display = "none";
-                        if (disabled) disabled.style.display = "block";
+                        if (disabled) {
+                            disabled.style.display = "block";
+                            /* Ya es el día (o después) y sigue cerrado: no decir "vuelve el 21" */
+                            if (Date.now() >= WEDDING_DATE.getTime()) {
+                                disabled.innerHTML = '📷 En un momento podrás compartir aquí<br>tus fotos de la boda.<br><br>' +
+                                    '<span style="color:var(--c-gold);font-style:italic;">¡Vuelve en un ratito!</span>';
+                            }
+                        }
                         return;
                     }
                     if (disabled) disabled.style.display = "none";
@@ -6119,7 +6132,10 @@
                 window.openMemForm = function() {
                     document.getElementById("mem-form").style.display = "block";
                     document.getElementById("mem-upload-wrap").style.display = "none";
-                    document.getElementById("mem-name").focus();
+                    /* Recordar el nombre: el invitado sube fotos varias veces durante la noche */
+                    var nm = document.getElementById("mem-name");
+                    try { if (!nm.value) nm.value = localStorage.getItem("ke-mem-name") || ""; } catch (e) {}
+                    if (!nm.value) nm.focus();
                 };
                 window.closeMemForm = function() {
                     document.getElementById("mem-form").style.display = "none";
@@ -6128,25 +6144,83 @@
                     document.getElementById("mem-name").value = "";
                     document.getElementById("mem-caption").value = "";
                     document.getElementById("mem-preview").style.display = "none";
-                    document.getElementById("mem-pick-btn").textContent = "📷 Elegir foto";
+                    document.getElementById("mem-pick-btn").textContent = "📷 Elegir fotos (hasta 10)";
                     document.getElementById("mem-progress-wrap").style.display = "none";
                     document.getElementById("mem-progress-fill").style.width = "0%";
+                    var th = document.getElementById("mem-thumbs"); if (th) th.innerHTML = "";
+                    var fi = document.getElementById("mem-file-input"); if (fi) fi.value = "";
                     _selectedFile = null;
+                    _selectedFiles = [];
                 };
 
+                /* Varias fotos a la vez (antes de una en una: en una boda cada invitado tiene decenas) */
+                var MAX_FILES = 10;
+                var _selectedFiles = [];
                 window.onMemFileSelected = function(input) {
-                    var file = input.files[0];
-                    if (!file) return;
-                    _selectedFile = file;
-                    var reader = new FileReader();
-                    reader.onload = function(e) {
-                        var prev = document.getElementById("mem-preview");
-                        prev.src = e.target.result;
-                        prev.style.display = "block";
-                    };
-                    reader.readAsDataURL(file);
-                    document.getElementById("mem-pick-btn").textContent = "✓ " + file.name.substring(0, 24);
+                    var files = Array.prototype.slice.call(input.files || []).filter(function (f) { return /^image\//.test(f.type) || /\.(heic|heif|jpe?g|png|webp)$/i.test(f.name); });
+                    if (!files.length) return;
+                    var errEl = document.getElementById("mem-form-error");
+                    errEl.textContent = files.length > MAX_FILES ? "Se tomarán las primeras " + MAX_FILES + " fotos. Puedes subir más después." : "";
+                    _selectedFiles = files.slice(0, MAX_FILES);
+                    _selectedFile = _selectedFiles[0];
+                    var prev = document.getElementById("mem-preview");
+                    var th = document.getElementById("mem-thumbs");
+                    if (_selectedFiles.length === 1) {
+                        th.innerHTML = "";
+                        var reader = new FileReader();
+                        reader.onload = function (e) { prev.src = e.target.result; prev.style.display = "block"; };
+                        reader.readAsDataURL(_selectedFile);
+                    } else {
+                        prev.style.display = "none";
+                        th.innerHTML = "";
+                        /* Miniaturas de 120px generadas UNA POR UNA: mostrar 10 fotos de 12 MP a
+                           tamaño completo puede usar cientos de MB y congelar un celular modesto */
+                        var placeholders = _selectedFiles.map(function () {
+                            var im = document.createElement("img");
+                            im.className = "mem-thumb"; im.alt = "";
+                            th.appendChild(im);
+                            return im;
+                        });
+                        (async function () {
+                            for (var k = 0; k < _selectedFiles.length; k++) {
+                                var src = await makeThumb(_selectedFiles[k], 120);
+                                if (src && placeholders[k]) placeholders[k].src = src;
+                            }
+                        })();
+                    }
+                    document.getElementById("mem-pick-btn").textContent = "✓ " + _selectedFiles.length + (_selectedFiles.length === 1 ? " foto elegida · cambiar" : " fotos elegidas · cambiar");
+                    document.getElementById("mem-submit-btn").textContent = _selectedFiles.length === 1 ? "Subir foto" : "Subir " + _selectedFiles.length + " fotos";
                 };
+
+                /* Miniatura pequeña: decodifica, dibuja a `px` y libera la original de inmediato */
+                function makeThumb(file, px) {
+                    return new Promise(function (resolve) {
+                        var url = URL.createObjectURL(file);
+                        var img = new Image();
+                        img.decoding = "async";
+                        img.onload = function () {
+                            var s = Math.min(1, px / Math.max(img.naturalWidth, img.naturalHeight));
+                            var cv = document.createElement("canvas");
+                            cv.width = Math.max(1, Math.round(img.naturalWidth * s));
+                            cv.height = Math.max(1, Math.round(img.naturalHeight * s));
+                            cv.getContext("2d").drawImage(img, 0, 0, cv.width, cv.height);
+                            URL.revokeObjectURL(url);
+                            img.src = "";
+                            resolve(cv.toDataURL("image/jpeg", 0.6));
+                        };
+                        img.onerror = function () { URL.revokeObjectURL(url); resolve(null); };
+                        img.src = url;
+                    });
+                }
+
+                /* Mensajes de error que un invitado entienda (antes: "Bucket not found") */
+                function friendlyUploadError(status, msg) {
+                    if (!navigator.onLine) return "Sin conexión. Conéctate a internet e inténtalo de nuevo.";
+                    if (status === 413 || /too large|exceeded/i.test(msg || "")) return "La foto es demasiado grande. Prueba con otra.";
+                    if (/bucket/i.test(msg || "") || status === 400 || status === 404 || status === 401 || status === 403)
+                        return "No pudimos guardar la foto en este momento. Avísale a los novios 🙏";
+                    return "Algo falló al subir. Inténtalo de nuevo en un momento.";
+                }
 
                 window.submitMemPhoto = function() {
                     submitMemPhotoAsync();
@@ -6162,51 +6236,56 @@
 
                     errEl.textContent = "";
                     if (!name) { errEl.textContent = "Ingresa tu nombre."; document.getElementById("mem-name").focus(); return; }
-                    if (!_selectedFile) { errEl.textContent = "Elige una foto primero."; return; }
+                    var files = _selectedFiles.length ? _selectedFiles : (_selectedFile ? [_selectedFile] : []);
+                    if (!files.length) { errEl.textContent = "Elige al menos una foto."; return; }
 
                     btn.disabled = true;
-                    btn.textContent = "Subiendo…";
                     prog.style.display = "block";
-                    fill.style.width = "15%";
+                    var total = files.length, ok = 0, lastErr = "", failed = [];
+                    try { localStorage.setItem("ke-mem-name", name); } catch (e) {}
 
-                    try {
-                        /* Comprimir: máx 1200px, calidad 82% */
-                        var blob = await compressImage(_selectedFile, 1200, 0.82);
-                        fill.style.width = "40%";
-
-                        /* Nombre único para el archivo */
-                        var filename = Date.now() + "-" + Math.random().toString(36).slice(2, 7) + ".jpg";
-
-                        /* Subir a storage */
-                        var sr = await fetch(SUPABASE_URL + "/storage/v1/object/" + REC_BUCKET + "/" + encodeURIComponent(filename), {
-                            method: "POST",
-                            headers: { apikey: SUPABASE_ANON_KEY, Authorization: "Bearer " + SUPABASE_ANON_KEY, "Content-Type": "image/jpeg" },
-                            body: blob
-                        });
-                        fill.style.width = "75%";
-                        if (!sr.ok) {
-                            var errJson = await sr.json().catch(function(){ return {}; });
-                            throw new Error(errJson.message || "Error al subir (HTTP " + sr.status + ")");
+                    /* Una por una: si una falla, las demás siguen */
+                    for (var i = 0; i < total; i++) {
+                        btn.textContent = total === 1 ? "Subiendo…" : "Subiendo " + (i + 1) + " de " + total + "…";
+                        fill.style.width = Math.round((i / total) * 100 + 5) + "%";
+                        try {
+                            var blob = await compressImage(files[i], 1200, 0.82);   /* máx 1200px, 82% */
+                            var filename = Date.now() + "-" + Math.random().toString(36).slice(2, 7) + ".jpg";
+                            var sr = await fetch(SUPABASE_URL + "/storage/v1/object/" + REC_BUCKET + "/" + encodeURIComponent(filename), {
+                                method: "POST",
+                                headers: { apikey: SUPABASE_ANON_KEY, Authorization: "Bearer " + SUPABASE_ANON_KEY, "Content-Type": "image/jpeg" },
+                                body: blob
+                            });
+                            if (!sr.ok) {
+                                var errJson = await sr.json().catch(function(){ return {}; });
+                                throw { status: sr.status, msg: errJson.message || errJson.error || "" };
+                            }
+                            var mr = await fetch(SUPABASE_URL + "/rest/v1/photos", {
+                                method: "POST",
+                                headers: Object.assign({}, hdrs, { "Content-Type": "application/json", Prefer: "return=minimal" }),
+                                body: JSON.stringify({ storage_path: filename, uploader_name: name, caption: caption || null })
+                            });
+                            if (!mr.ok) throw { status: mr.status, msg: "" };
+                            ok++;
+                        } catch (e) {
+                            failed.push(files[i]);
+                            lastErr = friendlyUploadError(e && e.status, e && (e.msg || e.message));
                         }
+                        fill.style.width = Math.round(((i + 1) / total) * 100) + "%";
+                    }
 
-                        /* Guardar metadatos */
-                        var mr = await fetch(SUPABASE_URL + "/rest/v1/photos", {
-                            method: "POST",
-                            headers: Object.assign({}, hdrs, { "Content-Type": "application/json", Prefer: "return=minimal" }),
-                            body: JSON.stringify({ storage_path: filename, uploader_name: name, caption: caption || null })
-                        });
-                        fill.style.width = "100%";
-                        if (!mr.ok) throw new Error("Error al guardar (HTTP " + mr.status + ")");
-
-                        /* Éxito */
+                    if (ok === total) {
                         closeMemForm();
                         await loadMemGallery();
-                    } catch(e) {
-                        errEl.textContent = e.message || "Error al subir. Intenta de nuevo.";
-                        btn.disabled = false;
-                        btn.textContent = "Subir foto";
-                        fill.style.width = "0%";
+                        return;
                     }
+                    errEl.textContent = (ok ? "Se subieron " + ok + " de " + total + ". " : "") + lastErr;
+                    btn.disabled = false;
+                    /* Quedan seleccionadas solo las que fallaron, para reintentar sin duplicar */
+                    _selectedFiles = failed;
+                    _selectedFile = failed[0] || null;
+                    btn.textContent = ok ? "Reintentar " + failed.length + (failed.length === 1 ? " foto" : " fotos") : (total === 1 ? "Subir foto" : "Subir " + total + " fotos");
+                    fill.style.width = "0%";
                 }
 
                 /* ── Lightbox ── */
