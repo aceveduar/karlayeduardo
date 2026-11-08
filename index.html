@@ -2961,6 +2961,49 @@
                 color: rgba(201, 169, 110, 0.45);
                 letter-spacing: 0.15em;
             }
+
+            /* =============================================
+               AUDITORÍA UX/UI — legibilidad en celular
+               Se abre desde WhatsApp: textos de 8–9px no se leen
+               ============================================= */
+
+            /* Etiquetas en mayúsculas espaciadas: piso de ~11.5px (antes 8–9.6px) */
+            .inv-header__tagline, .inv-header__greeting-for, .event-date__label,
+            .countdown__unit-lbl, .how-to-get__badge, .timeline__name,
+            .dresscode__formal-lbl, .gifts__amazon-store, .visitas__count, .visitas__otro-btn,
+            .rsvp__label, .rsvp__counter-label, .rsvp__change-link, .ticket__wa-btn,
+            .ticket__confirmed-lbl, .ticket__guests-lbl, .ticket__event-lbl,
+            .music-player__tip, .mem-cancel-btn, .event-info__type, .event-date__month {
+                font-size: max(0.72rem, 11.5px) !important;
+            }
+            .dresscode__swatch-lbl, .rsvp__decline-link, .inv-footer__msg, .inv-footer__hashtag,
+            .mem-pick-btn, .mem-submit-btn { font-size: max(0.75rem, 12px) !important; }
+            /* Etiquetas con estilo en línea de 0.48–0.5rem dentro del pase */
+            /* (selector exacto: "0.5rem" a secas también atrapaba margin-bottom de "Mesa 13") */
+            #rsvp p[style*="font-size: 0.48rem"], #rsvp p[style*="font-size: 0.5rem"], #rsvp p[style*="font-size:0.48rem"], .ticket__qr-hint {
+                font-size: max(0.72rem, 11.5px) !important;
+            }
+
+            /* Contraste: #888 sobre pergamino ≈ 3.4:1 → tono del texto de "Nuestra Historia" (≈ 9:1) */
+            .how-to-get__list li, .event-info__address { color: #5e5148 !important; }
+            #rsvp .rsvp__desc { color: rgba(255, 255, 255, 0.72) !important; }
+
+            /* Botones secundarios del pase: legibles sobre el fondo oscuro */
+            .ticket__wa-btn {
+                /* sin tocar display: showSavedPass() lo oculta con display:none en modo sin señal */
+                padding: 1.1rem 0.9rem !important; line-height: 1.3;
+                color: #6fe39a !important; letter-spacing: 0.12em !important;
+            }
+            #already-save-img, #ticket-save-img { color: rgba(232, 205, 150, 0.95) !important; }
+            .rsvp__change-link {
+                display: inline-block; padding: 0.8rem 0.5rem; line-height: 1.5;
+                letter-spacing: 0.06em !important; text-wrap: balance;
+                color: rgba(255, 255, 255, 0.6) !important; text-decoration: underline; text-underline-offset: 4px;
+            }
+            .pass-btn { font-size: 0.78rem; }
+
+            /* FAB "Mi pase": transición al ocultarse al bajar */
+            .rsvp-fab { transition: transform 0.3s ease, opacity 0.3s ease; }
         </style>
     </head>
     <body>
@@ -3968,7 +4011,7 @@
                             </div>
                             <!-- QR para mostrar en la entrada -->
                             <div id="already-qr-wrap" style="display:none; margin-top:1.75rem; text-align:center;">
-                                <p style="font-size:0.62rem; letter-spacing:0.25em; text-transform:uppercase; color:rgba(201,169,110,0.75); margin-bottom:0.85rem;">Tu pase de entrada</p>
+                                <p style="font-size:0.62rem; letter-spacing:0.25em; text-transform:uppercase; color:rgba(201,169,110,0.75); margin-bottom:0.85rem;">Tu código de acceso</p>
                                 <div style="display:flex; justify-content:center;">
                                     <div class="ticket__qr" id="already-qr"></div>
                                 </div>
@@ -3976,7 +4019,7 @@
                                 <p class="ticket__qr-hint">Muestra este código en la entrada.<br>Sube el brillo de tu pantalla para que se lea mejor.</p>
                                 <button class="pass-btn" type="button" data-open-pass>
                                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4h4M20 8V4h-4M4 16v4h4M20 16v4h-4"/></svg>
-                                    Mostrar en pantalla completa
+                                    Ver pase en grande
                                 </button>
                                 <a class="ticket__wa-btn" id="already-wa-btn" href="#" target="_blank" rel="noopener noreferrer" style="display:block; margin-top:0.75rem;">
                                     Guardar mi pase en WhatsApp
@@ -3991,7 +4034,7 @@
                                 href="#"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                >Necesito cambiar mi confirmación →</a
+                                >Necesito cambiar mi confirmación</a
                             >
                         </div>
 
@@ -4105,7 +4148,7 @@
                                 <div style="padding:0 1.5rem 1rem">
                                     <button class="pass-btn" type="button" data-open-pass style="margin-top:0">
                                         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4h4M20 8V4h-4M4 16v4h4M20 16v4h-4"/></svg>
-                                        Mostrar en pantalla completa
+                                        Ver pase en grande
                                     </button>
                                 </div>
                                 <a class="ticket__wa-btn" id="ticket-wa-btn" href="#" target="_blank" rel="noopener noreferrer">
@@ -5094,6 +5137,25 @@
                     fab.style.display = "";
                     fab.classList.remove("is-hidden");
                     fab.onclick = function (e) { e.preventDefault(); window.openPass(); };
+                    /* Ocultarlo cuando el pase ya está en pantalla (sección #rsvp) y mientras
+                       se baja leyendo: así no tapa botones (Maps, Waze, Calendario…). Reaparece al subir o detenerse. */
+                    if (fab._passWired) return;
+                    fab._passWired = true;
+                    var rsvpVisible = false, lastY = window.scrollY, idleT;
+                    var sec = document.getElementById("rsvp");
+                    if (sec && "IntersectionObserver" in window) {
+                        new IntersectionObserver(function (es) {
+                            rsvpVisible = es[0].isIntersecting;
+                            fab.classList.toggle("is-hidden", rsvpVisible);
+                        }, { threshold: 0.15 }).observe(sec);
+                    }
+                    window.addEventListener("scroll", function () {
+                        var y = window.scrollY;
+                        if (!rsvpVisible) fab.classList.toggle("is-hidden", y > lastY + 4 && y > 300);
+                        lastY = y;
+                        clearTimeout(idleT);
+                        idleT = setTimeout(function () { if (!rsvpVisible) fab.classList.remove("is-hidden"); }, 900);
+                    }, { passive: true });
                 }
 
                 function showStep(id) {
@@ -5113,7 +5175,14 @@
                     });
                     /* dots de progreso */
                     var progressWrap = document.getElementById("rsvp-progress");
-                    var stepMap = { code: 1, form: 2, success: 3, already: 3 };
+                    /* "already" no es un paso del flujo (es quien regresa a ver su pase) → sin puntos.
+                       Tras el deadline tampoco hay flujo de 3 pasos. */
+                    var stepMap = RSVP_DEADLINE && Date.now() > RSVP_DEADLINE.getTime()
+                        ? {}
+                        : { code: 1, form: 2, success: 3 };
+                    /* La descripción ("confirma antes de…" / "consulta aquí tu pase") sobra con el pase en pantalla */
+                    var descEl2 = document.querySelector("#rsvp .rsvp__desc");
+                    if (descEl2) descEl2.style.display = (id === "already" || id === "success") ? "none" : "";
                     var dot1 = document.getElementById("rsvp-dot-1");
                     var dot2 = document.getElementById("rsvp-dot-2");
                     var dot3 = document.getElementById("rsvp-dot-3");
