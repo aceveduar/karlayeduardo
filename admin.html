@@ -3438,7 +3438,7 @@
 
                     <hr class="sim-divider" />
                     <p class="sim-section-lbl">⚗ Modo Simulación</p>
-                    <p class="sim-locked" id="sim-locked" style="display:none">🔒 Bloqueado desde el 20 de noviembre: estas herramientas modifican familias reales (llegadas y confirmaciones) y un toque por error borraría el check-in de la boda.</p>
+                    <p class="sim-locked" id="sim-locked" style="display:none">🔒 Bloqueado para proteger la boda: estas herramientas modifican familias reales (llegadas y confirmaciones) y un toque por error borraría el check-in del evento.</p>
                     <div id="sim-panel">
 
                     <!-- Sembrar datos -->
@@ -5415,7 +5415,9 @@
             }
 
             /* Simulación: escribe sobre familias REALES → bloqueada desde el 20 nov */
-            var SIM_LOCK_FROM = new Date("2026-11-20T00:00:00");
+            /* Bloqueada desde el 8 nov 2026 por decisión de Eduardo (base verificada limpia:
+               0 familias TEST-*, 0 llegadas marcadas). Para reactivarla, cambiar esta fecha. */
+            var SIM_LOCK_FROM = new Date("2026-11-08T00:00:00");
             function simLocked() {
                 if (Date.now() < SIM_LOCK_FROM.getTime()) return false;
                 showToast("🔒 Simulación bloqueada durante la boda");
