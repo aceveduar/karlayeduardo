@@ -3990,7 +3990,7 @@
                                 _SVG_COPY + esc(f.code) +
                             '</button>' +
                             '<div class="fam-actions-right">' +
-                                '<a class="' + waCls + '" href="' + esc(buildWaUrl(f.family_name, f.code, f.phone, f.table_number)) + '" target="_blank" onclick="event.stopPropagation()">' + waLabel + '</a>' +
+                                '<a class="' + waCls + '" href="' + esc((f.confirmed && f.rsvps && f.rsvps[0] && f.rsvps[0].attending) ? buildPassWaUrl(f, 0) : buildWaUrl(f.family_name, f.code, f.phone, f.table_number)) + '" target="_blank" onclick="event.stopPropagation()">' + waLabel + '</a>' +
                                 '<button class="fam-action-toggle" id="fam-toggle-' + f.id + '" onclick="event.stopPropagation();toggleFamDetail(\'' + esc(f.id) + '\')">' +
                                     _SVG_CHEV + '<span>Detalle</span>' +
                                 '</button>' +
@@ -5081,8 +5081,10 @@
                     "🎫 Su pase de entrada (QR):\n" + link + "\n\n" +
                     "👉 Ábranlo una vez antes del día: así queda guardado en su celular aunque no haya señal en la hacienda.\n\n" +
                     "Con cariño,\nKarla & Eduardo";
-                var p = f.phone.replace(/\D/g, "");
-                return "https://wa.me/" + (p.length > 10 ? p : "52" + p) + "?text=" + encodeURIComponent(msg);
+                /* Sin teléfono → wa.me sin número: WhatsApp deja elegir el chat */
+                var p = (f.phone || "").replace(/\D/g, "");
+                var dest = p ? (p.length > 10 ? p : "52" + p) : "";
+                return "https://wa.me/" + dest + "?text=" + encodeURIComponent(msg);
             }
 
             function startPassBatch() {
