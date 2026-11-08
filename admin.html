@@ -2884,6 +2884,29 @@
             .ci-banner__sub { font-family: var(--f-sans); font-size: 0.85rem; opacity: 0.85; margin-top: 0.2rem; }
             .ci-banner__mesa { font-family: var(--f-serif); font-style: italic; font-size: 2rem; color: #f3dca8; margin-top: 0.25rem; line-height: 1.1; }
             .ci-banner__mesa--none { font-size: 1rem; font-style: normal; color: #ffb4b4; }
+            /* Ficha del QR: mesa en grande */
+            .qr-card__mesa { font-family: var(--f-serif); font-style: italic; font-size: 2.2rem; color: var(--gold); line-height: 1.1; margin: 0.35rem 0 0.5rem; }
+            .qr-card__mesa--none { font-size: 1rem; font-style: normal; font-family: var(--f-sans); color: #e08888; }
+            :root:not([data-theme="dark"]) .qr-card__mesa { color: #7a5a1e; }
+            .qr-found__detail { font-size: 0.78rem; line-height: 1.55; margin-top: 0.35rem; }
+            .qr-card__group { font-size: 0.66rem; padding: 0.2rem 0.65rem; }
+            .qr-card__stat { font-size: 0.8rem; }
+            .qr-card__guest { font-size: 0.85rem; line-height: 1.6; }
+            .qr-scan-next { min-height: 48px; border-radius: 10px; }
+
+            /* Simulación bloqueada */
+            .sim-locked { font-size: 0.78rem; line-height: 1.55; color: var(--text-mid); background: rgba(201,169,110,0.08); border: 1px solid rgba(201,169,110,0.3); border-radius: 8px; padding: 0.85rem 1rem; }
+
+            /* Placeholders más tenues: "Familia García" parecía un valor ya escrito */
+            .config-input::placeholder, .config-textarea::placeholder, .search-input::placeholder, .msgs-search::placeholder { opacity: 0.55; }
+
+            /* Botón principal de cada formulario = relleno dorado (antes todos iguales, outline) */
+            #btn-add-family, [id^="ef-save-"], [id^="att-save-"], #gate-btn {
+                background: var(--gold) !important; color: #1e1410 !important; border-color: var(--gold) !important; font-weight: 700;
+            }
+            #btn-add-family { min-height: 52px; border-radius: 10px; }
+            #gate-btn { min-height: 48px; min-width: 200px; border-radius: 24px; }
+
             /* Menú: Check-in en verde (mismo color que "Abrir Check-in" del Resumen) */
             .bottom-nav__item--checkin { color: #2a7a52; }
             .bottom-nav__item--checkin .bottom-nav__lbl { color: #2a7a52; font-weight: 700; }
@@ -3403,6 +3426,8 @@
 
                     <hr class="sim-divider" />
                     <p class="sim-section-lbl">⚗ Modo Simulación</p>
+                    <p class="sim-locked" id="sim-locked" style="display:none">🔒 Bloqueado desde el 20 de noviembre: estas herramientas modifican familias reales (llegadas y confirmaciones) y un toque por error borraría el check-in de la boda.</p>
+                    <div id="sim-panel">
 
                     <!-- Sembrar datos -->
                     <div class="sim-card">
@@ -3419,7 +3444,7 @@
                     <div class="sim-card">
                         <div class="sim-card__header">
                             <p class="sim-card__title">Simular día del evento</p>
-                            <p class="sim-card__desc">Marca todas las familias confirmadas como llegadas para probar el check-in al 100%.</p>
+                            <p class="sim-card__desc">Marca todas las familias confirmadas como llegadas para probar el check-in al 100%. <strong style="color:#e08888">⚠ Usa las familias reales:</strong> resetea al terminar la prueba.</p>
                         </div>
                         <div class="sim-card__actions">
                             <button class="sim-btn sim-btn--green" onclick="simulateFullCheckIn()">✓ Simular llegadas</button>
@@ -3454,6 +3479,7 @@
                             <button class="sim-btn sim-btn--red" onclick="cleanupTestData()">🗑 Eliminar TEST-*</button>
                         </div>
                     </div>
+                    </div><!-- /sim-panel -->
                 </div>
             </div>
         </div>
@@ -4053,7 +4079,7 @@
                     '<div style="grid-column:1/-1;display:flex;flex-wrap:wrap;gap:0.5rem;justify-content:flex-end;margin-top:0.25rem">' +
                         '<button class="action-btn" onclick="saveAttendance(\'' + id + '\', true)" style="font-size:0.5rem;padding:0.4rem 1rem;min-height:44px;color:#e08888;border-color:rgba(224,136,136,0.45)">Nadie asistirá</button>' +
                         '<button class="action-btn" id="att-save-' + id + '" onclick="saveAttendance(\'' + id + '\', false)" style="font-size:0.5rem;padding:0.4rem 1rem;min-height:44px">Guardar</button>' +
-                        '<button class="action-btn" onclick="loadData()" style="font-size:0.5rem;padding:0.4rem 1rem;min-height:44px;opacity:0.5">Cancelar</button>' +
+                        '<button class="action-btn" onclick="loadData()" style="font-size:0.5rem;padding:0.4rem 1rem;min-height:44px;opacity:0.8">Cancelar</button>' +
                     '</div>';
             }
 
@@ -5322,6 +5348,7 @@
             ];
 
             async function seedTestFamilies() {
+                if (simLocked()) return;
                 var existing = allData.filter(function(f){ return f.code.startsWith("TEST-"); });
                 if (existing.length) { showToast("⚠ Ya existen " + existing.length + " familias TEST. Límpielas primero."); return; }
                 if (!confirm("¿Crear 8 familias de prueba (TEST-01 a TEST-08)?")) return;
@@ -5351,6 +5378,7 @@
             }
 
             async function simulateFullCheckIn() {
+                if (simLocked()) return;
                 var targets = allData.filter(function(f){ return f.confirmed && f.rsvps && f.rsvps[0] && f.rsvps[0].attending; });
                 if (!targets.length) { showToast("No hay familias confirmadas"); return; }
                 if (!confirm("¿Marcar " + targets.length + " familias como llegadas?")) return;
@@ -5368,8 +5396,25 @@
                 } catch(e) { showToast("⚠ Error al simular check-in"); }
             }
 
+            /* Simulación: escribe sobre familias REALES → bloqueada desde el 20 nov */
+            var SIM_LOCK_FROM = new Date("2026-11-20T00:00:00");
+            function simLocked() {
+                if (Date.now() < SIM_LOCK_FROM.getTime()) return false;
+                showToast("🔒 Simulación bloqueada durante la boda");
+                return true;
+            }
+            function refreshSimLock() {
+                var locked = Date.now() >= SIM_LOCK_FROM.getTime();
+                var p = document.getElementById("sim-panel"), l = document.getElementById("sim-locked");
+                if (p) p.style.display = locked ? "none" : "";
+                if (l) l.style.display = locked ? "block" : "none";
+            }
+
             async function resetAllCheckIn() {
-                if (!confirm("¿Resetear check-in de TODAS las familias?")) return;
+                if (simLocked()) return;
+                var n = allData.filter(function(f){ return f.checked_in; }).length;
+                var typed = prompt("⚠️ Esto borra la llegada de TODAS las familias (" + n + " registradas ahora).\n\nEscribe RESETEAR para confirmar:");
+                if (!typed || typed.trim().toUpperCase() !== "RESETEAR") { showToast("Cancelado — no se borró nada"); return; }
                 try {
                     await fetch(SUPABASE_URL + "/rest/v1/families?confirmed=eq.true", {
                         method: "PATCH",
@@ -5383,6 +5428,7 @@
             }
 
             async function simRsvp(attending) {
+                if (simLocked()) return;
                 var sel = document.getElementById("sim-family-sel");
                 var id  = sel && sel.value;
                 if (!id) { showToast("Selecciona una familia primero"); return; }
@@ -5518,7 +5564,10 @@
                     result.innerHTML =
                         '<div class="qr-result-card qr-result-card--error">' +
                             '<div><p class="qr-found__name">' + (anyF ? esc(anyF.family_name) : "Código no reconocido") + '</p>' +
-                            '<p class="qr-found__detail">' + (anyF ? "No tiene RSVP confirmado" : esc(code)) + '</p></div>' +
+                            '<p class="qr-found__detail">' + (anyF
+                                ? (anyF.confirmed ? "Registró que NO asistiría." : "Nunca confirmó asistencia.") +
+                                  "<br>Si los novios aprueban que pase, regístralo después en Familias → Detalle → Cambiar asistencia."
+                                : "Leído: " + esc(code) + "<br>Intenta de nuevo o búscalo por nombre abajo.") + '</p></div>' +
                         '</div>' +
                         '<button class="qr-scan-next" onclick="startQrScanner()">↩ Escanear otro</button>';
                     if (hint) hint.textContent = "";
@@ -5564,9 +5613,6 @@
                     '<div class="qr-card__stats">' +
                         '<div class="qr-card__stat"><svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>' +
                         '<span><strong>' + paxConf + '</strong> de ' + f.max_guests + ' pase' + (f.max_guests !== 1 ? 's' : '') + '</span></div>' +
-                        (f.table_number
-                            ? '<div class="qr-card__stat"><svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg><span>Mesa <strong>' + f.table_number + '</strong></span></div>'
-                            : '<div class="qr-card__stat" style="color:#e08888">Sin mesa asignada</div>') +
                     '</div>';
 
                 var cardBase =
@@ -5574,6 +5620,10 @@
                         '<p class="qr-found__name">' + esc(f.family_name) + '</p>' +
                         grpHtml +
                     '</div>' +
+                    /* La mesa es lo que se le dice al invitado → en grande */
+                    (f.table_number
+                        ? '<p class="qr-card__mesa">Mesa ' + f.table_number + '</p>'
+                        : '<p class="qr-card__mesa qr-card__mesa--none">Sin mesa asignada</p>') +
                     statsHtml +
                     (namesHtml ? '<div class="qr-card__divider"></div>' + namesHtml : '');
 
@@ -6037,6 +6087,7 @@
             /* ── Settings modal ─────────────────────────────── */
             function openSettings() {
                 document.getElementById("settings-overlay").classList.add("is-open");
+                refreshSimLock();
                 /* Pobla el dropdown de RSVP simulado con familias no confirmadas */
                 var sel = document.getElementById("sim-family-sel");
                 if (sel && allData.length) {
