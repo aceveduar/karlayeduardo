@@ -3061,6 +3061,16 @@
             .mesa-fam-row__open .mesa-fam-row__pax { font-size: 0.74rem; color: var(--text-mid); line-height: 1.4; }
             .mesa-fam-row__remove { min-height: 40px; }
 
+            /* Mensajes */
+            .msgs-tab-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 0.75rem; }
+            .msgs-card--new { border-left-color: #7ec8a0 !important; }
+            .msgs-new {
+                display: inline-block; vertical-align: middle; margin-left: 0.4rem; padding: 0.05rem 0.45rem; flex-shrink: 0;
+                border-radius: 10px; background: rgba(126,200,160,0.15); border: 1px solid rgba(126,200,160,0.45);
+                color: #7ec8a0; font-family: var(--f-sans); font-style: normal; font-size: 0.62rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+            }
+            .msgs-del-btn { min-width: 40px; min-height: 40px; }
+
             /* Recuerdos: qué significa el estado del interruptor */
             .rec-hint { font-size: 0.8rem; line-height: 1.5; color: #e08888; background: rgba(224,136,136,0.08); border: 1px solid rgba(224,136,136,0.3); border-radius: 8px; padding: 0.6rem 0.8rem; margin: 0 0 0.85rem; }
             .rec-hint.is-on { color: #7ec8a0; background: rgba(126,200,160,0.08); border-color: rgba(126,200,160,0.3); }
@@ -3488,12 +3498,18 @@
 
                 <div class="tab-panel" id="tab-mensajes">
                     <div class="msgs-tab-header">
-                        <p class="msgs-tab-title">Libro de Visitas</p>
-                        <span class="msgs-tab-count" id="msgs-total-lbl"></span>
+                        <div>
+                            <p class="msgs-tab-title">Libro de Visitas</p>
+                            <span class="msgs-tab-count" id="msgs-total-lbl"></span>
+                        </div>
+                        <button class="mesas-print-btn" type="button" onclick="printMsgs()" title="Página elegante para imprimir o guardar en PDF">
+                            <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v12m0 0l-4-4m4 4l4-4M4 20h16"/></svg>
+                            Guardar como recuerdo
+                        </button>
                     </div>
                     <div class="msgs-search-wrap">
                         <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="flex-shrink:0;opacity:0.4;"><circle cx="11" cy="11" r="8"/><path stroke-linecap="round" d="M21 21l-4.35-4.35"/></svg>
-                        <input class="msgs-search" id="msgs-search" type="text" placeholder="Buscar por nombre…" autocomplete="off" />
+                        <input class="msgs-search" id="msgs-search" type="text" placeholder="Buscar por nombre o palabra…" autocomplete="off" />
                     </div>
                     <div class="msgs-list" id="msgs-list">
                         <p class="msgs-empty" id="msgs-empty">Cargando…</p>
@@ -6218,15 +6234,19 @@
                 list.innerHTML = msgs.map(function(m) {
                     var d    = new Date(m.created_at);
                     var date = d.toLocaleDateString("es-MX", { day:"numeric", month:"short", year:"numeric" });
-                    return '<div class="msgs-card" id="msg-' + escMsg(m.id) + '">' +
+                    /* "Nuevo": llegó después de la última vez que se abrió esta pestaña */
+                    var isNew = _msgsPrevSeen ? d > new Date(_msgsPrevSeen) : false;
+                    return '<div class="msgs-card' + (isNew ? ' msgs-card--new' : '') + '" id="msg-' + escMsg(m.id) + '">' +
                         '<div class="msgs-card__body">' +
                             '<div class="msgs-card__header">' +
                                 '<span class="msgs-card__name">' + escMsg(m.name) + '</span>' +
+                                /* fuera del nombre: con nombres largos (recortados con …) la etiqueta desaparecía */
+                                (isNew ? '<span class="msgs-new">Nuevo</span>' : '') +
                                 '<span class="msgs-card__date">' + date + '</span>' +
                             '</div>' +
                             '<p class="msgs-card__text">' + escMsg(m.message) + '</p>' +
                         '</div>' +
-                        '<button class="msgs-del-btn" onclick="deleteMsg(\'' + escMsg(m.id) + '\')" title="Eliminar">✕</button>' +
+                        '<button class="msgs-del-btn" onclick="deleteMsg(\'' + escMsg(m.id) + '\')" title="Eliminar" aria-label="Eliminar mensaje">✕</button>' +
                     '</div>';
                 }).join("");
             }
@@ -6251,7 +6271,8 @@
                         : total;
                     if (badge) { badge.textContent = newCount; badge.style.display = newCount ? "inline-flex" : "none"; }
 
-                    /* Marca como vistos ahora mismo */
+                    /* Recordar la visita anterior (para marcar "Nuevo") y marcar como vistos ahora */
+                    if (_msgsPrevSeen === undefined) _msgsPrevSeen = seenAt;
                     localStorage.setItem("ke-msgs-seen-at", new Date().toISOString());
 
                     var q = (document.getElementById("msgs-search") || {}).value || "";
@@ -6277,8 +6298,37 @@
                 if (s) s.addEventListener("input", function() { filterMsgs(s.value); });
             });
 
+            var _msgsPrevSeen;   /* undefined = aún no se abre la pestaña en esta sesión */
+
+            /* Libro de visitas como recuerdo: página elegante para imprimir o guardar en PDF */
+            function printMsgs() {
+                if (!_allMsgs.length) { showToast("Aún no hay mensajes"); return; }
+                var items = _allMsgs.slice().sort(function (a, b) { return new Date(a.created_at) - new Date(b.created_at); })
+                    .map(function (m) {
+                        var date = new Date(m.created_at).toLocaleDateString("es-MX", { day: "numeric", month: "long", year: "numeric" });
+                        return '<article><p class="txt">' + escMsg(m.message) + '</p><p class="who">— ' + escMsg(m.name) + '<span>' + date + '</span></p></article>';
+                    }).join("");
+                var html = '<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">' +
+                    '<title>Libro de Visitas · Karla & Eduardo</title>' +
+                    '<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:ital@0;1&display=swap" rel="stylesheet">' +
+                    '<style>*{box-sizing:border-box}body{margin:0;padding:32px 24px;background:#fbf8f2;color:#2c2420;font-family:"Playfair Display",Georgia,serif}' +
+                    '.bar{text-align:center;margin-bottom:16px}.bar button{font:600 14px Arial,sans-serif;padding:10px 18px;border:0;background:#2c2420;color:#fff;border-radius:6px;cursor:pointer}' +
+                    'header{text-align:center;margin:8px 0 28px}h1{font-family:"Great Vibes",cursive;font-weight:400;font-size:52px;color:#b08a4e;margin:0}' +
+                    'header p{font-style:italic;color:#7a6a5a;margin:6px 0 0}' +
+                    'main{max-width:680px;margin:0 auto;columns:1}article{break-inside:avoid;border-top:1px solid #e3d6bf;padding:18px 4px}' +
+                    '.txt{font-size:16px;line-height:1.7;margin:0;white-space:pre-line}.who{margin:10px 0 0;font-style:italic;color:#8a6a3a}.who span{float:right;font:12px Arial,sans-serif;color:#9a8a7a;font-style:normal}' +
+                    'footer{text-align:center;margin-top:28px;color:#9a8a7a;font-style:italic}@media print{.bar{display:none}body{padding:0;background:#fff}}</style></head><body>' +
+                    '<div class="bar"><button onclick="window.print()">🖨 Imprimir / Guardar PDF</button></div>' +
+                    '<header><h1>Libro de Visitas</h1><p>Karla &amp; Eduardo · 21 de noviembre de 2026 · ' + _allMsgs.length + ' mensajes</p></header>' +
+                    '<main>' + items + '</main><footer>Gracias por acompañarnos con tus palabras</footer></body></html>';
+                var w = window.open("", "_blank");
+                if (!w) { alert("Tu navegador bloqueó la ventana. Permite ventanas emergentes e inténtalo de nuevo."); return; }
+                w.document.open(); w.document.write(html); w.document.close();
+            }
+
             async function deleteMsg(id) {
-                if (!confirm("¿Eliminar este mensaje?")) return;
+                var mm = _allMsgs.find(function (x) { return x.id === id; });
+                if (!confirm("¿Eliminar el mensaje" + (mm ? " de " + mm.name : "") + "?\nNo se puede deshacer.")) return;
                 try {
                     var r = await fetch(SUPABASE_URL + "/rest/v1/messages?id=eq." + id, {
                         method: "DELETE",
