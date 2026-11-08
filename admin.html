@@ -3,6 +3,7 @@
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="color-scheme" content="light dark" />
         <title>Admin — Boda K&amp;E</title>
         <link
             href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Montserrat:wght@300;400;500;600&display=swap"
@@ -59,6 +60,10 @@
                 --slot-label-bg: rgba(18,13,9,0.65);
                 --slot-ph-bg: rgba(30,22,14,0.45);
             }
+            /* Declara qué tema usa la página: evita que el modo oscuro automático del
+               navegador "invierta" colores a medias (campo oscuro sobre fondo claro) */
+            :root { color-scheme: light; }
+            [data-theme="dark"] { color-scheme: dark; }
             *,
             *::before,
             *::after {
@@ -77,6 +82,14 @@
 
             /* ── Gate ───────────────────────────────────── */
             #gate {
+                /* Pinta su propio fondo con el tema: si algo externo (extensión, modo oscuro
+                   del navegador) cambia el fondo del body, el acceso sigue legible */
+                position: fixed;
+                inset: 0;
+                z-index: 50;
+                overflow-y: auto;
+                background: linear-gradient(150deg, var(--bg) 0%, var(--bg-2) 100%);
+                color: var(--text);
                 min-height: 100vh;
                 display: flex;
                 flex-direction: column;
