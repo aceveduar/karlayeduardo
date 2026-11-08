@@ -4617,7 +4617,7 @@
                     var famPax = fam && fam.rsvps && fam.rsvps[0] && fam.rsvps[0].attending ? fam.rsvps[0].guest_count : 0;
                     if (mesa && (mesa.pax + famPax) > CAP_POR_MESA) {
                         if (!confirm("⚠ La Mesa " + val + " quedaría con " + (mesa.pax + famPax) + "/" + CAP_POR_MESA + " pax (excede capacidad).\n¿Asignar de todas formas?")) {
-                            renderTable(allData);
+                            applyFilters();
                             return;
                         }
                     }
@@ -4743,12 +4743,22 @@
                 var sinMesa = allData.filter(function(f) {
                     return f.confirmed && f.rsvps && f.rsvps[0] && f.rsvps[0].attending && !f.table_number;
                 });
-                assignSel.innerHTML = sinMesa.length
-                    ? '<option value="">— Seleccionar familia —</option>' + sinMesa.map(function(f) {
-                        var pax = f.rsvps[0].guest_count || 0;
-                        return '<option value="' + esc(f.id) + '">' + esc(f.family_name) + ' (' + pax + ' pax)</option>';
-                      }).join("")
-                    : '<option value="">✓ Todas las familias tienen mesa</option>';
+                /* También las que ya tienen OTRA mesa → mover en un paso (antes: Quitar, cerrar, abrir otra, asignar) */
+                var enOtra = allData.filter(function(f) {
+                    return f.confirmed && f.rsvps && f.rsvps[0] && f.rsvps[0].attending && f.table_number && f.table_number !== n;
+                }).sort(function(a, b) { return a.family_name.localeCompare(b.family_name, "es"); });
+                var opt = function(f, extra) {
+                    var pax = f.rsvps[0].guest_count || 0;
+                    return '<option value="' + esc(f.id) + '">' + esc(f.family_name) + ' (' + pax + ' pax' + (extra || "") + ')</option>';
+                };
+                assignSel.innerHTML =
+                    '<option value="">— Seleccionar familia —</option>' +
+                    (sinMesa.length
+                        ? '<optgroup label="Sin mesa (' + sinMesa.length + ')">' + sinMesa.map(function(f){ return opt(f); }).join("") + '</optgroup>'
+                        : '<option value="" disabled>✓ Todas las familias tienen mesa</option>') +
+                    (enOtra.length
+                        ? '<optgroup label="Mover desde otra mesa">' + enOtra.map(function(f){ return opt(f, " · ahora Mesa " + f.table_number); }).join("") + '</optgroup>'
+                        : '');
 
                 document.getElementById("mesa-detail-overlay").classList.add("is-open");
             }
@@ -4763,6 +4773,8 @@
             }
 
             async function removeFromMesa(id, mesaNum) {
+                var rf = allData.find(function(x) { return x.id === id; });
+                if (!confirm("¿Quitar a " + (rf ? rf.family_name : "esta familia") + " de la Mesa " + mesaNum + "?\nQuedará sin mesa asignada.")) return;
                 try {
                     var tr = await fetch(SUPABASE_URL + "/rest/v1/families?id=eq." + id, {
                         method: "PATCH",
@@ -4775,7 +4787,8 @@
                     renderMesasGrid();
                     openMesaDetail(mesaNum);
                     renderProgress(allData);
-                    renderTable(allData);
+                    applyFilters();
+                    showToast((f ? f.family_name : "Familia") + " quedó sin mesa");
                 } catch (e) {
                     showToast("⚠ Error al quitar familia. Intenta nuevamente.");
                 }
@@ -4801,11 +4814,15 @@
                     });
                     if (!tr.ok) throw new Error("HTTP " + tr.status);
                     var f = allData.find(function(x) { return x.id === id; });
+                    var prevMesa = f && f.table_number;
                     if (f) f.table_number = n;
                     renderMesasGrid();
                     openMesaDetail(n);
                     renderProgress(allData);
-                    renderTable(allData);
+                    applyFilters();
+                    showToast(prevMesa
+                        ? "✓ " + f.family_name + " movida de Mesa " + prevMesa + " a Mesa " + n
+                        : "✓ " + (f ? f.family_name : "Familia") + " asignada a Mesa " + n);
                 } catch (e) {
                     showToast("⚠ Error al asignar. Intenta nuevamente.");
                 }
@@ -5856,7 +5873,7 @@
                         this.textContent = "✓ Guardado";
                         var self = this;
                         setTimeout(function () { self.textContent = "Guardar"; }, 2000);
-                        renderTable(allData);
+                        applyFilters();
                     });
             })();
 
