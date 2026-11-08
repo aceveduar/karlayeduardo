@@ -1260,6 +1260,8 @@
             .rec-setup-banner { background: rgba(201,169,110,0.07); border: 1px solid rgba(201,169,110,0.25); border-radius: 10px; padding: 1rem 1.25rem; margin-bottom: 1rem; font-family: var(--f-sans); font-size: 0.62rem; color: var(--text-mid); line-height: 1.6; }
             .rec-setup-banner code { background: rgba(201,169,110,0.15); padding: 0.1em 0.4em; border-radius: 3px; font-size: 0.9em; color: var(--gold); }
             .rec-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.6rem; margin-top: 0.5rem; }
+            /* Tablet/PC: miniaturas de ~220px (con 2 columnas una sola foto ocupaba media pantalla) */
+            @media (min-width: 700px) { .rec-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 0.8rem; } }
             .rec-card  { position: relative; border-radius: 8px; overflow: hidden; background: var(--surface); border: 1px solid rgba(201,169,110,0.15); }
             .rec-card__img { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; }
             .rec-card__info { padding: 0.5rem 0.6rem 0.4rem; }
