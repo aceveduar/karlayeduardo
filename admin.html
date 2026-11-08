@@ -2770,6 +2770,124 @@
                 transition: color 0.3s ease;
             }
             .gate-back-link:hover { color: rgba(201,169,110,0.9); }
+
+            /* =============================================
+               AUDITORÍA UX/UI — recta final de la boda
+               ============================================= */
+
+            /* iOS hace zoom en inputs < 16px (bug #5 de CLAUDE.md) */
+            .search-input, .msgs-search, .config-input, .config-textarea, select.config-input,
+            input[type="password"], input[type="text"], input[type="tel"], input[type="search"], input[type="number"], textarea {
+                font-size: max(1rem, 16px) !important;
+            }
+
+            /* Header: en móvil solo la flecha, para que no se corte "Karla & Eduardo" */
+            @media (max-width: 480px) {
+                .app-header { padding: 0 0.75rem; gap: 0.4rem; }
+                .app-header__action-lbl { display: none; }
+                .app-header__action { min-width: 40px; min-height: 40px; display: inline-flex; align-items: center; justify-content: center; }
+                .app-header__title { font-size: 1.15rem; }
+            }
+
+            /* Stats: 2×2 en móvil (4 columnas de 85px no dejan leer las etiquetas) */
+            @media (max-width: 480px) {
+                .stats { grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+                .stat { padding: 0.85rem 0.5rem; }
+                .stat__num { font-size: 2rem; }
+                .stat__lbl { font-size: 0.66rem; }
+            }
+
+            /* CTA de Check-in: más contraste (verde 65% sobre oscuro no se leía) */
+            .ci-cta-btn { min-height: 64px; border-radius: 10px; }
+            [data-theme="dark"] .ci-cta-btn { background: rgba(126,200,160,0.08); border-color: rgba(126,200,160,0.4); }
+            [data-theme="dark"] .ci-cta-title { color: #8fd8b0; font-size: 1.2rem; }
+            [data-theme="dark"] .ci-cta-sub   { color: rgba(176,228,198,0.8); }
+            [data-theme="dark"] .ci-cta-icon  { color: #8fd8b0; border-color: rgba(126,200,160,0.4); background: rgba(126,200,160,0.12); }
+            [data-theme="dark"] .ci-cta-chev  { color: rgba(176,228,198,0.7); }
+            .reminder-act-btn { min-height: 40px; }
+
+            /* Etiquetas de grupo: los colores inline están pensados para fondo claro */
+            [data-theme="dark"] .group-badge,
+            [data-theme="dark"] .qr-card__group { filter: brightness(1.9) saturate(1.1); }
+
+            /* Mesas: la regla oscura de .mesa-seat--filled pisaba dorado/verde/rojo */
+            [data-theme="dark"] .mesa-seat--filled                       { background: rgba(240,232,216,0.45); }
+            [data-theme="dark"] .mesa-card--partial .mesa-seat--filled   { background: #c9a96e; }
+            [data-theme="dark"] .mesa-card--full    .mesa-seat--filled   { background: #7ec8a0; }
+            [data-theme="dark"] .mesa-card--over    .mesa-seat--filled   { background: #e08888; }
+            .mesa-card__seats { grid-template-columns: repeat(12, 1fr); }  /* 12 lugares en una fila */
+            .mesa-seat { height: 8px; }
+
+            /* Fotos: el sello "✓ Subida" tapaba el título */
+            .foto-slot__label { padding-right: 5.5rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+            /* Botones del detalle de familia: área táctil cómoda */
+            .detail-inner .action-btn { min-height: 40px; }
+
+            /* ── Check-in ─────────────────────────────── */
+            .ci-close { min-height: 44px; min-width: 44px; padding: 0.5rem 1rem; border-radius: 22px; }
+            [data-theme="dark"] .ci-close { border-color: rgba(240,232,216,0.25); color: var(--text); }
+            .qr-toggle-btn {
+                background: var(--gold); color: #1e1410; border-color: var(--gold);
+                min-height: 60px; font-size: 0.8rem; border-radius: 10px;
+            }
+            .qr-toggle-btn:hover { background: #d8b97e; }
+            .qr-toggle-btn.scanning { border-radius: 10px; }
+            .ci-search-bar {
+                /* top negativo = padding-top del overlay → se pega al borde real, sin asomar tarjetas */
+                position: sticky; top: -1.5rem; z-index: 3;
+                margin: 0; padding: 1.5rem 0 0.75rem;
+                background: var(--bg);
+                display: flex; align-items: center;
+            }
+            @media (max-width: 640px) { .ci-search-bar { top: -1rem; padding-top: 1rem; } }
+            @media (min-width: 1024px) { .ci-search-bar { top: -2rem; padding-top: 2rem; } }
+            .ci-search-bar .search-input {
+                padding-left: 2.6rem; padding-right: 3rem; min-height: 50px; border-radius: 10px;
+                background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' stroke='%23c9a96e' viewBox='0 0 24 24'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'/%3E%3C/svg%3E");
+                background-repeat: no-repeat; background-size: 18px; background-position: 0.85rem center;
+            }
+            .ci-search-bar .search-input::-webkit-search-cancel-button { display: none; }
+            .ci-search-clear {
+                display: none; position: absolute; right: 0.4rem;
+                width: 36px; height: 36px; align-items: center; justify-content: center;
+                border: none; border-radius: 50%; background: rgba(201,169,110,0.15); color: var(--gold); font-size: 0.9rem; cursor: pointer;
+            }
+            .ci-list { margin-top: 0.25rem; padding-bottom: 6rem; }
+            .ci-item { border-radius: 8px; min-height: 64px; }
+            .ci-item__detail { font-size: 0.74rem; line-height: 1.5; }
+            .ci-mesa { color: var(--gold); font-weight: 600; }
+            .ci-nomesa { color: #e08888; }
+            .ci-btn { min-height: 44px; border-radius: 8px; font-size: 0.72rem; }
+            .ci-done-badge { font-size: 0.72rem; }
+            .ci-undo {
+                min-height: 36px; padding: 0.35rem 0.75rem;
+                background: none; border: 1px solid rgba(224,136,136,0.35); border-radius: 18px;
+                font-family: var(--f-sans); font-size: 0.66rem; letter-spacing: 0.08em; text-transform: uppercase;
+                color: #e08888; cursor: pointer;
+            }
+            .ci-empty { padding: 2rem 1rem; text-align: center; color: var(--text-mid); font-size: 0.85rem; line-height: 1.6; }
+            .ci-empty p + p { font-size: 0.75rem; color: var(--text-soft); margin-top: 0.4rem; }
+            .ci-banner {
+                position: fixed; left: 1rem; right: 1rem; bottom: calc(1rem + env(safe-area-inset-bottom)); z-index: 700;
+                padding: 1.1rem 1.25rem; border-radius: 14px; text-align: center;
+                background: #1f4d36; border: 1px solid #7ec8a0; color: #fff;
+                box-shadow: 0 12px 40px rgba(0,0,0,0.45);
+                animation: ci-banner-in 0.3s cubic-bezier(0.34,1.56,0.64,1);
+                transition: opacity 0.4s ease, transform 0.4s ease;
+            }
+            .ci-banner.is-out { opacity: 0; transform: translateY(20px); }
+            .ci-banner--undo { background: #4a2a2a; border-color: #e08888; }
+            .ci-banner__title { font-family: var(--f-serif); font-size: 1.25rem; line-height: 1.25; }
+            .ci-banner__sub { font-family: var(--f-sans); font-size: 0.85rem; opacity: 0.85; margin-top: 0.2rem; }
+            .ci-banner__mesa { font-family: var(--f-serif); font-style: italic; font-size: 2rem; color: #f3dca8; margin-top: 0.25rem; line-height: 1.1; }
+            .ci-banner__mesa--none { font-size: 1rem; font-style: normal; color: #ffb4b4; }
+            /* Modo claro: dorado #c9a96e sobre blanco ≈ 2:1 de contraste → tonos más oscuros */
+            :root:not([data-theme="dark"]) .ci-mesa  { color: #7a5a1e; }
+            :root:not([data-theme="dark"]) .ci-nomesa { color: #b03a3a; }
+            :root:not([data-theme="dark"]) .ci-btn   { color: #6e5018; border-color: rgba(122,90,30,0.55); background: rgba(201,169,110,0.14); }
+            :root:not([data-theme="dark"]) .ci-undo  { color: #b03a3a; border-color: rgba(176,58,58,0.4); }
+            @keyframes ci-banner-in { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: none; } }
         </style>
 
         <!-- Aplica tema antes del render para evitar flash -->
@@ -2834,7 +2952,7 @@
             <header class="app-header">
                 <a href="index.html" class="app-header__action" title="Ver invitación">
                     <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="vertical-align:middle;margin-right:3px;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
-                    Invitación
+                    <span class="app-header__action-lbl">Invitación</span>
                 </a>
                 <div class="app-header__center">
                     <p class="app-header__title">Karla &amp; Eduardo</p>
@@ -2870,6 +2988,23 @@
                     </div>
 
                     
+
+                    <!-- Día del evento: arriba porque es lo que se usa en la recta final -->
+                    <p class="resumen-section-title">Día del Evento</p>
+                    <button class="ci-cta-btn" onclick="openCheckin()">
+                        <div class="ci-cta-icon">
+                            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+                        </div>
+                        <div class="ci-cta-body">
+                            <p class="ci-cta-title">Abrir Check-in</p>
+                            <p class="ci-cta-sub">Escanea QR · Busca por nombre · Registra llegadas</p>
+                        </div>
+                        <svg class="ci-cta-chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+                    </button>
+                    <button class="reminder-act-btn reminder-act-btn--primary" id="pass-batch-btn" style="width:100%;margin:0.6rem 0 0.4rem;justify-content:center;display:flex;align-items:center;gap:0.5rem;min-height:48px;" onclick="startPassBatch()">
+                        🎫 Enviar recordatorio con pase
+                    </button>
+                    <p id="pass-batch-sub" style="font-size:0.72rem;color:var(--text-soft);text-align:center;margin:0 0 1.5rem;line-height:1.5;">Mándalo 2–3 días antes, en varias tandas: se recuerda a quién ya le llegó.</p>
 
                     <!-- Alertas contextuales -->
                     <div class="resumen-alerts" id="resumen-alerts"></div>
@@ -2969,23 +3104,6 @@
                         </button>
                     </div>
 
-                    <!-- Modo Check-in -->
-                    <p class="resumen-section-title">Día del Evento</p>
-                    <button class="reminder-act-btn reminder-act-btn--primary" id="pass-batch-btn" style="width:100%;margin-bottom:0.4rem;justify-content:center;display:flex;align-items:center;gap:0.5rem;min-height:48px;" onclick="startPassBatch()">
-                        🎫 Enviar recordatorio con pase
-                    </button>
-                    <p id="pass-batch-sub" style="font-size:0.68rem;color:var(--text-soft);text-align:center;margin:0 0 1rem;line-height:1.5;">Mándalo 2–3 días antes. Puedes enviarlo en varias tandas: se recuerda a quién ya le llegó.</p>
-                    <button class="ci-cta-btn" onclick="openCheckin()">
-                        <div class="ci-cta-icon">
-                            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
-                        </div>
-                        <div class="ci-cta-body">
-                            <p class="ci-cta-title">Modo Check-in</p>
-                            <p class="ci-cta-sub">21 · Nov · 2026 · Escanea QR · Registra llegadas</p>
-                        </div>
-                        <svg class="ci-cta-chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
-                    </button>
-
                     <!-- Salir sesión -->
                     <div style="margin-top:2rem;text-align:center;">
                         <button class="logout-text-btn" onclick="exitPanel()">Cerrar sesión</button>
@@ -3028,7 +3146,7 @@
 
                     <!-- Búsqueda -->
                     <div class="search-wrap">
-                        <input class="search-input" type="text" id="search" placeholder="Buscar familia o código…" />
+                        <input class="search-input" type="text" id="search" placeholder="Buscar familia, persona o teléfono…" />
                     </div>
 
                     <!-- Contador -->
@@ -3442,7 +3560,10 @@
             <p class="qr-hint" id="qr-hint"></p>
             <div id="qr-result"></div>
 
-            <input class="search-input" id="ci-search" placeholder="¿Sin QR? Busca por nombre de la persona, familia o código…" style="width:100%;max-width:100%;margin-bottom:0" oninput="filterCheckin(this.value)" />
+            <div class="ci-search-bar">
+                <input class="search-input" id="ci-search" type="search" enterkeyhint="search" autocomplete="off" placeholder="¿Sin QR? Busca persona o familia" oninput="filterCheckin(this.value)" />
+                <button class="ci-search-clear" id="ci-search-clear" type="button" aria-label="Borrar búsqueda" onclick="clearCiSearch()">✕</button>
+            </div>
             <div class="ci-list" id="ci-list"></div>
         </div>
 
@@ -3735,7 +3856,7 @@
                 var confirmed = data.filter(function(f) { return f.confirmed && f.rsvps && f.rsvps[0] && f.rsvps[0].attending; }).length;
                 var pending   = data.filter(function(f) { return !f.confirmed; }).length;
                 var countEl   = document.getElementById("fam-count-bar");
-                if (countEl) countEl.textContent = total + " familias  ·  " + confirmed + " confirmadas  ·  " + pending + " pendientes";
+                if (countEl) countEl.textContent = total + (total === 1 ? " familia" : " familias") + "  ·  " + confirmed + (confirmed === 1 ? " confirmada" : " confirmadas") + "  ·  " + pending + (pending === 1 ? " pendiente" : " pendientes");
 
                 /* Pendientes primero, luego confirmadas, luego declinadas — dentro de cada grupo, alfabético */
                 data.slice().sort(function(a, b) {
@@ -5022,13 +5143,17 @@
 
             function openCheckin() {
                 ciData = allData.filter(function(f) { return f.confirmed && f.rsvps && f.rsvps[0] && f.rsvps[0].attending; });
-                renderCheckin(ciData);
-                document.getElementById("checkin-overlay").style.display = "block";
                 document.getElementById("ci-search").value = "";
+                filterCheckin("");
+                document.getElementById("checkin-overlay").style.display = "block";
                 document.body.style.overflow = "hidden";
+                ciSyncNow();
+                clearInterval(_ciSync);
+                _ciSync = setInterval(ciSyncNow, 15000);
             }
 
             function closeCheckin() {
+                clearInterval(_ciSync); _ciSync = null;
                 stopQrScanner();
                 document.getElementById("checkin-overlay").style.display = "none";
                 document.body.style.overflow = "";
@@ -5038,13 +5163,64 @@
             /* Busca por familia, código o NOMBRE DE CADA PERSONA (sin importar acentos):
                plan B si el invitado llega sin QR y no sabe cómo está registrada su familia */
             function _norm(s) { return String(s || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/\s+/g, " "); }
-            function filterCheckin(q) {
-                var nq = _norm(q).trim();
-                var filtered = nq ? ciData.filter(function(f) {
+            var _ciQuery = "";
+            function _ciFiltered() {
+                var nq = _norm(_ciQuery).trim();
+                return nq ? ciData.filter(function(f) {
                     var rsvp = f.rsvps && f.rsvps[0];
                     return _norm(f.family_name + " " + f.code + " " + (f.guest_names || "") + " " + (rsvp && rsvp.attending_names || "") + " " + (rsvp && rsvp.contact_name || "")).indexOf(nq) !== -1;
                 }) : ciData;
-                renderCheckin(filtered, true);
+            }
+            function filterCheckin(q) {
+                _ciQuery = q || "";
+                var clr = document.getElementById("ci-search-clear");
+                if (clr) clr.style.display = _ciQuery ? "flex" : "none";
+                renderCheckin(_ciFiltered(), true);
+            }
+            function clearCiSearch() {
+                var inp = document.getElementById("ci-search");
+                inp.value = "";
+                filterCheckin("");
+            }
+
+            /* Aviso grande tras registrar: la mesa es lo que hay que decirle al invitado */
+            function ciBanner(f, undone) {
+                var old = document.getElementById("ci-banner");
+                if (old) old.remove();
+                var rsvp = f.rsvps && f.rsvps[0];
+                var pax = rsvp ? rsvp.guest_count : 0;
+                var b = document.createElement("div");
+                b.id = "ci-banner";
+                b.className = "ci-banner" + (undone ? " ci-banner--undo" : "");
+                b.innerHTML = undone
+                    ? '<p class="ci-banner__title">Llegada deshecha</p><p class="ci-banner__sub">' + esc(f.family_name) + '</p>'
+                    : '<p class="ci-banner__title">✓ ' + esc(f.family_name) + '</p>' +
+                      '<p class="ci-banner__sub">' + pax + (pax === 1 ? " persona" : " personas") + '</p>' +
+                      (f.table_number ? '<p class="ci-banner__mesa">Mesa ' + f.table_number + '</p>' : '<p class="ci-banner__mesa ci-banner__mesa--none">Sin mesa asignada</p>');
+                b.onclick = function () { b.remove(); };
+                document.getElementById("checkin-overlay").appendChild(b);
+                setTimeout(function () { if (b.parentNode) b.classList.add("is-out"); }, 3800);
+                setTimeout(function () { if (b.parentNode) b.remove(); }, 4300);
+            }
+
+            /* Sincronizar llegadas entre varios teléfonos mientras el check-in está abierto */
+            var _ciSync = null;
+            async function ciSyncNow() {
+                try {
+                    var r = await fetch(SUPABASE_URL + "/rest/v1/families?select=id,checked_in,checked_in_at", {
+                        headers: { apikey: SUPABASE_ANON_KEY, Authorization: "Bearer " + SUPABASE_ANON_KEY }
+                    });
+                    if (!r.ok) return;
+                    var rows = await r.json(), changed = false;
+                    var map = {}; rows.forEach(function(x){ map[x.id] = x; });
+                    [ciData, allData].forEach(function(arr) {
+                        arr.forEach(function(f) {
+                            var x = map[f.id];
+                            if (x && (!!x.checked_in !== !!f.checked_in)) { f.checked_in = x.checked_in; f.checked_in_at = x.checked_in_at; changed = true; }
+                        });
+                    });
+                    if (changed && !document.querySelector("#ci-list .ci-btn:disabled")) renderCheckin(_ciFiltered(), true);
+                } catch (e) {}
             }
 
             function renderCheckin(data, keepStats) {
@@ -5065,33 +5241,36 @@
                 document.getElementById("ci-list").innerHTML = sorted.length ? sorted.map(function(f) {
                     var rsvp   = f.rsvps && f.rsvps[0];
                     var detail = (rsvp ? rsvp.guest_count + (rsvp.guest_count === 1 ? " persona" : " personas") : "?") +
-                        (f.table_number ? " · Mesa " + f.table_number : "") +
-                        " · " + f.code;
+                        (f.table_number ? " · <strong class=\"ci-mesa\">Mesa " + f.table_number + "</strong>" : " · <span class=\"ci-nomesa\">Sin mesa</span>") +
+                        " · " + esc(f.code);
                     if (f.checked_in) {
                         var t = f.checked_in_at ? new Date(f.checked_in_at).toLocaleTimeString("es-MX", { hour: "2-digit", minute: "2-digit", hour12: false }) : "";
                         return '<div class="ci-item ci-item--done" id="ci-row-' + f.id + '"><div><p class="ci-item__name">' + esc(f.family_name) + '</p><p class="ci-item__detail">' + detail + '</p></div>' +
                             '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:0.3rem;">' +
                             '<span class="ci-done-badge">✓ ' + (t || "Registrado") + '</span>' +
-                            '<button onclick="uncheckIn(\'' + esc(f.id) + '\')" style="background:none;border:none;font-family:var(--f-sans);font-size:0.52rem;letter-spacing:0.1em;text-transform:uppercase;color:rgba(201,112,112,0.45);cursor:pointer;padding:0;transition:color 0.2s" onmouseover="this.style.color=\'#c97070\'" onmouseout="this.style.color=\'rgba(201,112,112,0.45)\'">Deshacer</button>' +
+                            '<button class="ci-undo" onclick="uncheckIn(\'' + esc(f.id) + '\')">Deshacer</button>' +
                             '</div></div>';
                     }
                     return '<div class="ci-item" id="ci-row-' + f.id + '"><div><p class="ci-item__name">' + esc(f.family_name) + '</p><p class="ci-item__detail">' + detail + '</p></div><button class="ci-btn" onclick="checkIn(\'' + esc(f.id) + '\')">✓ Llegó</button></div>';
-                }).join("") : '<p style="padding:2rem;text-align:center;font-size:0.72rem;color:rgba(255,255,255,0.28)">Sin resultados</p>';
+                }).join("") : '<div class="ci-empty"><p>Nadie confirmado coincide con "' + esc(_ciQuery) + '".</p><p>Prueba solo con el apellido o con otra parte del nombre.</p></div>';
             }
 
             async function uncheckIn(id) {
                 if (!confirm("¿Deshacer la llegada de esta familia?")) return;
                 try {
-                    await fetch(SUPABASE_URL + "/rest/v1/families?id=eq." + id, {
+                    var ur = await fetch(SUPABASE_URL + "/rest/v1/families?id=eq." + id, {
                         method: "PATCH",
                         headers: { apikey: SUPABASE_ANON_KEY, Authorization: "Bearer " + SUPABASE_ANON_KEY, "Content-Type": "application/json" },
                         body: JSON.stringify({ checked_in: false, checked_in_at: null }),
                     });
+                    if (!ur.ok) throw new Error("HTTP " + ur.status);
+                    var fam;
                     [ciData, allData].forEach(function(arr) {
                         var f = arr.find(function(x) { return x.id === id; });
-                        if (f) { f.checked_in = false; f.checked_in_at = null; }
+                        if (f) { f.checked_in = false; f.checked_in_at = null; fam = fam || f; }
                     });
-                    renderCheckin(ciData, true);
+                    renderCheckin(_ciFiltered(), true);
+                    if (fam) ciBanner(fam, true);
                 } catch(e) { showToast("⚠ Error al deshacer. Intenta nuevamente."); }
             }
 
@@ -5106,11 +5285,15 @@
                         body: JSON.stringify({ checked_in: true, checked_in_at: new Date().toISOString() }),
                     });
                     if (!cr.ok) throw new Error("HTTP " + cr.status);
+                    var fam;
                     [ciData, allData].forEach(function(arr) {
                         var f = arr.find(function(x) { return x.id === id; });
-                        if (f) { f.checked_in = true; f.checked_in_at = new Date().toISOString(); }
+                        if (f) { f.checked_in = true; f.checked_in_at = new Date().toISOString(); fam = fam || f; }
                     });
-                    renderCheckin(ciData, true);
+                    /* Tras registrar, limpiar la búsqueda: listo para el siguiente invitado */
+                    if (_ciQuery) { document.getElementById("ci-search").value = ""; _ciQuery = ""; var clr = document.getElementById("ci-search-clear"); if (clr) clr.style.display = "none"; }
+                    renderCheckin(_ciFiltered(), true);
+                    if (fam) ciBanner(fam, false);
                 } catch (e) {
                     if (btn) { btn.textContent = "✓ Llegó"; btn.disabled = false; }
                     showToast("⚠ Error al registrar entrada. Intenta nuevamente.");
@@ -5641,7 +5824,7 @@
             })();
 
             function applyFilters() {
-                var q = document.getElementById("search").value.toLowerCase();
+                var q = _norm(document.getElementById("search").value).trim();
                 var filtered = allData.filter(function (f) {
                     var matchGroup = activeGroup === "__pending__"
                         ? !f.confirmed
@@ -5654,7 +5837,7 @@
                                     : activeGroup === "__checked_in__"
                                         ? !!f.checked_in
                                         : (!activeGroup || f.group_name === activeGroup);
-                    var matchSearch = !q || f.family_name.toLowerCase().includes(q) || f.code.toLowerCase().includes(q);
+                    var matchSearch = !q || _norm(f.family_name + " " + f.code + " " + (f.guest_names || "") + " " + (f.phone || "")).indexOf(q) !== -1;
                     return matchGroup && matchSearch;
                 });
                 renderTable(filtered);
@@ -5712,7 +5895,7 @@
             function showToast(msg) {
                 var t = document.createElement("div");
                 t.textContent = msg;
-                t.style.cssText = "position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);background:rgba(30,20,16,0.97);border:1px solid rgba(201,169,110,0.45);color:var(--gold);font-family:var(--f-sans);font-size:0.62rem;letter-spacing:0.14em;padding:0.7rem 1.5rem;z-index:9999;pointer-events:none;white-space:nowrap;box-shadow:0 8px 30px rgba(0,0,0,0.4);transition:opacity 0.4s ease;";
+                t.style.cssText = "position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);background:rgba(30,20,16,0.97);border:1px solid rgba(201,169,110,0.45);color:var(--gold);font-family:var(--f-sans);font-size:0.78rem;letter-spacing:0.04em;line-height:1.4;text-align:center;padding:0.75rem 1.25rem;z-index:9999;pointer-events:none;width:max-content;max-width:calc(100vw - 2rem);border-radius:8px;bottom:calc(76px + env(safe-area-inset-bottom));box-shadow:0 8px 30px rgba(0,0,0,0.4);transition:opacity 0.4s ease;";
                 document.body.appendChild(t);
                 setTimeout(function() { t.style.opacity = "0"; }, 3000);
                 setTimeout(function() { t.remove(); }, 3400);
