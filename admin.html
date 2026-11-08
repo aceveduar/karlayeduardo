@@ -2960,6 +2960,57 @@
             .sm-row__act .mesa-assign-btn { min-height: 44px; padding: 0 1rem; }
             .sm-empty { padding: 1.5rem 1.25rem 2rem; text-align: center; color: #7ec8a0; font-size: 0.9rem; }
 
+            /* ── Familias ───────────────────────────────────────── */
+            /* Filtros + búsqueda fijos arriba al bajar por la lista */
+            .fam-sticky { position: sticky; top: 0; z-index: 5; background: var(--bg); padding: 0.5rem 0 0.35rem; }
+            .fam-sticky .group-filter-wrap { margin-bottom: 0.5rem !important; }
+            .fam-sticky .search-wrap { margin-bottom: 0.25rem; }
+            /* "Nueva familia" ya no es la acción principal (faltan días): más discreto */
+            .fam-new-btn { min-height: 44px; padding: 0.55rem 1rem !important; margin-bottom: 0.5rem !important; font-size: 0.68rem !important; }
+            /* Tarjeta tocable completa */
+            .fam-card__main { cursor: pointer; }
+            .fam-card__main:active { background: rgba(201,169,110,0.05); }
+            .fam-meta-pax--partial { color: #e0a96e; font-weight: 600; }
+            .fam-action-toggle svg { margin-left: 0.2rem; }
+
+            /* Hoja de familia */
+            .fam-sheet { max-height: 90vh; overflow-y: auto; scrollbar-width: thin; scrollbar-color: rgba(201,169,110,0.35) transparent; }
+            .fam-sheet::-webkit-scrollbar { width: 6px; }
+            .fam-sheet::-webkit-scrollbar-thumb { background: rgba(201,169,110,0.35); border-radius: 3px; }
+            .fam-sheet .mesa-detail-num { font-size: 1.45rem; line-height: 1.2; overflow-wrap: anywhere; }
+            .fs-badges { display: flex; flex-wrap: wrap; gap: 0.35rem; align-items: center; margin-top: 0.4rem; }
+            .fs-arrived { font-size: 0.68rem; font-weight: 600; color: #7ec8a0; border: 1px solid rgba(126,200,160,0.4); border-radius: 10px; padding: 0.1rem 0.5rem; }
+            .fs-inner { background: none !important; border: none !important; padding: 0 1.25rem 1.5rem !important; }
+            .fs-inner > .fs-view { grid-column: 1 / -1; }
+            .fs-facts { display: grid; grid-template-columns: 1fr 1fr 1.25fr; gap: 0.5rem; margin: 0.25rem 0 0.85rem; }
+            .fs-fact { background: var(--surface); border: 1px solid rgba(201,169,110,0.2); border-radius: 10px; padding: 0.6rem 0.7rem; text-align: left; min-width: 0; }
+            .fs-fact--btn { cursor: pointer; font: inherit; color: inherit; }
+            .fs-fact--btn:active { transform: scale(0.98); }
+            .fs-fact__lbl { font-size: 0.62rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-mid); }
+            .fs-fact__val { font-family: var(--f-serif); font-size: 1.3rem; color: var(--gold); line-height: 1.2; margin-top: 0.15rem; }
+            .fs-fact__val small { font-size: 0.75rem; color: var(--text-mid); font-family: var(--f-sans); }
+            .fs-fact__val--code { font-family: ui-monospace, monospace; font-size: 0.85rem; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+            .fs-none { color: #e08888; font-size: 1rem; }
+            .fs-muted { color: var(--text-soft); }
+            .fs-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-bottom: 1rem; }
+            .fs-btn {
+                display: flex; align-items: center; justify-content: center; gap: 0.4rem;
+                min-height: 48px; padding: 0.5rem 0.75rem; border-radius: 10px;
+                background: var(--surface); border: 1px solid rgba(201,169,110,0.35); color: var(--gold);
+                font-family: var(--f-sans); font-size: 0.78rem; font-weight: 600; text-decoration: none; cursor: pointer;
+            }
+            .fs-btn--wa { grid-column: 1 / -1; background: #25d366; border-color: #25d366; color: #fff; font-size: 0.85rem; }
+            .fs-btn--danger { width: 100%; color: #e08888; border-color: rgba(224,136,136,0.4); background: transparent; }
+            .fs-section { padding: 0.85rem 0; border-top: 1px solid rgba(201,169,110,0.12); }
+            .fs-section__lbl { font-size: 0.66rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-mid); margin-bottom: 0.4rem; }
+            .fs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+            .fs-val { font-size: 0.9rem; color: var(--text); line-height: 1.45; overflow-wrap: anywhere; }
+            .fs-val a { color: var(--gold); }
+            .fs-val small { color: var(--text-mid); font-size: 0.75rem; }
+            .fs-notes { white-space: pre-line; }
+            .fs-danger { border-top-style: dashed; }
+            @media (max-width: 360px) { .fs-facts { grid-template-columns: 1fr 1fr; } .fs-facts .fs-fact--btn { grid-column: 1 / -1; } }
+
             /* Menú: Check-in en verde (mismo color que "Abrir Check-in" del Resumen) */
             .bottom-nav__item--checkin { color: #2a7a52; }
             .bottom-nav__item--checkin .bottom-nav__lbl { color: #2a7a52; font-weight: 700; }
@@ -3221,6 +3272,8 @@
                         Nueva Familia
                     </button>
 
+                    <!-- Barra fija: filtros + búsqueda siguen visibles al bajar por 98 familias -->
+                    <div class="fam-sticky">
                     <!-- Filtros de grupo -->
                     <div class="group-filter-wrap" style="margin-bottom:0.75rem;">
                         <div class="group-filter" id="group-filter">
@@ -3251,6 +3304,7 @@
                     <div class="search-wrap">
                         <input class="search-input" type="text" id="search" placeholder="Buscar familia, persona o teléfono…" />
                     </div>
+                    </div><!-- /fam-sticky -->
 
                     <!-- Contador -->
                     <p class="fam-count-bar" id="fam-count-bar"></p>
@@ -3415,6 +3469,21 @@
                         <button class="mesa-detail-close" onclick="closeSheet('sinmesa-overlay')" aria-label="Cerrar">✕</button>
                     </div>
                     <div id="sm-list"></div>
+                </div>
+            </div>
+
+            <!-- Hoja: detalle de una familia (antes era un panel que se abría dentro de la lista) -->
+            <div class="mesa-detail-overlay" id="fam-sheet-overlay" onclick="if(event.target===this)closeSheet('fam-sheet-overlay')">
+                <div class="mesa-detail-sheet fam-sheet" role="dialog" aria-modal="true" aria-labelledby="fs-name">
+                    <div class="sheet-grip" aria-hidden="true"></div>
+                    <div class="mesa-detail-header">
+                        <div style="min-width:0">
+                            <p class="mesa-detail-num" id="fs-name"></p>
+                            <div class="fs-badges" id="fs-badges"></div>
+                        </div>
+                        <button class="mesa-detail-close" onclick="closeSheet('fam-sheet-overlay')" aria-label="Cerrar">✕</button>
+                    </div>
+                    <div id="fs-body"></div>
                 </div>
             </div>
 
@@ -3773,9 +3842,7 @@
                 var silent = opts && opts.silent;
                 var famList = document.getElementById("fam-list");
                 var loadingEl = document.getElementById("loading");
-                /* Recordar qué estaba viendo el usuario para restaurarlo tras redibujar */
-                var openPanel = document.querySelector(".fam-detail-panel.is-open");
-                var openId = openPanel ? openPanel.id.replace("fdp-", "") : null;
+                /* Recordar la posición para restaurarla tras redibujar */
                 var scroller = document.querySelector(".tab-content");
                 var scrollY = scroller ? scroller.scrollTop : 0;
                 if (!silent) {
@@ -3795,10 +3862,9 @@
                     if (silent && isUserEditing()) return;
                     /* Respetar búsqueda y filtro activos (antes se mostraban las 98 aunque hubiera búsqueda) */
                     applyFilters();
-                    if (openId && !isUserEditing()) {
-                        var p = document.getElementById("fdp-" + openId);
-                        if (p) toggleFamDetail(openId);
-                    }
+                    /* Hoja de familia abierta: refrescar con los datos nuevos (tras guardar/cancelar
+                       vuelve a la vista; si la familia ya no existe, la hoja se cierra) */
+                    if (famSheetOpen()) renderFamSheet();
                     if (scroller) scroller.scrollTop = scrollY;
                     if (document.getElementById("tab-mesas") && document.getElementById("tab-mesas").classList.contains("is-active") && typeof renderMesasGrid === "function") renderMesasGrid();
                     if (!_tabRestored) {
@@ -4052,8 +4118,15 @@
                     card.className = "fam-card fam-card--" + status;
                     card.id = "fam-card-" + f.id;
 
+                    /* Personas: en confirmadas "2 de 4" (se nota una cancelación parcial sin abrir nada) */
+                    var paxHtml = status === "confirmed"
+                        ? '<span class="fam-meta-pax' + (rsvp.guest_count < f.max_guests ? ' fam-meta-pax--partial' : '') + '">' + _SVG_USER +
+                          rsvp.guest_count + ' de ' + f.max_guests + '</span>'
+                        : '<span class="fam-meta-pax">' + _SVG_USER + f.max_guests + (f.max_guests === 1 ? ' pase' : ' pases') + '</span>';
+
+                    /* Toda la tarjeta abre la hoja de detalle; Eliminar vive en la hoja (aquí estaba a un toque de WhatsApp) */
                     card.innerHTML =
-                        '<div class="fam-card__main" onclick="toggleFamDetail(\'' + esc(f.id) + '\')">' +
+                        '<div class="fam-card__main" role="button" tabindex="0" onclick="openFamSheet(\'' + esc(f.id) + '\')" onkeydown="if(event.key===\'Enter\')openFamSheet(\'' + esc(f.id) + '\')">' +
                             '<div class="fam-card__top">' +
                                 '<span class="fam-card__name">' + esc(f.family_name) + '</span>' +
                                 '<span class="fam-status-badge fam-status-badge--' + status + '">' + statusLbl + '</span>' +
@@ -4062,7 +4135,7 @@
                                 (f.group_name ? groupBadge(f.group_name) + '<span class="fam-meta-sep">·</span>' : '') +
                                 mesaHtml +
                                 (mesaHtml ? '<span class="fam-meta-sep">·</span>' : '') +
-                                '<span class="fam-meta-pax">' + _SVG_USER + f.max_guests + (f.max_guests === 1 ? ' pase' : ' pases') + '</span>' +
+                                paxHtml +
                             '</div>' +
                         '</div>' +
                         '<div class="fam-card__actions-row">' +
@@ -4070,16 +4143,10 @@
                                 _SVG_COPY + esc(f.code) +
                             '</button>' +
                             '<div class="fam-actions-right">' +
-                                '<a class="' + waCls + '" href="' + esc((f.confirmed && f.rsvps && f.rsvps[0] && f.rsvps[0].attending) ? buildPassWaUrl(f, 0) : buildWaUrl(f.family_name, f.code, f.phone, f.table_number)) + '" target="_blank" onclick="event.stopPropagation()">' + waLabel + '</a>' +
-                                '<button class="fam-action-toggle" id="fam-toggle-' + f.id + '" onclick="event.stopPropagation();toggleFamDetail(\'' + esc(f.id) + '\')">' +
-                                    _SVG_CHEV + '<span>Detalle</span>' +
+                                '<a class="' + waCls + '" href="' + esc(famWaUrl(f)) + '" target="_blank" onclick="event.stopPropagation()">' + waLabel + '</a>' +
+                                '<button class="fam-action-toggle" onclick="event.stopPropagation();openFamSheet(\'' + esc(f.id) + '\')">' +
+                                    '<span>Ver</span>' + _SVG_CHEV +
                                 '</button>' +
-                                (canDelete ? '<button class="fam-action-del" onclick="event.stopPropagation();deleteFamily(\'' + esc(f.id) + '\',\'' + esc(f.family_name) + '\')" title="Eliminar">✕</button>' : '') +
-                            '</div>' +
-                        '</div>' +
-                        '<div class="fam-detail-panel" id="fdp-' + f.id + '">' +
-                            '<div class="detail-inner" id="di-' + f.id + '">' +
-                                buildFamDetailContent(f) +
                             '</div>' +
                         '</div>';
 
@@ -4101,17 +4168,134 @@
                 }).catch(function() { prompt("Copia este link:", link); });
             }
 
-            function toggleFamDetail(id) {
-                var panel  = document.getElementById("fdp-" + id);
-                var btn    = document.getElementById("fam-toggle-" + id);
-                var isOpen = panel.classList.contains("is-open");
-                /* Cierra todos los demás */
-                document.querySelectorAll(".fam-detail-panel.is-open").forEach(function(p) { p.classList.remove("is-open"); });
-                document.querySelectorAll(".fam-action-toggle.is-open").forEach(function(b) { b.classList.remove("is-open"); b.innerHTML = _SVG_CHEV + '<span>Detalle</span>'; });
-                if (!isOpen) {
-                    panel.classList.add("is-open");
-                    if (btn) { btn.classList.add("is-open"); btn.innerHTML = '<span>Cerrar</span> ✕'; }
+            /* WhatsApp según estado: confirmadas reciben su PASE; el resto, la invitación */
+            function famWaUrl(f) {
+                return (f.confirmed && f.rsvps && f.rsvps[0] && f.rsvps[0].attending)
+                    ? buildPassWaUrl(f, 0)
+                    : buildWaUrl(f.family_name, f.code, f.phone, f.table_number);
+            }
+
+            /* ── Hoja de detalle de familia ───────────────────────────────
+               Reemplaza el panel que se abría dentro de la lista (≈450px de alto que
+               hacía perder el lugar entre 98 familias). Los formularios de Editar y
+               Cambiar asistencia se dibujan dentro (#di-<id>) igual que antes. */
+            var _famSheetId = null;
+            function toggleFamDetail(id) { openFamSheet(id); }   /* compatibilidad */
+            function openFamSheet(id) {
+                _famSheetId = id;
+                renderFamSheet();
+                openSheet("fam-sheet-overlay");
+            }
+            function famSheetOpen() {
+                var o = document.getElementById("fam-sheet-overlay");
+                return !!(o && o.classList.contains("is-open"));
+            }
+            function renderFamSheet() {
+                var f = allData.find(function (x) { return x.id === _famSheetId; });
+                if (!f) { if (famSheetOpen()) closeSheet("fam-sheet-overlay"); return; }
+                var rsvp = f.rsvps && f.rsvps[0];
+                var status = !f.confirmed ? "pending" : rsvp && rsvp.attending ? "confirmed" : "declined";
+                var statusLbl = { pending: "Pendiente", confirmed: "Confirmada", declined: "No asiste" }[status];
+                var attending = status === "confirmed";
+
+                document.getElementById("fs-name").textContent = f.family_name;
+                document.getElementById("fs-badges").innerHTML =
+                    '<span class="fam-status-badge fam-status-badge--' + status + '">' + statusLbl + '</span>' +
+                    (f.group_name ? groupBadge(f.group_name) : "") +
+                    (f.checked_in ? '<span class="fs-arrived">✓ Llegó' + (f.checked_in_at ? " " + new Date(f.checked_in_at).toLocaleTimeString("es-MX", { hour: "2-digit", minute: "2-digit", hour12: false }) : "") + '</span>' : "");
+
+                /* Datos clave arriba: lo que se consulta el 90% de las veces */
+                var mesaVal = f.table_number ? 'Mesa ' + f.table_number : (attending ? '<span class="fs-none">Sin mesa</span>' : '—');
+                var paxVal = attending ? rsvp.guest_count + ' <small>de ' + f.max_guests + '</small>' : (status === "declined" ? '<span class="fs-muted">0</span>' : f.max_guests + ' <small>pases</small>');
+                var facts =
+                    '<div class="fs-facts">' +
+                        '<div class="fs-fact"><p class="fs-fact__lbl">Mesa</p><p class="fs-fact__val">' + mesaVal + '</p></div>' +
+                        '<div class="fs-fact"><p class="fs-fact__lbl">' + (attending ? "Asisten" : "Pases") + '</p><p class="fs-fact__val">' + paxVal + '</p></div>' +
+                        '<button class="fs-fact fs-fact--btn" id="fam-code-' + f.id + '" onclick="famCopyLink(\'' + esc(f.code) + '\',\'' + esc(f.id) + '\')" title="Copiar link de invitación">' +
+                            '<p class="fs-fact__lbl">Código · copiar link</p><p class="fs-fact__val fs-fact__val--code">' + esc(f.code) + '</p></button>' +
+                    '</div>';
+
+                /* Acciones principales */
+                var actions =
+                    '<div class="fs-actions">' +
+                        '<a class="fs-btn fs-btn--wa" href="' + esc(famWaUrl(f)) + '" target="_blank" rel="noopener">' + _SVG_WA + (attending ? ' Enviar su pase' : ' Enviar invitación') + '</a>' +
+                        '<button class="fs-btn" onclick="startAttendanceEdit(\'' + f.id + '\')">Cambiar asistencia</button>' +
+                        '<button class="fs-btn" onclick="startEdit(\'' + f.id + '\')">Editar datos</button>' +
+                    '</div>';
+
+                /* Mesa: asignar o mover aquí mismo (antes solo desde la pestaña Mesas) */
+                var mesaBlock = "";
+                if (attending) {
+                    var mMap = buildMesaMap(), opts = '<option value="">' + (f.table_number ? 'Mover a otra mesa…' : 'Elegir mesa…') + '</option>';
+                    for (var n = 1; n <= TOTAL_MESAS; n++) {
+                        if (n === f.table_number) continue;
+                        var used = (mMap[n] && mMap[n].pax) || 0, libres = CAP_POR_MESA - used;
+                        opts += '<option value="' + n + '">Mesa ' + n + ' · ' + (libres <= 0 ? 'llena' : libres + (libres === 1 ? ' libre' : ' libres')) +
+                            (libres > 0 && libres < rsvp.guest_count ? ' (no caben ' + rsvp.guest_count + ')' : '') + '</option>';
+                    }
+                    if (f.table_number) opts += '<option value="0">Quitar mesa (dejar sin mesa)</option>';
+                    mesaBlock =
+                        '<div class="fs-section"><p class="fs-section__lbl">' + (f.table_number ? 'Cambiar de mesa' : 'Asignar mesa') + '</p>' +
+                        '<div class="sm-row__act"><select class="mesa-assign-select" id="fs-mesa-sel" aria-label="Mesa">' + opts + '</select>' +
+                        '<button class="mesa-assign-btn" onclick="famSheetAssign(\'' + f.id + '\')">' + (f.table_number ? 'Mover' : 'Asignar') + '</button></div></div>';
                 }
+
+                /* Invitados por persona */
+                var allNames = f.guest_names ? f.guest_names.split(",").map(function (n) { return n.trim(); }).filter(Boolean) : [];
+                var attArr = rsvp && rsvp.attending && rsvp.attending_names ? rsvp.attending_names.split(",").map(function (n) { return n.trim(); }).filter(Boolean) : [];
+                var attSet = {}; attArr.forEach(function (n) { attSet[n] = true; });
+                var people = allNames.length
+                    ? '<div class="member-status-list">' + allNames.map(function (name) {
+                        var cls = status === "pending" ? "pending" : attSet[name] ? "yes" : "no";
+                        return '<div class="ms-row ms-row--' + cls + '"><span class="ms-icon">' + { pending: "·", yes: "✓", no: "✗" }[cls] + '</span><span class="ms-name">' + esc(name) + '</span></div>';
+                      }).join("") + '</div>'
+                    : '<p class="fs-muted">Sin nombres registrados</p>';
+
+                var date = rsvp && rsvp.created_at ? new Date(rsvp.created_at).toLocaleDateString("es-MX", { day: "numeric", month: "short", year: "numeric" }) : "—";
+                var phoneHtml = f.phone
+                    ? '<a href="https://wa.me/' + (function (p) { var c = p.replace(/\D/g, ""); return c.length > 10 ? c : "52" + c; })(f.phone) + '" target="_blank" rel="noopener">' + esc(f.phone) + '</a>'
+                    : '—';
+                var info =
+                    '<div class="fs-section"><p class="fs-section__lbl">Invitados</p>' + people + '</div>' +
+                    '<div class="fs-section fs-grid">' +
+                        '<div><p class="fs-section__lbl">Teléfono</p><p class="fs-val">' + phoneHtml + '</p></div>' +
+                        '<div><p class="fs-section__lbl">Respondió</p><p class="fs-val">' + esc(rsvp ? rsvp.contact_name || "—" : "—") + '<br><small>' + date + '</small></p></div>' +
+                    '</div>' +
+                    '<div class="fs-section"><p class="fs-section__lbl">Notas internas</p><p class="fs-val fs-notes">' + (f.notes ? esc(f.notes) : '<span class="fs-muted">—</span>') + '</p></div>' +
+                    (!f.confirmed ? '<div class="fs-section fs-danger"><button class="fs-btn fs-btn--danger" onclick="deleteFamily(\'' + esc(f.id) + '\',\'' + esc(f.family_name) + '\')">Eliminar familia</button></div>' : '');
+
+                /* #di-<id>: contenedor donde startEdit/startAttendanceEdit dibujan sus formularios */
+                document.getElementById("fs-body").innerHTML =
+                    '<div class="detail-inner fs-inner" id="di-' + f.id + '"><div class="fs-view">' + facts + actions + mesaBlock + info + '</div></div>';
+            }
+
+            async function famSheetAssign(id) {
+                var sel = document.getElementById("fs-mesa-sel");
+                if (!sel || sel.value === "") { showToast("Elige una mesa primero"); return; }
+                var n = parseInt(sel.value, 10) || null;
+                var f = allData.find(function (x) { return x.id === id; });
+                if (!f) return;
+                var pax = (f.rsvps && f.rsvps[0] && f.rsvps[0].guest_count) || 0;
+                var prev = f.table_number;
+                if (!n && !confirm("¿Quitar a " + f.family_name + " de la Mesa " + prev + "?\nQuedará sin mesa asignada.")) return;
+                if (n) {
+                    var used = (buildMesaMap()[n] || { pax: 0 }).pax || 0;
+                    if (used + pax > CAP_POR_MESA &&
+                        !confirm("⚠ La Mesa " + n + " quedaría con " + (used + pax) + "/" + CAP_POR_MESA + " personas.\n¿Asignar de todas formas?")) return;
+                }
+                try {
+                    var r = await fetch(SUPABASE_URL + "/rest/v1/families?id=eq." + id, {
+                        method: "PATCH",
+                        headers: { apikey: SUPABASE_ANON_KEY, Authorization: "Bearer " + SUPABASE_ANON_KEY, "Content-Type": "application/json" },
+                        body: JSON.stringify({ table_number: n })
+                    });
+                    if (!r.ok) throw new Error("HTTP " + r.status);
+                    f.table_number = n;
+                    renderStats(allData); renderProgress(allData); applyFilters(); renderFamSheet();
+                    showToast(!n ? f.family_name + " quedó sin mesa"
+                        : prev ? "✓ Movida de Mesa " + prev + " a Mesa " + n
+                        : "✓ " + f.family_name + " → Mesa " + n);
+                } catch (e) { showToast("⚠ No se pudo guardar. Intenta nuevamente."); }
             }
 
             function buildFamDetailContent(f) {
@@ -6284,11 +6468,29 @@
             });
 
             /* ── Hojas inferiores: el botón "atrás" de Android las cierra ── */
+            /* Historial de hojas: cada hoja abierta = 1 entrada, para que "atrás" la cierre.
+               history.back() es ASÍNCRONO: si se cierra una hoja y se abre otra enseguida,
+               el pushState de la nueva se perdía y "atrás" sacaba del admin. Por eso, mientras
+               hay un "atrás" en curso (_popPending), la hoja nueva se muestra ya y su entrada
+               se registra cuando termina. */
+            var _popPending = false, _queuedPush = null, _popTimer = null;
+            function _flushQueuedPush() {
+                _popPending = false;
+                clearTimeout(_popTimer);
+                if (_queuedPush) {
+                    var q = _queuedPush; _queuedPush = null;
+                    var qo = document.getElementById(q);
+                    if (qo && qo.classList.contains("is-open")) { try { history.pushState({ keSheet: q }, ""); } catch (e) {} }
+                }
+            }
             function openSheet(id) {
                 var o = document.getElementById(id);
-                if (!o || o.classList.contains("is-open")) return;
+                if (!o) return;
+                var wasOpen = o.classList.contains("is-open");
                 o.classList.add("is-open");
                 document.body.style.overflow = "hidden";
+                if (wasOpen) return;                       /* re-render: no duplicar historial */
+                if (_popPending) { _queuedPush = id; return; }
                 try { history.pushState({ keSheet: id }, ""); } catch (e) {}
             }
             function hideSheet(id) {
@@ -6297,11 +6499,18 @@
                 if (id === "mesa-detail-overlay") _currentMesaDetail = null;
                 if (!document.querySelector(".mesa-detail-overlay.is-open")) document.body.style.overflow = "";
             }
+            /* Cerrar (✕ / fondo): oculta YA y retira su entrada del historial */
             function closeSheet(id) {
-                if (history.state && history.state.keSheet === id) history.back();
-                else hideSheet(id);
+                hideSheet(id);
+                if (!_popPending && history.state && history.state.keSheet === id) {
+                    _popPending = true;
+                    history.back();
+                    _popTimer = setTimeout(_flushQueuedPush, 500);   /* por si el popstate no llega */
+                }
             }
             window.addEventListener("popstate", function () {
+                if (_popPending) { _flushQueuedPush(); return; }   /* nuestro propio "atrás" */
+                /* "atrás" del usuario: cerrar las hojas abiertas */
                 document.querySelectorAll(".mesa-detail-overlay.is-open").forEach(function (o) { hideSheet(o.id); });
             });
 
