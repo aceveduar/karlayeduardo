@@ -3454,7 +3454,7 @@
                         </div>
                         <div class="mesas-stat">
                             <span class="mesas-stat__num" id="mstat-free">—</span>
-                            <span class="mesas-stat__lbl">Lugares libres</span>
+                            <span class="mesas-stat__lbl">Sillas sin asignar</span>
                         </div>
                     </div>
                     <!-- Familias confirmadas sin mesa -->
@@ -4075,7 +4075,7 @@
                     var libre = VENUE_CAP - guests;
                     capEl.textContent = guests > VENUE_CAP
                         ? "⚠ " + (guests - VENUE_CAP) + " sobre el límite"
-                        : libre + " lugares libres";
+                        : libre + " lugares disponibles";
                 }
 
                 /* Colores semánticos en stat cards */
@@ -5100,7 +5100,7 @@
                         ? '<ul class="mesa-card__list">' + m.fams.slice(0, MAXF).map(function (x) {
                               return '<li' + (x.attending ? '' : ' class="is-off"') + '><span>' + esc(x.name) + '</span><b>' + (x.attending ? x.pax : 'no asiste') + '</b></li>';
                           }).join("") + (m.fams.length > MAXF ? '<li class="is-more">+' + (m.fams.length - MAXF) + ' más</li>' : '') + '</ul>'
-                        : '<span class="mesa-card__empty">Sin familias · ' + CAP_POR_MESA + ' lugares libres</span>';
+                        : '<span class="mesa-card__empty">Sin familias · ' + CAP_POR_MESA + ' sillas libres</span>';
 
                     grid.innerHTML +=
                         '<div class="mesa-card mesa-card--' + cls + '" id="mesa-card-' + n + '" onclick="openMesaDetail(' + n + ')" role="button" tabindex="0" aria-label="Mesa ' + n + ', ' + m.pax + ' de ' + CAP_POR_MESA + ' personas">' +
@@ -5370,9 +5370,15 @@
                 var VCAP       = TOTAL_MESAS * CAP_POR_MESA;
                 var totalGuests = data.reduce(function(acc, f) { return acc + (f.max_guests || 0); }, 0);
                 var confGuests  = data.reduce(function(acc, f) { return acc + (f.rsvps && f.rsvps[0] && f.rsvps[0].attending ? (f.rsvps[0].guest_count || 0) : 0); }, 0);
-                // Count cancelled guests as the seats/passes that had been assigned to that family
-                var cancelledGuests = data.reduce(function(acc, f) { return acc + (f.rsvps && f.rsvps[0] && f.rsvps[0].attending === false ? (f.max_guests || 0) : 0); }, 0);
-                var cancelledFamilies = data.filter(function(f){ return f.rsvps && f.rsvps[0] && f.rsvps[0].attending === false; }).length;
+                /* Personas que no asisten = todos los pases de las familias que respondieron (o se marcaron)
+                   que no asisten + los lugares que no usarán las familias que sí asisten con menos personas.
+                   Así cuadra: asisten + no asisten + pases de pendientes = pases totales */
+                var cancelledGuests = data.reduce(function(acc, f) {
+                    if (!f.confirmed) return acc;
+                    var r = f.rsvps && f.rsvps[0];
+                    if (r && r.attending) return acc + Math.max(0, (f.max_guests || 0) - (r.guest_count || 0));
+                    return acc + (f.max_guests || 0);
+                }, 0);
                 var famPct    = total > 0 ? Math.round(confirmed  / total * 100) : 0;
                 var guestsPct = VCAP > 0 ? Math.min(Math.round(confGuests / VCAP * 100), 100) : 0;
                 var invitedPct = VCAP > 0 ? Math.min(Math.round(totalGuests / VCAP * 100), 100) : 0;
