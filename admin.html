@@ -3011,6 +3011,56 @@
             .fs-danger { border-top-style: dashed; }
             @media (max-width: 360px) { .fs-facts { grid-template-columns: 1fr 1fr; } .fs-facts .fs-fact--btn { grid-column: 1 / -1; } }
 
+            /* ── Mesas ─────────────────────────────────────────── */
+            .mesas-tab-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 0.75rem; }
+            .mesas-tab-sub { font-size: 0.72rem; color: var(--text-mid); }
+            .mesas-print-btn {
+                display: inline-flex; align-items: center; gap: 0.4rem; flex-shrink: 0;
+                min-height: 40px; padding: 0.4rem 0.85rem; border-radius: 20px;
+                background: transparent; border: 1px solid rgba(201,169,110,0.45); color: var(--gold);
+                font-family: var(--f-sans); font-size: 0.74rem; font-weight: 600; cursor: pointer;
+            }
+            .mesas-search { margin: 0.25rem 0 1rem; }
+            .mesas-search .search-input {
+                padding-left: 2.6rem; min-height: 48px; border-radius: 10px;
+                background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' stroke='%23c9a96e' viewBox='0 0 24 24'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'/%3E%3C/svg%3E");
+                background-repeat: no-repeat; background-size: 18px; background-position: 0.85rem center;
+            }
+            .mesas-search-results { display: flex; flex-direction: column; gap: 0.35rem; margin-top: 0.5rem; }
+            .mesas-hit {
+                display: flex; justify-content: space-between; align-items: center; gap: 0.75rem;
+                min-height: 44px; padding: 0.5rem 0.85rem; border-radius: 8px; text-align: left;
+                background: var(--surface); border: 1px solid rgba(201,169,110,0.25); color: var(--text);
+                font-family: var(--f-sans); font-size: 0.85rem; cursor: pointer;
+            }
+            .mesas-hit b { color: var(--gold); white-space: nowrap; font-family: var(--f-serif); font-size: 1rem; }
+            .mesas-hit b.is-warn { color: #e08888; font-family: var(--f-sans); font-size: 0.8rem; }
+            .mesas-hit b.is-off { color: var(--text-soft); font-family: var(--f-sans); font-size: 0.8rem; }
+            .mesas-search-none { font-size: 0.8rem; color: var(--text-mid); padding: 0.25rem 0.2rem; }
+            .mesa-card { transition: opacity 0.2s ease, box-shadow 0.2s ease; }
+            .mesa-card.is-dim { opacity: 0.3; }
+            .mesa-card.is-match { box-shadow: 0 0 0 2px var(--gold); opacity: 1; }
+            /* Lista de familias en la tarjeta: una por línea con sus personas */
+            .mesa-card__list { list-style: none; margin: 0.15rem 0 0; padding: 0; }
+            .mesa-card__list li { display: flex; justify-content: space-between; gap: 0.5rem; font-size: 0.78rem; line-height: 1.55; color: var(--text); }
+            .mesa-card__list li span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+            .mesa-card__list li b { color: var(--text-mid); font-weight: 600; flex-shrink: 0; }
+            .mesa-card__list li.is-off span { text-decoration: line-through; color: var(--text-soft); }
+            .mesa-card__list li.is-off b { color: #e08888; font-size: 0.7rem; }
+            .mesa-card__list li.is-more { color: var(--text-mid); font-size: 0.72rem; }
+            .mesa-card__empty { font-size: 0.75rem; color: var(--text-soft); }
+            .mesas-sinmesa-banner { position: relative; cursor: pointer; padding-right: 2.25rem !important; }
+            .mesas-sinmesa-chev { position: absolute; right: 0.9rem; top: 50%; transform: translateY(-50%); font-size: 1.3rem; color: var(--gold); }
+            /* Hoja de mesa: filas tocables */
+            .mesa-fam-row__open {
+                flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 0.15rem;
+                background: none; border: none; padding: 0.15rem 0; text-align: left; cursor: pointer; color: inherit; font: inherit;
+            }
+            .mesa-fam-row__open .mesa-fam-row__name { font-size: 0.92rem; color: var(--text); }
+            .mesa-fam-row__open .mesa-fam-row__name::after { content: " ›"; color: var(--gold); }
+            .mesa-fam-row__open .mesa-fam-row__pax { font-size: 0.74rem; color: var(--text-mid); line-height: 1.4; }
+            .mesa-fam-row__remove { min-height: 40px; }
+
             /* Menú: Check-in en verde (mismo color que "Abrir Check-in" del Resumen) */
             .bottom-nav__item--checkin { color: #2a7a52; }
             .bottom-nav__item--checkin .bottom-nav__lbl { color: #2a7a52; font-weight: 700; }
@@ -3320,8 +3370,19 @@
                 <!-- ── TAB 3: MESAS ────────────────────────── -->
                 <div class="tab-panel" id="tab-mesas">
                     <div class="mesas-tab-header">
-                        <p class="mesas-tab-title">Vista de Mesas</p>
-                        <span style="font-size:0.65rem;color:var(--text-soft);">20 mesas · 12 pax c/u</span>
+                        <div>
+                            <p class="mesas-tab-title">Vista de Mesas</p>
+                            <span class="mesas-tab-sub">20 mesas · 12 personas c/u</span>
+                        </div>
+                        <button class="mesas-print-btn" type="button" onclick="printMesas()" title="Lista por mesa y lista alfabética para la entrada">
+                            <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 9V3h12v6M6 18H4a1 1 0 01-1-1v-6a2 2 0 012-2h14a2 2 0 012 2v6a1 1 0 01-1 1h-2M6 14h12v7H6z"/></svg>
+                            Imprimir listas
+                        </button>
+                    </div>
+                    <!-- Buscar en qué mesa está alguien (antes había que ir a Familias) -->
+                    <div class="mesas-search">
+                        <input class="search-input" type="search" id="mesas-search" autocomplete="off" placeholder="¿En qué mesa está…? Escribe un nombre" oninput="filterMesas(this.value)" />
+                        <div class="mesas-search-results" id="mesas-search-results"></div>
                     </div>
                     <!-- Stats rápidos -->
                     <div class="mesas-stats-row">
@@ -3339,12 +3400,13 @@
                         </div>
                     </div>
                     <!-- Familias confirmadas sin mesa -->
-                    <div class="mesas-sinmesa-banner" id="mesas-sinmesa-banner">
+                    <div class="mesas-sinmesa-banner is-link" id="mesas-sinmesa-banner" role="button" tabindex="0" data-go="sinmesa">
                         <span class="mesas-sinmesa-count" id="mesas-sinmesa-count">0</span>
                         <div class="mesas-sinmesa-txt">
                             <p>familias confirmadas sin mesa</p>
-                            <p>Toca una mesa para asignarlas</p>
+                            <p>Toca aquí para asignarles mesa</p>
                         </div>
+                        <span class="mesas-sinmesa-chev" aria-hidden="true">›</span>
                     </div>
                     <!-- Alerta capacidad excedida -->
                     <div class="mesas-over-banner" id="mesas-over-banner">⚠️ Hay mesas con capacidad excedida</div>
@@ -4845,14 +4907,16 @@
             function buildMesaMap() {
                 var map = {};
                 for (var i = 1; i <= TOTAL_MESAS; i++) {
-                    map[i] = { pax: 0, names: [], over: false };
+                    map[i] = { pax: 0, names: [], fams: [], over: false };
                 }
                 allData.forEach(function (f) {
                     if (!f.table_number || !map[f.table_number]) return;
                     var rsvp = f.rsvps && f.rsvps[0];
-                    var pax  = rsvp && rsvp.attending ? rsvp.guest_count : 0;
+                    var attending = !!(f.confirmed && rsvp && rsvp.attending);
+                    var pax  = attending ? rsvp.guest_count : 0;
                     map[f.table_number].pax += pax;
                     map[f.table_number].names.push(f.family_name.replace(/^Familia\s+/i, ""));
+                    map[f.table_number].fams.push({ id: f.id, name: f.family_name.replace(/^Familia\s+/i, ""), pax: pax, attending: attending });
                 });
                 Object.keys(map).forEach(function (k) {
                     map[k].over = map[k].pax > CAP_POR_MESA;
@@ -4935,12 +4999,17 @@
                         seatsHtml += '<div class="mesa-seat' + (s <= m.pax ? ' mesa-seat--filled' : '') + '"></div>';
                     }
 
-                    var famsHtml = m.names.length
-                        ? esc(m.names.slice(0, 2).join(" · ") + (m.names.length > 2 ? " +" + (m.names.length - 2) + " más" : ""))
-                        : '<span style="color:var(--text-soft)">Sin familias asignadas</span>';
+                    /* Una línea por familia con sus personas (antes: "A · B +3 más" y había que abrir la mesa).
+                       Una familia que ya no asiste pero conserva la mesa se marca para limpiarla. */
+                    var MAXF = 5;
+                    var famsHtml = m.fams.length
+                        ? '<ul class="mesa-card__list">' + m.fams.slice(0, MAXF).map(function (x) {
+                              return '<li' + (x.attending ? '' : ' class="is-off"') + '><span>' + esc(x.name) + '</span><b>' + (x.attending ? x.pax : 'no asiste') + '</b></li>';
+                          }).join("") + (m.fams.length > MAXF ? '<li class="is-more">+' + (m.fams.length - MAXF) + ' más</li>' : '') + '</ul>'
+                        : '<span class="mesa-card__empty">Sin familias · ' + CAP_POR_MESA + ' lugares libres</span>';
 
                     grid.innerHTML +=
-                        '<div class="mesa-card mesa-card--' + cls + '" onclick="openMesaDetail(' + n + ')" role="button" aria-label="Mesa ' + n + ', ' + m.pax + ' de ' + CAP_POR_MESA + ' personas">' +
+                        '<div class="mesa-card mesa-card--' + cls + '" id="mesa-card-' + n + '" onclick="openMesaDetail(' + n + ')" role="button" tabindex="0" aria-label="Mesa ' + n + ', ' + m.pax + ' de ' + CAP_POR_MESA + ' personas">' +
                         '<div class="mesa-card__header"><span class="mesa-card__num">' + n + '</span><span class="mesa-card__pax">' + m.pax + '/' + CAP_POR_MESA + '</span></div>' +
                         '<div class="mesa-card__seats">' + seatsHtml + '</div>' +
                         '<div class="mesa-card__fams">' + famsHtml + '</div>' +
@@ -4948,6 +5017,9 @@
                 }
 
                 if (banner) banner.style.display = hasOver ? "block" : "none";
+                /* Si hay búsqueda activa, volver a resaltar tras redibujar */
+                var ms = document.getElementById("mesas-search");
+                if (ms && ms.value) filterMesas(ms.value);
 
                 /* Stats resumen */
                 var el = document.getElementById("mstat-occupied");
@@ -4992,11 +5064,17 @@
                 if (famsAtTable.length === 0) {
                     famsEl.innerHTML = '<p style="padding:1rem 1.25rem;font-size:0.72rem;color:var(--text-soft);text-align:center;">Mesa vacía — asigna una familia abajo</p>';
                 } else {
+                    /* Fila tocable → abre la hoja de esa familia (ver invitados, mover, WhatsApp) */
                     famsEl.innerHTML = famsAtTable.map(function(f) {
-                        var pax = f.rsvps && f.rsvps[0] && f.rsvps[0].attending ? f.rsvps[0].guest_count : 0;
+                        var r0 = f.rsvps && f.rsvps[0];
+                        var pax = f.confirmed && r0 && r0.attending ? r0.guest_count : 0;
+                        var who = pax && r0.attending_names ? r0.attending_names : "";
                         return '<div class="mesa-fam-row">' +
-                            '<div class="mesa-fam-row__name">' + esc(f.family_name) +
-                            '<span class="mesa-fam-row__pax">' + esc(f.code) + (pax ? " · " + pax + " pax" : " · no confirmada") + '</span></div>' +
+                            '<button class="mesa-fam-row__open" onclick="openFamFromMesa(\'' + esc(f.id) + '\')">' +
+                                '<span class="mesa-fam-row__name">' + esc(f.family_name) + '</span>' +
+                                '<span class="mesa-fam-row__pax">' + (pax ? pax + (pax === 1 ? " persona" : " personas") : '<span style="color:#e08888">no asiste — quítala</span>') +
+                                (who ? ' · ' + esc(who) : '') + '</span>' +
+                            '</button>' +
                             '<button class="mesa-fam-row__remove" onclick="removeFromMesa(\'' + esc(f.id) + '\',' + n + ')">Quitar</button>' +
                             '</div>';
                     }).join("");
@@ -5030,6 +5108,105 @@
 
             function closeMesaDetail() {
                 closeSheet("mesa-detail-overlay");
+            }
+
+            /* Desde una mesa → hoja de la familia (closeSheet + openSheet ya manejan el historial) */
+            function openFamFromMesa(id) {
+                closeSheet("mesa-detail-overlay");
+                openFamSheet(id);
+            }
+
+            /* ── Buscar "¿en qué mesa está…?" ─────────────────────────────
+               Resalta las mesas que coinciden y lista resultados tocables. */
+            function filterMesas(q) {
+                var nq = _norm(q).trim();
+                var cards = document.querySelectorAll("#mesas-grid .mesa-card");
+                var out = document.getElementById("mesas-search-results");
+                if (!nq) {
+                    cards.forEach(function (c) { c.classList.remove("is-match", "is-dim"); });
+                    out.innerHTML = "";
+                    return;
+                }
+                var hits = allData.filter(function (f) {
+                    var r0 = f.rsvps && f.rsvps[0];
+                    return _norm(f.family_name + " " + f.code + " " + (f.guest_names || "") + " " + (r0 && r0.attending_names || "")).indexOf(nq) !== -1;
+                }).sort(function (a, b) { return (b.table_number ? 1 : 0) - (a.table_number ? 1 : 0) || a.family_name.localeCompare(b.family_name, "es"); });
+                var hitMesas = {};
+                hits.forEach(function (f) { if (f.table_number) hitMesas[f.table_number] = true; });
+                cards.forEach(function (c) {
+                    var n = +c.id.replace("mesa-card-", "");
+                    c.classList.toggle("is-match", !!hitMesas[n]);
+                    c.classList.toggle("is-dim", !hitMesas[n]);
+                });
+                if (!hits.length) { out.innerHTML = '<p class="mesas-search-none">Nadie coincide con "' + esc(q) + '"</p>'; return; }
+                out.innerHTML = hits.slice(0, 8).map(function (f) {
+                    var r0 = f.rsvps && f.rsvps[0];
+                    var attending = f.confirmed && r0 && r0.attending;
+                    var dest = f.table_number ? '<b>Mesa ' + f.table_number + '</b>'
+                        : attending ? '<b class="is-warn">Sin mesa</b>'
+                        : '<b class="is-off">' + (f.confirmed ? 'No asiste' : 'Sin confirmar') + '</b>';
+                    var act = f.table_number ? "openMesaDetail(" + f.table_number + ")" : "openFamSheet('" + f.id + "')";
+                    return '<button type="button" class="mesas-hit" onclick="' + act + '"><span>' + esc(f.family_name) + '</span>' + dest + '</button>';
+                }).join("") + (hits.length > 8 ? '<p class="mesas-search-none">+' + (hits.length - 8) + ' más — escribe más letras</p>' : '');
+            }
+
+            /* ── Imprimir: lista por mesa + lista alfabética para la entrada ──
+               También es el "plan B" si el internet falla en la puerta. */
+            function printMesas() {
+                var mMap = buildMesaMap();
+                var conf = allData.filter(function (f) { return f.confirmed && f.rsvps && f.rsvps[0] && f.rsvps[0].attending; });
+                var byMesa = "";
+                for (var n = 1; n <= TOTAL_MESAS; n++) {
+                    var fams = conf.filter(function (f) { return f.table_number === n; })
+                        .sort(function (a, b) { return a.family_name.localeCompare(b.family_name, "es"); });
+                    var pax = mMap[n].pax;
+                    byMesa += '<section class="mesa"><h3>Mesa ' + n + ' <small>' + pax + ' / ' + CAP_POR_MESA + '</small></h3>' +
+                        (fams.length ? '<ul>' + fams.map(function (f) {
+                            var r0 = f.rsvps[0];
+                            return '<li><span class="fam">' + esc(f.family_name) + '</span><span class="pax">' + r0.guest_count + '</span>' +
+                                (r0.attending_names ? '<span class="who">' + esc(r0.attending_names) + '</span>' : '') + '</li>';
+                        }).join("") + '</ul>' : '<p class="vacia">— vacía —</p>') + '</section>';
+                }
+                var sinMesa = conf.filter(function (f) { return !f.table_number; });
+                var alfa = conf.slice().sort(function (a, b) { return a.family_name.localeCompare(b.family_name, "es"); })
+                    .map(function (f) {
+                        var r0 = f.rsvps[0];
+                        return '<tr><td class="chk">☐</td><td>' + esc(f.family_name) +
+                            (r0.attending_names ? '<div class="who">' + esc(r0.attending_names) + '</div>' : '') + '</td>' +
+                            '<td class="num">' + r0.guest_count + '</td><td class="num"><b>' + (f.table_number || '—') + '</b></td><td class="code">' + esc(f.code) + '</td></tr>';
+                    }).join("");
+                var totalPax = conf.reduce(function (s, f) { return s + (f.rsvps[0].guest_count || 0); }, 0);
+                var hoy = new Date().toLocaleString("es-MX", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
+                var html = '<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">' +
+                    '<title>Mesas · Karla & Eduardo</title><style>' +
+                    '*{box-sizing:border-box}body{font-family:Georgia,serif;color:#111;margin:0;padding:24px;font-size:12px}' +
+                    'h1{font-size:20px;margin:0}h2{font-size:15px;margin:24px 0 10px;border-bottom:2px solid #111;padding-bottom:4px}' +
+                    '.meta{color:#555;font-family:Arial,sans-serif;font-size:11px;margin:4px 0 0}' +
+                    '.bar{position:sticky;top:0;background:#fff;padding:8px 0 12px;display:flex;gap:8px}' +
+                    '.bar button{font:600 14px Arial,sans-serif;padding:10px 18px;border:1px solid #111;background:#111;color:#fff;border-radius:6px;cursor:pointer}' +
+                    '.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}' +
+                    '.mesa{border:1px solid #999;border-radius:6px;padding:8px 10px;break-inside:avoid}' +
+                    '.mesa h3{margin:0 0 6px;font-size:14px;display:flex;justify-content:space-between}.mesa h3 small{font:11px Arial,sans-serif;color:#555}' +
+                    '.mesa ul{list-style:none;margin:0;padding:0}.mesa li{display:grid;grid-template-columns:1fr auto;gap:0 8px;padding:3px 0;border-top:1px dotted #ccc}' +
+                    '.mesa li .pax{font:700 12px Arial,sans-serif}.who{grid-column:1/-1;font:10px Arial,sans-serif;color:#555}.vacia{color:#999;margin:0}' +
+                    'table{width:100%;border-collapse:collapse;font-size:12px}th,td{border-bottom:1px solid #ccc;padding:6px 4px;text-align:left;vertical-align:top}' +
+                    'th{font:700 10px Arial,sans-serif;text-transform:uppercase;letter-spacing:.05em;color:#333}' +
+                    '.chk{width:24px;font-size:16px}.num{text-align:center;width:52px}.code{font:10px monospace;color:#555;width:90px}' +
+                    '.warn{border:1px solid #c33;color:#c33;padding:8px;border-radius:6px;margin:8px 0;font-family:Arial,sans-serif}' +
+                    '.pb{break-before:page}@media print{.bar{display:none}body{padding:0}}' +
+                    '@media (max-width:600px){.grid{grid-template-columns:1fr}}' +
+                    '</style></head><body>' +
+                    '<div class="bar"><button onclick="window.print()">🖨 Imprimir / Guardar PDF</button></div>' +
+                    '<h1>Karla & Eduardo · 21 de noviembre de 2026</h1>' +
+                    '<p class="meta">Hacienda Zerezotla · ' + conf.length + ' familias · ' + totalPax + ' personas confirmadas · generado ' + hoy + '</p>' +
+                    (sinMesa.length ? '<p class="warn">⚠ ' + sinMesa.length + ' familia(s) confirmadas SIN mesa: ' + sinMesa.map(function (f) { return esc(f.family_name); }).join(", ") + '</p>' : '') +
+                    '<h2>Distribución por mesa</h2><div class="grid">' + byMesa + '</div>' +
+                    '<h2 class="pb">Lista alfabética para la entrada</h2>' +
+                    '<table><thead><tr><th></th><th>Familia</th><th class="num">Pers.</th><th class="num">Mesa</th><th>Código</th></tr></thead><tbody>' + alfa + '</tbody></table>' +
+                    '</body></html>';
+                var w = window.open("", "_blank");
+                if (!w) { alert("Tu navegador bloqueó la ventana. Permite ventanas emergentes para este sitio e inténtalo de nuevo."); return; }
+                w.document.open(); w.document.write(html); w.document.close();
             }
 
             function closeMesaDetailIfBackdrop(e) {
