@@ -2913,6 +2913,18 @@
             [data-theme="dark"] .bottom-nav__item--checkin,
             [data-theme="dark"] .bottom-nav__item--checkin .bottom-nav__lbl { color: #8fd8b0; }
 
+            /* Familias: las pendientes son las que requieren acción → nombre con contraste completo */
+            .fam-card--pending .fam-card__name { color: var(--text); }
+            /* Eliminar: área táctil real y separado de "Detalle" para no tocarlo por error */
+            .fam-action-del { width: 40px; height: 40px; font-size: 0.8rem; margin-left: 0.35rem; border-radius: 8px; color: #e08888; flex-shrink: 0; }
+            .fam-action-wa, .fam-action-toggle, .fam-action-code { min-height: 40px; }
+            .fam-action-code { white-space: nowrap; flex-shrink: 0; }
+            @media (max-width: 420px) {
+                .fam-action-wa { padding-left: 0.55rem !important; padding-right: 0.55rem !important; }
+                .fam-action-toggle { padding-left: 0.4rem !important; padding-right: 0.4rem !important; }
+                .fam-actions-right { gap: 0.2rem; }
+            }
+
             /* Modo claro: dorado #c9a96e sobre blanco ≈ 2:1 de contraste → tonos más oscuros */
             :root:not([data-theme="dark"]) .ci-mesa  { color: #7a5a1e; }
             :root:not([data-theme="dark"]) .ci-nomesa { color: #b03a3a; }
@@ -3914,8 +3926,9 @@
                             : '';
 
                     var waLabel = f.phone
-                        ? _SVG_WA + '<span>Enviar ✓</span>'
-                        : _SVG_WA + '<span>Enviar</span>';
+                        /* Antes "Enviar ✓" parecía "ya enviado"; el ✓ solo significaba "tiene teléfono" */
+                        ? _SVG_WA + '<span>WhatsApp</span>'
+                        : _SVG_WA + '<span>Compartir</span>';
                     var waCls = 'fam-action-wa' + (f.phone ? ' fam-action-wa--direct' : '');
 
                     var card = document.createElement("div");
@@ -5096,6 +5109,11 @@
             }
 
             function startRecBatch() {
+                /* Con Recuerdos desactivado el link lleva a una sección cerrada */
+                if (typeof _recEnabled !== "undefined" && !_recEnabled) {
+                    alert("El Libro de Recuerdos está DESACTIVADO.\n\nActívalo primero (botón arriba a la derecha) para que los invitados puedan subir sus fotos al abrir el link.");
+                    return;
+                }
                 _recBatchFamilies = allData.filter(function(f) {
                     return f.confirmed && f.rsvps && f.rsvps[0] && f.rsvps[0].attending && f.phone;
                 });
