@@ -3684,26 +3684,63 @@
             });
 
             /* ── Load data ────────────────────────────── */
-            async function loadData() {
-                document.getElementById("loading").style.display = "block";
-                document.getElementById("fam-list").innerHTML = "";
+            /* ¿El usuario está a media edición? (formulario abierto, campo con foco, modal abierto)
+               → la actualización automática NO debe redibujar la lista y borrar lo escrito */
+            function isUserEditing() {
+                var a = document.activeElement;
+                if (a && /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName) && a.id !== "search") return true;
+                if (document.querySelector('.detail-inner input, .detail-inner textarea, .detail-inner select')) return true;
+                if (document.querySelector('#nf-modal-overlay.is-open, .settings-overlay.is-open, .batch-overlay.is-open, .mesa-detail-overlay.is-open')) return true;
+                return false;
+            }
+
+            async function loadData(opts) {
+                var silent = opts && opts.silent;
+                var famList = document.getElementById("fam-list");
+                var loadingEl = document.getElementById("loading");
+                /* Recordar qué estaba viendo el usuario para restaurarlo tras redibujar */
+                var openPanel = document.querySelector(".fam-detail-panel.is-open");
+                var openId = openPanel ? openPanel.id.replace("fdp-", "") : null;
+                var scroller = document.querySelector(".tab-content");
+                var scrollY = scroller ? scroller.scrollTop : 0;
+                if (!silent) {
+                    loadingEl.textContent = "Cargando…";
+                    loadingEl.style.display = "block";
+                }
                 try {
-                    allData = await api(
+                    var fresh = await api(
                         "families?select=*,rsvps(*)&order=family_name.asc",
                     );
+                    /* Refresco automático con un formulario abierto: actualizar datos y números,
+                       pero no tocar la lista (se redibuja en el siguiente ciclo libre) */
+                    allData = fresh;
                     lastConfirmedCount = allData.filter(function(f) { return f.confirmed; }).length;
                     renderStats(allData);
                     renderProgress(allData);
-                    renderTable(allData);
+                    if (silent && isUserEditing()) return;
+                    /* Respetar búsqueda y filtro activos (antes se mostraban las 98 aunque hubiera búsqueda) */
+                    applyFilters();
+                    if (openId && !isUserEditing()) {
+                        var p = document.getElementById("fdp-" + openId);
+                        if (p) toggleFamDetail(openId);
+                    }
+                    if (scroller) scroller.scrollTop = scrollY;
+                    if (document.getElementById("tab-mesas") && document.getElementById("tab-mesas").classList.contains("is-active") && typeof renderMesasGrid === "function") renderMesasGrid();
                     if (!_tabRestored) {
                         _tabRestored = true;
                         var savedTab = localStorage.getItem("ke-tab");
                         if (savedTab && savedTab !== "resumen") switchTab(savedTab);
                     }
                 } catch (err) {
-                    document.getElementById("loading").textContent =
-                        "Error al cargar datos. Verifica tu conexión.";
+                    if (silent) {
+                        /* En segundo plano: no borrar lo que ya se ve, solo avisar una vez */
+                        if (!loadData._warned) { loadData._warned = true; showToast("⚠ Sin conexión — mostrando los últimos datos"); }
+                        return;
+                    }
+                    loadingEl.textContent = "Error al cargar datos. Verifica tu conexión (o si el proyecto de Supabase está en pausa).";
+                    loadingEl.style.display = "block";
                 }
+                loadData._warned = false;
             }
 
             function renderStats(data) {
@@ -5983,7 +6020,7 @@
                 if (localStorage.getItem("ke-admin") !== "1") return;
                 try {
                     var prevCount = lastConfirmedCount;
-                    await loadData();
+                    await loadData({ silent: true });
                     var newCount = allData.filter(function(f) { return f.confirmed; }).length;
                     if (prevCount > 0 && newCount > prevCount) {
                         showToast("🎉 " + (newCount - prevCount) + " " + (newCount - prevCount > 1 ? "nuevas confirmaciones" : "nueva confirmación"));
