@@ -1998,30 +1998,134 @@
                 display: flex;
                 justify-content: center;
             }
+            /* QR: fondo blanco = "zona de silencio" que los escáneres necesitan */
             .ticket__qr {
-                width: 140px;
-                height: 140px;
-                border: 3px solid rgba(201, 169, 110, 0.18);
-                padding: 5px;
-                background: var(--c-dark-bg);
+                width: 220px;
+                max-width: 70vw;
+                aspect-ratio: 1;
+                padding: 14px;
+                background: #fff;
+                border-radius: 6px;
+                box-shadow: 0 0 0 1px rgba(201, 169, 110, 0.35), 0 8px 28px rgba(0, 0, 0, 0.35);
                 display: flex;
                 align-items: center;
                 justify-content: center;
                 overflow: hidden;
+                box-sizing: border-box;
             }
             .ticket__qr canvas,
             .ticket__qr img {
-                display: block;
-                width: 130px !important;
-                height: 130px !important;
+                width: 100% !important;
+                height: 100% !important;
+                image-rendering: pixelated;
+            }
+            .ticket__qr-code {
+                font-family: var(--f-sans);
+                font-size: 1.05rem;
+                font-weight: 500;
+                letter-spacing: 0.16em;
+                color: var(--c-gold);
+                text-align: center;
+                margin-top: 0.85rem;
             }
             .ticket__qr-hint {
-                font-size: 0.48rem;
-                letter-spacing: 0.14em;
-                text-transform: uppercase;
-                color: rgba(255, 255, 255, 0.22);
+                font-size: 0.7rem;
+                letter-spacing: 0.04em;
+                color: rgba(255, 255, 255, 0.55);
                 text-align: center;
-                padding: 0.35rem 1rem 1.1rem;
+                padding: 0.4rem 1rem 1.1rem;
+                line-height: 1.5;
+            }
+            .pass-btn {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 0.5rem;
+                width: 100%;
+                min-height: 52px;
+                margin-top: 1rem;
+                border: none;
+                border-radius: 50px;
+                background: var(--c-gold);
+                color: #1e1410;
+                font-family: var(--f-sans);
+                font-size: 0.72rem;
+                font-weight: 600;
+                letter-spacing: 0.1em;
+                text-transform: uppercase;
+                padding: 0 1.25rem;
+                cursor: pointer;
+            }
+            .pass-btn svg { width: 18px; height: 18px; }
+
+            /* Pase en pantalla completa (hijo de <body>, ver bug del lightbox) */
+            .pass-overlay {
+                position: fixed;
+                inset: 0;
+                z-index: 10000;
+                background: #fff;
+                color: #1e1410;
+                display: none;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                padding: max(1.25rem, env(safe-area-inset-top)) 1.25rem max(1.25rem, env(safe-area-inset-bottom));
+                text-align: center;
+                overflow-y: auto;
+            }
+            .pass-overlay.is-visible { display: flex; }
+            .pass-overlay__close {
+                position: absolute;
+                top: max(0.75rem, env(safe-area-inset-top));
+                right: 0.75rem;
+                width: 48px;
+                height: 48px;
+                border: none;
+                background: rgba(30, 20, 16, 0.06);
+                border-radius: 50%;
+                font-size: 1.4rem;
+                color: #1e1410;
+                cursor: pointer;
+            }
+            .pass-overlay__eyebrow {
+                font-family: var(--f-sans);
+                font-size: 0.7rem;
+                letter-spacing: 0.25em;
+                text-transform: uppercase;
+                color: #8a6a3a;
+            }
+            .pass-overlay__name {
+                font-family: var(--f-serif);
+                font-size: 1.6rem;
+                font-style: italic;
+                margin: 0.35rem 0 0.25rem;
+                line-height: 1.2;
+            }
+            .pass-overlay__meta {
+                font-family: var(--f-sans);
+                font-size: 0.95rem;
+                color: #4a3a30;
+            }
+            .pass-overlay__meta strong { color: #b76e49; font-size: 1.15rem; }
+            .pass-overlay__qr {
+                width: min(80vw, 46vh, 360px);
+                aspect-ratio: 1;
+                margin: 1.25rem auto 0.75rem;
+            }
+            .pass-overlay__qr canvas,
+            .pass-overlay__qr img { width: 100% !important; height: 100% !important; image-rendering: pixelated; }
+            .pass-overlay__code {
+                font-family: var(--f-sans);
+                font-size: 1.5rem;
+                font-weight: 600;
+                letter-spacing: 0.18em;
+            }
+            .pass-overlay__hint {
+                font-family: var(--f-sans);
+                font-size: 0.8rem;
+                color: #6b5a4e;
+                margin-top: 0.75rem;
+                line-height: 1.5;
             }
             .ticket__wa-btn {
                 display: block;
@@ -3811,11 +3915,19 @@
                                 ></canvas>
                             </div>
                             <!-- QR para mostrar en la entrada -->
-                            <div id="already-qr-wrap" style="display:none; margin-top:1.5rem; text-align:center;">
-                                <div id="already-qr" style="display:inline-block; padding:0.5rem; background:#fff; border-radius:4px;"></div>
-                                <p style="font-size:0.48rem; letter-spacing:0.18em; text-transform:uppercase; color:rgba(255,255,255,0.28); margin-top:0.5rem;">Muestra este código en la entrada</p>
+                            <div id="already-qr-wrap" style="display:none; margin-top:1.75rem; text-align:center;">
+                                <p style="font-size:0.62rem; letter-spacing:0.25em; text-transform:uppercase; color:rgba(201,169,110,0.75); margin-bottom:0.85rem;">Tu pase de entrada</p>
+                                <div style="display:flex; justify-content:center;">
+                                    <div class="ticket__qr" id="already-qr"></div>
+                                </div>
+                                <p class="ticket__qr-code" id="already-qr-code"></p>
+                                <p class="ticket__qr-hint">Muestra este código en la entrada.<br>Sube el brillo de tu pantalla para que se lea mejor.</p>
+                                <button class="pass-btn" type="button" data-open-pass>
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4h4M20 8V4h-4M4 16v4h4M20 16v4h-4"/></svg>
+                                    Mostrar en pantalla completa
+                                </button>
                                 <a class="ticket__wa-btn" id="already-wa-btn" href="#" target="_blank" rel="noopener noreferrer" style="display:block; margin-top:0.75rem;">
-                                    Enviar por WhatsApp
+                                    Guardar mi pase en WhatsApp
                                 </a>
                                 <button class="ticket__wa-btn" id="already-save-img" style="border:none; cursor:pointer; border-top:1px solid rgba(201,169,110,0.15); color:rgba(201,169,110,0.6); display:block; width:100%; text-align:center;">
                                     Guardar / Compartir imagen
@@ -3936,7 +4048,14 @@
                                 <div class="ticket__qr-wrap">
                                     <div class="ticket__qr" id="ticket-qr"></div>
                                 </div>
-                                <p class="ticket__qr-hint">Muestra este código en la entrada</p>
+                                <p class="ticket__qr-code" id="ticket-qr-code"></p>
+                                <p class="ticket__qr-hint">Muestra este código en la entrada.<br>Sube el brillo de tu pantalla para que se lea mejor.</p>
+                                <div style="padding:0 1.5rem 1rem">
+                                    <button class="pass-btn" type="button" data-open-pass style="margin-top:0">
+                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4h4M20 8V4h-4M4 16v4h4M20 16v4h-4"/></svg>
+                                        Mostrar en pantalla completa
+                                    </button>
+                                </div>
                                 <a class="ticket__wa-btn" id="ticket-wa-btn" href="#" target="_blank" rel="noopener noreferrer">
                                     Enviar por WhatsApp
                                 </a>
@@ -4063,6 +4182,17 @@
             </main>
         </div>
         <!-- end page-shell -->
+
+        <!-- PASE EN PANTALLA COMPLETA — hijo de <body> (mismo motivo que el lightbox) -->
+        <div class="pass-overlay" id="pass-overlay" role="dialog" aria-modal="true" aria-label="Pase de entrada">
+            <button class="pass-overlay__close" type="button" id="pass-overlay-close" aria-label="Cerrar">✕</button>
+            <p class="pass-overlay__eyebrow">Boda Karla &amp; Eduardo · Pase de entrada</p>
+            <p class="pass-overlay__name" id="pass-ov-name"></p>
+            <p class="pass-overlay__meta" id="pass-ov-meta"></p>
+            <div class="pass-overlay__qr" id="pass-ov-qr"></div>
+            <p class="pass-overlay__code" id="pass-ov-code"></p>
+            <p class="pass-overlay__hint">Muestra esta pantalla en la entrada.<br>Sube el brillo al máximo.</p>
+        </div>
 
         <!-- LIGHTBOX — fuera de .invitation para evitar containment por transform -->
         <div class="gallery-lightbox" id="gallery-lightbox" role="dialog" aria-modal="true" aria-label="Galería de fotos">
@@ -4272,6 +4402,46 @@
                 };
             })();
 
+            /* === PASE EN PANTALLA COMPLETA === */
+            (function () {
+                var ov = document.getElementById("pass-overlay");
+                if (!ov) return;
+                var wakeLock = null;
+
+                function hide() {
+                    ov.classList.remove("is-visible");
+                    document.body.style.overflow = "";
+                    if (wakeLock) { wakeLock.release().catch(function () {}); wakeLock = null; }
+                }
+
+                window.openPass = function () {
+                    var p = window._pass;
+                    if (!p) { location.hash = "#rsvp"; return; }
+                    document.getElementById("pass-ov-name").textContent = p.name;
+                    document.getElementById("pass-ov-meta").innerHTML =
+                        p.pax + (p.pax === 1 ? " persona" : " personas") +
+                        (p.mesa ? "  ·  <strong>Mesa " + p.mesa + "</strong>" : "");
+                    document.getElementById("pass-ov-code").textContent = p.code;
+                    var qr = document.getElementById("pass-ov-qr");
+                    if (qr.getAttribute("data-code") !== p.code && window._renderQr) window._renderQr(qr, p.code);
+                    ov.classList.add("is-visible");
+                    document.body.style.overflow = "hidden";
+                    /* Evita que la pantalla se apague mientras esperan en la fila */
+                    if (navigator.wakeLock) navigator.wakeLock.request("screen").then(function (w) { wakeLock = w; }).catch(function () {});
+                    /* Botón "atrás" de Android cierra el pase en vez de salir de la invitación */
+                    history.pushState({ kePass: true }, "");
+                };
+
+                document.getElementById("pass-overlay-close").addEventListener("click", function () {
+                    if (history.state && history.state.kePass) history.back(); else hide();
+                });
+                window.addEventListener("popstate", function () { if (ov.classList.contains("is-visible")) hide(); });
+                document.addEventListener("keydown", function (e) { if (e.key === "Escape" && ov.classList.contains("is-visible")) history.back(); });
+                document.addEventListener("click", function (e) {
+                    if (e.target.closest && e.target.closest("[data-open-pass]")) window.openPass();
+                });
+            })();
+
             /* === GUARDAR IMAGEN DEL PASE (canvas directo, sin librerías) === */
             (function () {
                 document.addEventListener("click", function (e) {
@@ -4309,9 +4479,27 @@
                     ctx.stroke();
                 }
 
+                /* Parte un texto en líneas que quepan en maxW */
+                function wrapLines(ctx, text, maxW) {
+                    var words = text.split(" "), lines = [], cur = "";
+                    words.forEach(function (w) {
+                        var t = cur ? cur + " " + w : w;
+                        if (ctx.measureText(t).width > maxW && cur) { lines.push(cur); cur = w; }
+                        else cur = t;
+                    });
+                    if (cur) lines.push(cur);
+                    return lines;
+                }
+
                 function buildTicketCanvas() {
-                    var W = 560, H = 800;
-                    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+                    /* Medir nombres antes de fijar la altura del lienzo */
+                    var namesEl0 = document.getElementById("ticket-attending-names");
+                    var namesTxt = namesEl0 && namesEl0.parentElement.style.display !== "none" ? namesEl0.textContent : "";
+                    var mctx = document.createElement("canvas").getContext("2d");
+                    mctx.font = '300 13px Montserrat, Arial, sans-serif';
+                    var nameLines = namesTxt ? wrapLines(mctx, namesTxt, 440) : [];
+                    var W = 560, H = 1010 + Math.max(0, nameLines.length - 1) * 20;
+                    var dpr = 2; /* siempre 2x: la imagen se ve nítida al hacer zoom */
                     var c = document.createElement("canvas");
                     c.width = W * dpr;
                     c.height = H * dpr;
@@ -4362,7 +4550,7 @@
                     ctx.fillStyle = "#c9a96e";
                     ctx.font = 'italic bold 34px "Playfair Display", Georgia, serif';
                     ctx.textAlign = "center";
-                    ctx.fillText(famName, W / 2, 196);
+                    ctx.fillText(famName, W / 2, 196, W - 80);
 
                     /* Pases */
                     var gLabel = (document.getElementById("ticket-guests-lbl") || {}).textContent || "";
@@ -4371,13 +4559,12 @@
                     ctx.fillText(gLabel, W / 2, 224);
 
                     /* Nombres confirmados */
-                    var namesEl = document.getElementById("ticket-attending-names");
-                    var yMid = 244;
-                    if (namesEl && namesEl.parentElement.style.display !== "none" && namesEl.textContent) {
-                        ctx.fillStyle = "rgba(255,255,255,0.45)";
-                        ctx.font = '300 12px Montserrat, Arial, sans-serif';
-                        ctx.fillText(namesEl.textContent, W / 2, yMid);
-                        yMid += 24;
+                    var yMid = 250;
+                    if (nameLines.length) {
+                        ctx.fillStyle = "rgba(255,255,255,0.55)";
+                        ctx.font = '300 13px Montserrat, Arial, sans-serif';
+                        nameLines.forEach(function (ln, i) { ctx.fillText(ln, W / 2, yMid + i * 20); });
+                        yMid += 4 + nameLines.length * 20;
                     }
 
                     gLine(ctx, W, yMid + 12);
@@ -4423,17 +4610,31 @@
                     ctx.setLineDash([]);
 
                     /* QR */
-                    var qrSrc = document.querySelector("#ticket-qr canvas");
+                    /* QR en alta resolución, generado aparte (no el de pantalla) */
+                    var code = (window._pass && window._pass.code) || (document.getElementById("ticket-qr") || { getAttribute: function () { return ""; } }).getAttribute("data-code");
+                    var qrSrc = null;
+                    if (code && typeof QRCode !== "undefined") {
+                        var tmp = document.createElement("div");
+                        new QRCode(tmp, { text: code, width: 525, height: 525, colorDark: "#000000", colorLight: "#ffffff", correctLevel: QRCode.CorrectLevel.M });
+                        qrSrc = tmp.querySelector("canvas");
+                    }
+                    var qS = 300, qPad = 18, qX = (W - qS) / 2, qY = y + 44;
                     if (qrSrc) {
-                        var qS = 148, qX = (W - qS) / 2, qY = y + 28;
-                        ctx.strokeStyle = "rgba(201,169,110,0.18)";
-                        ctx.lineWidth = 2;
-                        ctx.strokeRect(qX - 6, qY - 6, qS + 12, qS + 12);
+                        /* Fondo blanco = zona de silencio para que el escáner lo lea */
+                        ctx.fillStyle = "#ffffff";
+                        ctx.fillRect(qX - qPad, qY - qPad, qS + qPad * 2, qS + qPad * 2);
+                        ctx.imageSmoothingEnabled = false;
                         ctx.drawImage(qrSrc, qX, qY, qS, qS);
-                        ctx.fillStyle = "rgba(255,255,255,0.2)";
-                        ctx.font = '300 9px Montserrat, Arial, sans-serif';
+                        ctx.imageSmoothingEnabled = true;
+                    }
+                    if (code) {
+                        ctx.fillStyle = "#c9a96e";
+                        ctx.font = '600 22px Montserrat, Arial, sans-serif';
                         ctx.textAlign = "center";
-                        ctx.fillText("MUESTRA ESTE CÓDIGO EN LA ENTRADA", W / 2, qY + qS + 22);
+                        ctx.fillText(code.split("").join(String.fromCharCode(8202)), W / 2, qY + qS + qPad + 38);
+                        ctx.fillStyle = "rgba(255,255,255,0.5)";
+                        ctx.font = '400 12px Montserrat, Arial, sans-serif';
+                        ctx.fillText("Muestra este código en la entrada", W / 2, qY + qS + qPad + 62);
                     }
 
                     /* Firma al fondo */
@@ -4770,6 +4971,79 @@
 
                 var RSVP_DEADLINE = new Date("2026-09-20T23:59:00");
 
+                /* ── Pase de entrada: QR nítido + pantalla completa ──────────
+                   525px = múltiplo de 21 y 25 módulos (versiones 1 y 2 del QR)
+                   → cada módulo mide pixeles enteros, sin bordes borrosos. */
+                var QR_PX = 525;
+                function renderQr(el, code) {
+                    if (!el) return;
+                    if (typeof QRCode === "undefined") {
+                        /* qrcode.min.js es defer: si aún no carga, reintentar al terminar */
+                        window.addEventListener("load", function () { if (typeof QRCode !== "undefined") renderQr(el, code); }, { once: true });
+                        return;
+                    }
+                    el.innerHTML = "";
+                    new QRCode(el, { text: code, width: QR_PX, height: QR_PX, colorDark: "#000000", colorLight: "#ffffff", correctLevel: QRCode.CorrectLevel.M });
+                    el.setAttribute("data-code", code);
+                }
+                window._renderQr = renderQr;
+
+                function passLink(code) {
+                    return location.origin + location.pathname + "?code=" + encodeURIComponent(code);
+                }
+
+                function setPass(fam, pax) {
+                    window._pass = { code: fam.code, name: fam.family_name, pax: pax, mesa: fam.table_number };
+                    ["already-qr-code", "ticket-qr-code"].forEach(function (id) {
+                        var el = document.getElementById(id);
+                        if (el) el.textContent = fam.code;
+                    });
+                    /* Copia local: si el día de la boda no hay señal en la hacienda,
+                       el pase se muestra igual desde el teléfono */
+                    try { localStorage.setItem("ke-pass", JSON.stringify(window._pass)); } catch (e) {}
+                }
+
+                function getSavedPass(code) {
+                    try {
+                        var p = JSON.parse(localStorage.getItem("ke-pass") || "null");
+                        return p && p.code === code ? p : null;
+                    } catch (e) { return null; }
+                }
+
+                /* Mostrar el pase guardado sin conexión */
+                function showSavedPass(p) {
+                    window._pass = p;
+                    document.getElementById("rsvp-already-detail").textContent =
+                        "Confirmaste " + p.pax + (p.pax === 1 ? " lugar" : " lugares") + " para el 21 de noviembre.";
+                    if (p.mesa) {
+                        document.getElementById("already-map-wrap").style.display = "block";
+                        document.getElementById("already-mesa-num").textContent = "Mesa " + p.mesa;
+                        setTimeout(function () { drawVenueMap(document.getElementById("already-map-canvas"), p.mesa); }, 300);
+                    }
+                    document.getElementById("already-qr-code").textContent = p.code;
+                    document.getElementById("already-qr-wrap").style.display = "block";
+                    var wa = document.getElementById("already-wa-btn");
+                    if (wa) wa.style.display = "none";
+                    /* Datos para "Guardar imagen" */
+                    document.getElementById("ticket-family-name").textContent = p.name;
+                    document.getElementById("ticket-guests-lbl").textContent = p.pax + (p.pax === 1 ? " persona confirmada" : " personas confirmadas");
+                    if (p.mesa) document.getElementById("ticket-mesa-num").textContent = "Mesa " + p.mesa;
+                    renderQr(document.getElementById("already-qr"), p.code);
+                    showPassFab();
+                    showStep("already");
+                }
+
+                /* FAB "Mi pase": abre el pase completo con un toque desde cualquier parte */
+                function showPassFab() {
+                    var fab = document.getElementById("rsvp-fab");
+                    if (!fab) return;
+                    fab.lastChild.textContent = " Mi pase";
+                    fab.setAttribute("aria-label", "Ver mi pase de entrada");
+                    fab.style.display = "";
+                    fab.classList.remove("is-hidden");
+                    fab.onclick = function (e) { e.preventDefault(); window.openPass(); };
+                }
+
                 function showStep(id) {
                     [
                         "closed",
@@ -4800,7 +5074,9 @@
                     }
                     /* En pasos terminales el FAB ya no tiene utilidad — ocultarlo para siempre */
                     if (["success", "declined", "already", "closed"].indexOf(id) !== -1) {
-                        if (window._fabHidePermanent) window._fabHidePermanent();
+                        /* …salvo si hay pase: entonces se vuelve "Mi pase" (abre el QR a pantalla completa) */
+                        if (window._pass && (id === "already" || id === "success")) showPassFab();
+                        else if (window._fabHidePermanent) window._fabHidePermanent();
                     }
                 }
 
@@ -4925,7 +5201,21 @@
                     var ci = document.getElementById("rsvp-code-input");
                     if (ci) ci.value = urlCode.toUpperCase();
                 }
-                showStep(Date.now() > RSVP_DEADLINE.getTime() ? "closed" : "code");
+                /* Tras el deadline el paso "code" sigue disponible para CONSULTAR el pase:
+                   antes se mostraba "closed" directo y nadie podía ver su QR. */
+                var RSVP_CLOSED = Date.now() > RSVP_DEADLINE.getTime();
+                if (RSVP_CLOSED) {
+                    var descEl = document.querySelector("#rsvp .rsvp__desc");
+                    if (descEl) descEl.innerHTML = "El plazo para confirmar ya cerró.<br>Si confirmaste, consulta aquí tu <span class=\"rsvp__deadline\">pase de entrada</span>";
+                    var headEl = document.querySelector("#rsvp .section-heading");
+                    if (headEl) headEl.textContent = "Tu Pase de Entrada";
+                    document.getElementById("rsvp-code-btn").textContent = "Ver mi pase";
+                }
+                showStep("code");
+                /* Si llegó con ?code= (link de WhatsApp), verificar solo — sin tocar nada */
+                if (urlCode) {
+                    setTimeout(function () { document.getElementById("rsvp-code-btn").click(); }, 0);
+                }
 
                 /* ── PASO 1: verificar código ─────────────── */
                 document
@@ -4959,6 +5249,11 @@
                                 return;
                             }
                             family = rows[0];
+                            /* Plazo vencido y nunca confirmó → mensaje de periodo cerrado */
+                            if (!family.confirmed && RSVP_CLOSED) {
+                                showStep("closed");
+                                return;
+                            }
                             if (family.confirmed) {
                                 var rsvps = await api(
                                     "rsvps?family_id=eq." +
@@ -4996,33 +5291,28 @@
                                     chLink.href = "https://wa.me/" + COUPLE_PHONE + "?text=" + encodeURIComponent(chMsg);
                                 }
                                 /* QR en pantalla "ya confirmaste" + en #ticket-qr para buildTicketCanvas() */
-                                var _qrConfig = {
-                                    text: family.code,
-                                    width: 130, height: 130,
-                                    colorDark: "#000000", colorLight: "#ffffff",
-                                    correctLevel: QRCode.CorrectLevel.M,
-                                };
-                                var alreadyQrEl = document.getElementById("already-qr");
-                                if (alreadyQrEl && typeof QRCode !== "undefined") {
-                                    alreadyQrEl.innerHTML = "";
-                                    new QRCode(alreadyQrEl, _qrConfig);
-                                }
-                                var ticketQrEl = document.getElementById("ticket-qr");
-                                if (ticketQrEl && typeof QRCode !== "undefined") {
-                                    ticketQrEl.innerHTML = "";
-                                    new QRCode(ticketQrEl, _qrConfig);
-                                }
-                                document.getElementById("already-qr-wrap").style.display = "block";
+                                /* QR solo si asiste — a quien declinó no se le muestra pase */
+                                var isAttending = !!(r && r.attending);
+                                document.getElementById("already-qr-wrap").style.display = isAttending ? "block" : "none";
+                                if (!isAttending) { try { localStorage.removeItem("ke-pass"); } catch (e) {} }
+                                if (isAttending) {
+                                    renderQr(document.getElementById("already-qr"), family.code);
+                                    renderQr(document.getElementById("ticket-qr"), family.code);
+                                    setPass(family, r.guest_count);
+                                    showPassFab();
 
-                                /* Link WhatsApp para reenviar confirmación */
-                                var alreadyWaBtn = document.getElementById("already-wa-btn");
-                                if (alreadyWaBtn) {
-                                    var waMsg = "✅ Mi confirmación de asistencia\n\n" +
-                                        "*" + family.family_name + "*\n" +
-                                        "📅 21 de noviembre de 2026 — 17:30 HRS\n" +
-                                        "📍 Hacienda Zerezotla, San Andrés Cholula\n" +
-                                        "🔑 Código: " + family.code;
-                                    alreadyWaBtn.href = "https://wa.me/" + COUPLE_PHONE + "?text=" + encodeURIComponent(waMsg);
+                                    /* WhatsApp a sí mismo (wa.me sin número → elige chat, p.ej. "Tú")
+                                       con el link directo al pase, para encontrarlo el día de la boda */
+                                    var alreadyWaBtn = document.getElementById("already-wa-btn");
+                                    if (alreadyWaBtn) {
+                                        var waMsg = "🎫 Mi pase para la boda de Karla & Eduardo\n" +
+                                            "📅 21 de noviembre · 17:30 HRS\n" +
+                                            "📍 Hacienda Zerezotla, San Andrés Cholula\n" +
+                                            (family.table_number ? "🪑 Mesa " + family.table_number + "\n" : "") +
+                                            "🔑 Código: " + family.code + "\n\n" +
+                                            "Abrir mi pase: " + passLink(family.code);
+                                        alreadyWaBtn.href = "https://wa.me/?text=" + encodeURIComponent(waMsg);
+                                    }
                                 }
 
                                 /* Poblar datos del ticket para que "Guardar imagen" funcione */
@@ -5080,11 +5370,13 @@
                                     "?text=" + encodeURIComponent(changeMsg);
                             showStep("form");
                         } catch (err) {
+                            var saved = getSavedPass(code);
+                            if (saved) { showSavedPass(saved); return; }
                             errEl.textContent = navigator.onLine
                                 ? "Error del servidor. Intenta en unos segundos."
                                 : "Sin conexión a internet. Verifica tu red e intenta de nuevo.";
                         } finally {
-                            self.innerHTML = "Verificar código";
+                            self.innerHTML = RSVP_CLOSED ? "Ver mi pase" : "Verificar código";
                             self.disabled = false;
                         }
                     });
@@ -5155,17 +5447,11 @@
 
                             /* QR generado localmente (sin CORS) */
                             var qrEl = document.getElementById("ticket-qr");
-                            qrEl.innerHTML = "";
+                            setPass(family, guestCount);
                             if (typeof QRCode !== "undefined") {
-                                new QRCode(qrEl, {
-                                    text: family.code,
-                                    width: 130,
-                                    height: 130,
-                                    colorDark: "#000000",
-                                    colorLight: "#ffffff",
-                                    correctLevel: QRCode.CorrectLevel.M,
-                                });
+                                renderQr(qrEl, family.code);
                             } else {
+                                qrEl.innerHTML = "";
                                 var _p = document.createElement("p");
                                 _p.style.cssText = "font-family:var(--f-sans);font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;color:rgba(201,169,110,0.6);text-align:center;padding:1rem;line-height:2;";
                                 _p.textContent = family.code;

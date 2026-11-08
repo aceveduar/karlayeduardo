@@ -1,4 +1,4 @@
-const CACHE = "ke-boda-v10";
+const CACHE = "ke-boda-v11";
 const PRECACHE = [
   "./assets/flores-1.webp",
   "./assets/flores-2.webp",
@@ -58,7 +58,9 @@ self.addEventListener("fetch", function (e) {
   e.respondWith(
     caches.match(e.request).then(function (cached) {
       return cached || fetch(e.request).then(function (res) {
-        if (res && res.status === 200 && res.type === "basic") {
+        /* También librerías de cdnjs (QRCode.js) → el QR se genera sin señal */
+        var isCdn = e.request.url.indexOf("cdnjs.cloudflare.com") !== -1;
+        if (res && (isCdn ? (res.status === 200 || res.type === "opaque") : (res.status === 200 && res.type === "basic"))) {
           var clone = res.clone();
           caches.open(CACHE).then(function (c) { c.put(e.request, clone); });
         }
