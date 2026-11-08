@@ -329,10 +329,12 @@
                     scroll-snap-type: x proximity;
                 }
                 .bottom-nav__item {
-                    flex: 0 0 22%; /* ~4.5 items visible, gives peek */
-                    min-width: 78px;
+                    /* 4 completos + medio 5º con su ícono visible → se entiende que se desliza
+                       (con 22% solo asomaban 16px vacíos del 5º, sin ícono ni texto) */
+                    flex: 0 0 19%;
+                    min-width: 70px;
                     box-sizing: border-box;
-                    padding: 0.6rem 0.8rem; /* larger touch target */
+                    padding: 0.6rem 0.35rem; /* larger touch target */
                     scroll-snap-align: center;
                 }
                 .bottom-nav::-webkit-scrollbar { display: none; }
@@ -2882,6 +2884,12 @@
             .ci-banner__sub { font-family: var(--f-sans); font-size: 0.85rem; opacity: 0.85; margin-top: 0.2rem; }
             .ci-banner__mesa { font-family: var(--f-serif); font-style: italic; font-size: 2rem; color: #f3dca8; margin-top: 0.25rem; line-height: 1.1; }
             .ci-banner__mesa--none { font-size: 1rem; font-style: normal; color: #ffb4b4; }
+            /* Menú: Check-in en verde (mismo color que "Abrir Check-in" del Resumen) */
+            .bottom-nav__item--checkin { color: #2a7a52; }
+            .bottom-nav__item--checkin .bottom-nav__lbl { color: #2a7a52; font-weight: 700; }
+            [data-theme="dark"] .bottom-nav__item--checkin,
+            [data-theme="dark"] .bottom-nav__item--checkin .bottom-nav__lbl { color: #8fd8b0; }
+
             /* Modo claro: dorado #c9a96e sobre blanco ≈ 2:1 de contraste → tonos más oscuros */
             :root:not([data-theme="dark"]) .ci-mesa  { color: #7a5a1e; }
             :root:not([data-theme="dark"]) .ci-nomesa { color: #b03a3a; }
@@ -3313,6 +3321,11 @@
                     <span class="bottom-nav__lbl">Resumen</span>
                     <span class="bottom-nav__badge" id="nav-pending-badge"></span>
                 </button>
+                <!-- Check-in 2º: visible sin deslizar el día de la boda. Verde = abre un modo, no una pestaña -->
+                <button class="bottom-nav__item bottom-nav__item--checkin" id="nav-entrada" onclick="openCheckin()" aria-label="Check-in">
+                    <svg class="bottom-nav__icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+                    <span class="bottom-nav__lbl">Check-in</span>
+                </button>
                 <button class="bottom-nav__item" id="nav-familias" onclick="switchTab('familias')" aria-label="Familias">
                     <svg class="bottom-nav__icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                     <span class="bottom-nav__lbl">Familias</span>
@@ -3336,10 +3349,6 @@
                         <span class="bottom-nav__badge" id="msgs-badge" style="display:none;"></span>
                     </span>
                     <span class="bottom-nav__lbl">Mensajes</span>
-                </button>
-                <button class="bottom-nav__item" id="nav-entrada" onclick="openCheckin()" aria-label="Check-in">
-                    <svg class="bottom-nav__icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
-                    <span class="bottom-nav__lbl">Check-in</span>
                 </button>
 
                 <!-- Solo visible en laptop (1024px+) -->
