@@ -5102,7 +5102,13 @@
             function kidsColumnReady() { return allData.length > 0 && Object.prototype.hasOwnProperty.call(allData[0], "kids_names"); }
             function splitNames(t) { return (t || "").split(",").map(function (n) { return n.trim(); }).filter(Boolean); }
             function famPax(f) { var r = f.rsvps && f.rsvps[0]; return f.confirmed && r && r.attending ? (r.guest_count || 0) : 0; }
-            function famKidsMarked(f) { return splitNames(f.kids_names); }
+            /* Solo marcas de nombres que siguen en guest_names (si editan/renombran a un invitado,
+               una marca vieja no debe seguir contando). Respeta duplicados: "Tania" ×2. */
+            function famKidsMarked(f) {
+                var pool = {};
+                splitNames(f.guest_names).forEach(function (g) { var k = _norm(g); pool[k] = (pool[k] || 0) + 1; });
+                return splitNames(f.kids_names).filter(function (m) { var k = _norm(m); if (pool[k]) { pool[k]--; return true; } return false; });
+            }
             function famKids(f) {
                 var p = famPax(f);
                 if (!p) return 0;
