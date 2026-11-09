@@ -3109,6 +3109,30 @@
             .mas-item__sub { display: block; font-size: 0.78rem; color: var(--text-mid); margin-top: 0.15rem; }
             .mas-item__badge { background: #e08888; color: #fff; font-size: 0.7rem; font-weight: 700; border-radius: 10px; padding: 0.1rem 0.5rem; }
             .mas-item__chev { color: var(--text-soft); }
+            /* Platos adulto / infantil */
+            .mesas-platos { border: 1px solid rgba(201,169,110,0.3); border-radius: 12px; padding: 0.85rem 1rem; margin: 0 0 0.85rem; background: rgba(201,169,110,0.05); }
+            .platos__lbl { font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); font-weight: 600; margin-bottom: 0.55rem; }
+            .platos__nums { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; text-align: center; }
+            .platos__nums > div { display: flex; flex-direction: column; gap: 0.1rem; }
+            .platos__n { font-family: var(--f-serif); font-size: 1.7rem; line-height: 1.1; color: var(--text); }
+            .platos__k { font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-mid); }
+            .platos__nums .is-kids .platos__n { color: #4f8fbf; }
+            [data-theme="dark"] .platos__nums .is-kids .platos__n { color: #8fc1e3; }
+            .platos__nums .is-total { border-left: 1px solid rgba(201,169,110,0.25); }
+            .platos__nums .is-total .platos__n { color: var(--gold); }
+            .platos__note { font-size: 0.78rem; color: var(--text-mid); margin-top: 0.6rem; line-height: 1.45; }
+            .platos__note.is-warn { color: #e08888; }
+            .mesa-card__platos { font-size: 0.74rem; color: var(--text-mid); margin: 0.35rem 0 0; }
+            .mesa-card__platos b, .kid-tag, .fs-kids-sum .is-kid { color: #4f8fbf; font-weight: 600; }
+            [data-theme="dark"] .mesa-card__platos b, [data-theme="dark"] .kid-tag, [data-theme="dark"] .fs-kids-sum .is-kid { color: #8fc1e3; }
+            .kid-tag { font-size: 0.72em; margin-left: 0.3rem; }
+            .ms-row { align-items: center; }
+            .ms-kid { margin-left: auto; flex-shrink: 0; min-height: 36px; padding: 0.3rem 0.75rem; border-radius: 18px; border: 1px dashed rgba(201,169,110,0.4); background: transparent; color: var(--text-soft); font-family: var(--f-sans); font-size: 0.78rem; cursor: pointer; }
+            .ms-kid.is-on { border: 1px solid #4f8fbf; background: rgba(79,143,191,0.14); color: #4f8fbf; font-weight: 600; }
+            [data-theme="dark"] .ms-kid.is-on { border-color: #8fc1e3; color: #8fc1e3; background: rgba(143,193,227,0.12); }
+            .ms-kid:disabled { opacity: 0.5; cursor: wait; }
+            .fs-kids-sum { font-size: 0.86rem; color: var(--text-mid); margin-top: 0.6rem; }
+            .fs-kids-sum b { color: var(--text); }
             .rec-hint.is-auto { color: var(--gold); background: rgba(201,169,110,0.08); border-color: rgba(201,169,110,0.3); }
             .rec-mode { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.4rem; margin: 0 0 0.6rem; }
             .rec-mode button { min-height: 52px; padding: 0.45rem 0.3rem; border-radius: 10px; border: 1px solid rgba(201,169,110,0.3); background: transparent; color: var(--text-mid); font-family: var(--f-sans); font-size: 0.78rem; font-weight: 600; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.15rem; transition: all 0.2s; }
@@ -3459,6 +3483,8 @@
                             <span class="mesas-stat__lbl">Sillas sin asignar</span>
                         </div>
                     </div>
+                    <!-- Platos adulto / infantil para el banquete -->
+                    <div class="mesas-platos" id="mesas-platos"></div>
                     <!-- Familias confirmadas sin mesa -->
                     <div class="mesas-sinmesa-banner is-link" id="mesas-sinmesa-banner" role="button" tabindex="0" data-go="sinmesa">
                         <span class="mesas-sinmesa-count" id="mesas-sinmesa-count">0</span>
@@ -4402,19 +4428,33 @@
                 var allNames = f.guest_names ? f.guest_names.split(",").map(function (n) { return n.trim(); }).filter(Boolean) : [];
                 var attArr = rsvp && rsvp.attending && rsvp.attending_names ? rsvp.attending_names.split(",").map(function (n) { return n.trim(); }).filter(Boolean) : [];
                 var attSet = {}; attArr.forEach(function (n) { attSet[n] = true; });
+                /* Niños: un botón 👶 por nombre (duplicados como "Tania" ×2 se cuentan por fila) */
+                var kidsReady = kidsColumnReady();
+                var kidPool = {}; famKidsMarked(f).forEach(function (k) { var nk = _norm(k); kidPool[nk] = (kidPool[nk] || 0) + 1; });
                 var people = allNames.length
-                    ? '<div class="member-status-list">' + allNames.map(function (name) {
+                    ? '<div class="member-status-list">' + allNames.map(function (name, i) {
                         var cls = status === "pending" ? "pending" : attSet[name] ? "yes" : "no";
-                        return '<div class="ms-row ms-row--' + cls + '"><span class="ms-icon">' + { pending: "·", yes: "✓", no: "✗" }[cls] + '</span><span class="ms-name">' + esc(name) + '</span></div>';
+                        var nk = _norm(name), isKid = !!kidPool[nk];
+                        if (isKid) kidPool[nk]--;
+                        return '<div class="ms-row ms-row--' + cls + (isKid ? ' is-kid' : '') + '"><span class="ms-icon">' + { pending: "·", yes: "✓", no: "✗" }[cls] + '</span><span class="ms-name">' + esc(name) + '</span>' +
+                            (kidsReady ? '<button type="button" class="ms-kid' + (isKid ? ' is-on' : '') + '" data-kid-idx="' + i + '" aria-pressed="' + isKid + '" aria-label="' + esc(name) + ': ' + (isKid ? 'es niño (tocar para quitar)' : 'marcar como niño') + '">' + (isKid ? '👶 Niño' : '+ Niño') + '</button>' : '') +
+                            '</div>';
                       }).join("") + '</div>'
-                    : '<p class="fs-muted">Sin nombres registrados</p>';
+                    : '<p class="fs-muted">Sin nombres registrados' + (kidsReady ? ' — agrega los nombres en "Editar datos" para poder marcar niños' : '') + '</p>';
+                var kidsSummary = "";
+                if (kidsReady && attending) {
+                    var kk = famKids(f), pp = rsvp.guest_count || 0;
+                    kidsSummary = '<p class="fs-kids-sum">🍽 Platos: <b>' + adultsTxt(pp - kk) + '</b>' + (kk ? ' · <b class="is-kid">👶 ' + kidsTxt(kk) + '</b>' : '') + '</p>';
+                } else if (!kidsReady) {
+                    kidsSummary = '<p class="fs-muted fs-kids-sum">Para marcar niños falta un paso en Supabase (columna <code>kids_names</code>).</p>';
+                }
 
                 var date = rsvp && rsvp.created_at ? new Date(rsvp.created_at).toLocaleDateString("es-MX", { day: "numeric", month: "short", year: "numeric" }) : "—";
                 var phoneHtml = f.phone
                     ? '<a href="https://wa.me/' + (function (p) { var c = p.replace(/\D/g, ""); return c.length > 10 ? c : "52" + c; })(f.phone) + '" target="_blank" rel="noopener">' + esc(f.phone) + '</a>'
                     : '—';
                 var info =
-                    '<div class="fs-section"><p class="fs-section__lbl">Invitados</p>' + people + '</div>' +
+                    '<div class="fs-section"><p class="fs-section__lbl">Invitados' + (kidsReady && allNames.length ? ' · toca 👶 en los niños' : '') + '</p>' + people + kidsSummary + '</div>' +
                     '<div class="fs-section fs-grid">' +
                         '<div><p class="fs-section__lbl">Teléfono</p><p class="fs-val">' + phoneHtml + '</p></div>' +
                         '<div><p class="fs-section__lbl">Respondió</p><p class="fs-val">' + esc(rsvp ? rsvp.contact_name || "—" : "—") + '<br><small>' + date + '</small></p></div>' +
@@ -4425,6 +4465,44 @@
                 /* #di-<id>: contenedor donde startEdit/startAttendanceEdit dibujan sus formularios */
                 document.getElementById("fs-body").innerHTML =
                     '<div class="detail-inner fs-inner" id="di-' + f.id + '"><div class="fs-view">' + facts + actions + mesaBlock + info + '</div></div>';
+            }
+
+            /* Marcar / desmarcar niño (fila i de guest_names). Verifica el guardado (RLS puede bloquear en silencio) */
+            var _kidsSaving = false;
+            document.addEventListener("click", function (e) {
+                var b = e.target.closest && e.target.closest(".ms-kid");
+                if (!b || !_famSheetId) return;
+                toggleKid(_famSheetId, +b.getAttribute("data-kid-idx"));
+            });
+            async function toggleKid(id, idx) {
+                var f = allData.find(function (x) { return x.id === id; });
+                if (!f || _kidsSaving) return;
+                var names = splitNames(f.guest_names);
+                if (!names[idx]) return;
+                /* Estado actual por fila (mismo reparto que al dibujar) */
+                var pool = {}; famKidsMarked(f).forEach(function (k) { var nk = _norm(k); pool[nk] = (pool[nk] || 0) + 1; });
+                var rows = names.map(function (n) { var nk = _norm(n); if (pool[nk]) { pool[nk]--; return true; } return false; });
+                rows[idx] = !rows[idx];
+                var value = names.filter(function (n, i) { return rows[i]; }).join(", ");
+                _kidsSaving = true;
+                document.querySelectorAll(".ms-kid").forEach(function (b) { b.disabled = true; });
+                try {
+                    var r = await fetch(SUPABASE_URL + "/rest/v1/families?id=eq." + id, {
+                        method: "PATCH",
+                        headers: { apikey: SUPABASE_ANON_KEY, Authorization: "Bearer " + SUPABASE_ANON_KEY, "Content-Type": "application/json", Prefer: "return=representation" },
+                        body: JSON.stringify({ kids_names: value })
+                    });
+                    if (!r.ok) throw new Error("HTTP " + r.status);
+                    var saved = await r.json();
+                    if (!saved.length || (saved[0].kids_names || "") !== value) throw new Error("rls");
+                    f.kids_names = value;
+                } catch (e) {
+                    showToast(e.message === "rls" ? "⚠ Supabase no permitió guardar (permisos). No se guardó." : "⚠ No se pudo guardar — revisa la conexión");
+                } finally {
+                    _kidsSaving = false;
+                    renderFamSheet();
+                    if (document.getElementById("tab-mesas").classList.contains("is-active")) renderMesasGrid();
+                }
             }
 
             async function famSheetAssign(id) {
@@ -5000,10 +5078,46 @@
             var CAP_POR_MESA = 12;
 
             /* Mapa de capacidad actual por mesa */
+            /* ── Niños (platos infantiles) ──────────────────
+               families.kids_names = nombres (de guest_names) que son niños, separados por coma.
+               Los novios los marcan en la hoja de la familia. Niños que ASISTEN:
+               - si attending_names trae nombres reales → los marcados que están en esa lista
+               - si no (p. ej. confirmadas por simulación: "Familia X") → marcados, sin pasar de los que asisten */
+            function kidsColumnReady() { return allData.length > 0 && Object.prototype.hasOwnProperty.call(allData[0], "kids_names"); }
+            function splitNames(t) { return (t || "").split(",").map(function (n) { return n.trim(); }).filter(Boolean); }
+            function famPax(f) { var r = f.rsvps && f.rsvps[0]; return f.confirmed && r && r.attending ? (r.guest_count || 0) : 0; }
+            function famKidsMarked(f) { return splitNames(f.kids_names); }
+            function famKids(f) {
+                var p = famPax(f);
+                if (!p) return 0;
+                var marked = famKidsMarked(f);
+                if (!marked.length) return 0;
+                var r = f.rsvps[0], att = splitNames(r.attending_names), guests = splitNames(f.guest_names);
+                var gl = {}; guests.forEach(function (g) { gl[_norm(g)] = true; });
+                var real = att.length > 0 && att.every(function (a) { return gl[_norm(a)]; });
+                if (!real) return Math.min(marked.length, p);
+                var pool = {}; att.forEach(function (a) { var k = _norm(a); pool[k] = (pool[k] || 0) + 1; });
+                var n = 0;
+                marked.forEach(function (m) { var k = _norm(m); if (pool[k]) { pool[k]--; n++; } });
+                return Math.min(n, p);
+            }
+            function kidsTxt(k) { return k + (k === 1 ? " niño" : " niños"); }
+            function adultsTxt(a) { return a + (a === 1 ? " adulto" : " adultos"); }
+            function platosTotales() {
+                var t = { adult: 0, kids: 0, sinMesaPax: 0, sinMesaKids: 0 };
+                allData.forEach(function (f) {
+                    var p = famPax(f), k = famKids(f);
+                    if (!p) return;
+                    t.adult += p - k; t.kids += k;
+                    if (!f.table_number) { t.sinMesaPax += p; t.sinMesaKids += k; }
+                });
+                return t;
+            }
+
             function buildMesaMap() {
                 var map = {};
                 for (var i = 1; i <= TOTAL_MESAS; i++) {
-                    map[i] = { pax: 0, names: [], fams: [], over: false };
+                    map[i] = { pax: 0, kids: 0, names: [], fams: [], over: false };
                 }
                 allData.forEach(function (f) {
                     if (!f.table_number || !map[f.table_number]) return;
@@ -5011,8 +5125,9 @@
                     var attending = !!(f.confirmed && rsvp && rsvp.attending);
                     var pax  = attending ? rsvp.guest_count : 0;
                     map[f.table_number].pax += pax;
+                    map[f.table_number].kids += famKids(f);
                     map[f.table_number].names.push(f.family_name.replace(/^Familia\s+/i, ""));
-                    map[f.table_number].fams.push({ id: f.id, name: f.family_name.replace(/^Familia\s+/i, ""), pax: pax, attending: attending });
+                    map[f.table_number].fams.push({ id: f.id, name: f.family_name.replace(/^Familia\s+/i, ""), pax: pax, kids: famKids(f), attending: attending });
                 });
                 Object.keys(map).forEach(function (k) {
                     map[k].over = map[k].pax > CAP_POR_MESA;
@@ -5100,13 +5215,14 @@
                     var MAXF = 5;
                     var famsHtml = m.fams.length
                         ? '<ul class="mesa-card__list">' + m.fams.slice(0, MAXF).map(function (x) {
-                              return '<li' + (x.attending ? '' : ' class="is-off"') + '><span>' + esc(x.name) + '</span><b>' + (x.attending ? x.pax : 'no asiste') + '</b></li>';
+                              return '<li' + (x.attending ? '' : ' class="is-off"') + '><span>' + esc(x.name) + '</span><b>' + (x.attending ? x.pax + (x.kids ? '<small class="kid-tag" title="' + kidsTxt(x.kids) + '">👶' + x.kids + '</small>' : '') : 'no asiste') + '</b></li>';
                           }).join("") + (m.fams.length > MAXF ? '<li class="is-more">+' + (m.fams.length - MAXF) + ' más</li>' : '') + '</ul>'
                         : '<span class="mesa-card__empty">Sin familias · ' + CAP_POR_MESA + ' sillas libres</span>';
 
                     grid.innerHTML +=
                         '<div class="mesa-card mesa-card--' + cls + '" id="mesa-card-' + n + '" onclick="openMesaDetail(' + n + ')" role="button" tabindex="0" aria-label="Mesa ' + n + ', ' + m.pax + ' de ' + CAP_POR_MESA + ' personas">' +
                         '<div class="mesa-card__header"><span class="mesa-card__num">' + n + '</span><span class="mesa-card__pax">' + m.pax + '/' + CAP_POR_MESA + '</span></div>' +
+                        (m.pax ? '<p class="mesa-card__platos">🍽 ' + adultsTxt(m.pax - m.kids) + (m.kids ? ' · <b>👶 ' + kidsTxt(m.kids) + '</b>' : '') + '</p>' : '') +
                         '<div class="mesa-card__seats">' + seatsHtml + '</div>' +
                         '<div class="mesa-card__fams">' + famsHtml + '</div>' +
                         '</div>';
@@ -5124,6 +5240,7 @@
                 if (el) el.textContent = totalPax;
                 el = document.getElementById("mstat-free");
                 if (el) el.textContent = (TOTAL_MESAS * CAP_POR_MESA) - totalPax;
+                renderPlatos();
 
                 /* Banner sin mesa */
                 var sinMesa = allData.filter(function(f) {
@@ -5134,6 +5251,24 @@
                     if (sinMesa > 0) smBanner.classList.add("is-visible");
                     else smBanner.classList.remove("is-visible");
                 }
+            }
+
+            /* Indicador de platos para el banquete (todas las personas que asisten, tengan mesa o no) */
+            function renderPlatos() {
+                var box = document.getElementById("mesas-platos");
+                if (!box) return;
+                var t = platosTotales(), ready = kidsColumnReady();
+                box.innerHTML =
+                    '<p class="platos__lbl">🍽 Platos para el banquete</p>' +
+                    '<div class="platos__nums">' +
+                        '<div><span class="platos__n">' + (ready ? t.adult : "—") + '</span><span class="platos__k">Adulto</span></div>' +
+                        '<div class="is-kids"><span class="platos__n">' + (ready ? t.kids : "—") + '</span><span class="platos__k">Infantil</span></div>' +
+                        '<div class="is-total"><span class="platos__n">' + (t.adult + t.kids) + '</span><span class="platos__k">Total</span></div>' +
+                    '</div>' +
+                    (!ready ? '<p class="platos__note is-warn">Falta un paso en Supabase para marcar niños (columna <code>kids_names</code>).</p>'
+                     : !t.kids ? '<p class="platos__note">Marca a los niños en la hoja de cada familia: Familias → toca la familia → 👶 junto a su nombre.</p>'
+                     : t.sinMesaPax ? '<p class="platos__note">Incluye ' + t.sinMesaPax + ' persona' + (t.sinMesaPax === 1 ? '' : 's') + ' que aún no tienen mesa' + (t.sinMesaKids ? ' (' + kidsTxt(t.sinMesaKids) + ')' : '') + '.</p>'
+                     : '');
             }
 
             /* ── Mesa detail sheet ──────────────────────── */
@@ -5149,7 +5284,7 @@
                 var barPct   = Math.min(100, Math.round(m.pax / CAP_POR_MESA * 100));
 
                 document.getElementById("mdd-num").textContent = "Mesa " + n;
-                document.getElementById("mdd-pax").textContent = m.pax + " / " + CAP_POR_MESA + " personas";
+                document.getElementById("mdd-pax").textContent = m.pax + " / " + CAP_POR_MESA + " personas" + (m.pax ? " · 🍽 " + adultsTxt(m.pax - m.kids) + (m.kids ? " · 👶 " + kidsTxt(m.kids) : "") : "");
                 var bar = document.getElementById("mdd-bar");
                 bar.style.width = barPct + "%";
                 bar.style.background = barColor;
@@ -5168,7 +5303,7 @@
                         return '<div class="mesa-fam-row">' +
                             '<button class="mesa-fam-row__open" onclick="openFamFromMesa(\'' + esc(f.id) + '\')">' +
                                 '<span class="mesa-fam-row__name">' + esc(f.family_name) + '</span>' +
-                                '<span class="mesa-fam-row__pax">' + (pax ? pax + (pax === 1 ? " persona" : " personas") : '<span style="color:#e08888">no asiste — quítala</span>') +
+                                '<span class="mesa-fam-row__pax">' + (pax ? pax + (pax === 1 ? " persona" : " personas") + (famKids(f) ? " (" + kidsTxt(famKids(f)) + ")" : "") : '<span style="color:#e08888">no asiste — quítala</span>') +
                                 (who ? ' · ' + esc(who) : '') + '</span>' +
                             '</button>' +
                             '<button class="mesa-fam-row__remove" onclick="removeFromMesa(\'' + esc(f.id) + '\',' + n + ')">Quitar</button>' +
@@ -5251,15 +5386,16 @@
             function printMesas() {
                 var mMap = buildMesaMap();
                 var conf = allData.filter(function (f) { return f.confirmed && f.rsvps && f.rsvps[0] && f.rsvps[0].attending; });
-                var byMesa = "";
+                var byMesa = "", platosRows = "";
                 for (var n = 1; n <= TOTAL_MESAS; n++) {
                     var fams = conf.filter(function (f) { return f.table_number === n; })
                         .sort(function (a, b) { return a.family_name.localeCompare(b.family_name, "es"); });
-                    var pax = mMap[n].pax;
-                    byMesa += '<section class="mesa"><h3>Mesa ' + n + ' <small>' + pax + ' / ' + CAP_POR_MESA + '</small></h3>' +
+                    var pax = mMap[n].pax, kn = mMap[n].kids;
+                    if (pax) platosRows += '<tr><td>Mesa ' + n + '</td><td class="num">' + (pax - kn) + '</td><td class="num">' + kn + '</td><td class="num"><b>' + pax + '</b></td></tr>';
+                    byMesa += '<section class="mesa"><h3>Mesa ' + n + ' <small>' + pax + ' / ' + CAP_POR_MESA + (kn ? ' · ' + kidsTxt(kn) : '') + '</small></h3>' +
                         (fams.length ? '<ul>' + fams.map(function (f) {
                             var r0 = f.rsvps[0];
-                            return '<li><span class="fam">' + esc(f.family_name) + '</span><span class="pax">' + r0.guest_count + '</span>' +
+                            return '<li><span class="fam">' + esc(f.family_name) + '</span><span class="pax">' + r0.guest_count + (famKids(f) ? ' <i>(' + kidsTxt(famKids(f)) + ')</i>' : '') + '</span>' +
                                 (r0.attending_names ? '<span class="who">' + esc(r0.attending_names) + '</span>' : '') + '</li>';
                         }).join("") + '</ul>' : '<p class="vacia">— vacía —</p>') + '</section>';
                 }
@@ -5272,10 +5408,14 @@
                             '<td class="num">' + r0.guest_count + '</td><td class="num"><b>' + (f.table_number || '—') + '</b></td><td class="code">' + esc(f.code) + '</td></tr>';
                     }).join("");
                 var totalPax = conf.reduce(function (s, f) { return s + (f.rsvps[0].guest_count || 0); }, 0);
+                var pt = platosTotales();
+                if (pt.sinMesaPax) platosRows += '<tr><td>Sin mesa asignada</td><td class="num">' + (pt.sinMesaPax - pt.sinMesaKids) + '</td><td class="num">' + pt.sinMesaKids + '</td><td class="num"><b>' + pt.sinMesaPax + '</b></td></tr>';
+                var platosHtml = '<h2>Platos para el banquete</h2><table class="platos"><thead><tr><th>Mesa</th><th class="num">Adulto</th><th class="num">Infantil</th><th class="num">Total</th></tr></thead><tbody>' + platosRows +
+                    '</tbody><tfoot><tr><td>TOTAL</td><td class="num">' + pt.adult + '</td><td class="num">' + pt.kids + '</td><td class="num">' + (pt.adult + pt.kids) + '</td></tr></tfoot></table>';
                 var hoy = new Date().toLocaleString("es-MX", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
                 var html = '<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">' +
                     '<title>Mesas · Karla & Eduardo</title><style>' +
-                    '*{box-sizing:border-box}body{font-family:Georgia,serif;color:#111;margin:0;padding:24px;font-size:12px}' +
+                    ':root{color-scheme:only light}*{box-sizing:border-box}html,body{background:#fff}body{font-family:Georgia,serif;color:#111;margin:0;padding:24px;font-size:12px}' +
                     'h1{font-size:20px;margin:0}h2{font-size:15px;margin:24px 0 10px;border-bottom:2px solid #111;padding-bottom:4px}' +
                     '.meta{color:#555;font-family:Arial,sans-serif;font-size:11px;margin:4px 0 0}' +
                     '.bar{position:sticky;top:0;background:#fff;padding:8px 0 12px;display:flex;gap:8px}' +
@@ -5289,14 +5429,16 @@
                     'th{font:700 10px Arial,sans-serif;text-transform:uppercase;letter-spacing:.05em;color:#333}' +
                     '.chk{width:24px;font-size:16px}.num{text-align:center;width:52px}.code{font:10px monospace;color:#555;width:90px}' +
                     '.warn{border:1px solid #c33;color:#c33;padding:8px;border-radius:6px;margin:8px 0;font-family:Arial,sans-serif}' +
+                    '.platos{max-width:480px}.platos tfoot td{font-weight:700;border-top:2px solid #111;border-bottom:none}.mesa li .pax i{font-weight:400;font-style:normal;color:#555}' +
                     '.pb{break-before:page}@media print{.bar{display:none}body{padding:0}}' +
                     '@media (max-width:600px){.grid{grid-template-columns:1fr}}' +
                     '</style></head><body>' +
                     '<div class="bar"><button onclick="window.print()">🖨 Imprimir / Guardar PDF</button></div>' +
                     '<h1>Karla & Eduardo · 21 de noviembre de 2026</h1>' +
-                    '<p class="meta">Hacienda Zerezotla · ' + conf.length + ' familias · ' + totalPax + ' personas confirmadas · generado ' + hoy + '</p>' +
+                    '<p class="meta">Hacienda Zerezotla · ' + conf.length + ' familias · ' + totalPax + ' personas confirmadas (' + adultsTxt(pt.adult) + ' · ' + kidsTxt(pt.kids) + ') · generado ' + hoy + '</p>' +
                     (sinMesa.length ? '<p class="warn">⚠ ' + sinMesa.length + ' familia(s) confirmadas SIN mesa: ' + sinMesa.map(function (f) { return esc(f.family_name); }).join(", ") + '</p>' : '') +
-                    '<h2>Distribución por mesa</h2><div class="grid">' + byMesa + '</div>' +
+                    platosHtml +
+                    '<h2 class="pb">Distribución por mesa</h2><div class="grid">' + byMesa + '</div>' +
                     '<h2 class="pb">Lista alfabética para la entrada</h2>' +
                     '<table><thead><tr><th></th><th>Familia</th><th class="num">Pers.</th><th class="num">Mesa</th><th>Código</th></tr></thead><tbody>' + alfa + '</tbody></table>' +
                     '</bo' + 'dy></ht' + 'ml>';
@@ -6687,6 +6829,7 @@
                             "Estado",
                             "Confirmó",
                             "Asistentes",
+                            "Niños",
                             "Fecha",
                         ],
                     ];
@@ -6710,6 +6853,7 @@
                             status,
                             rsvp ? rsvp.contact_name : "",
                             rsvp && rsvp.attending ? rsvp.guest_count : "",
+                            rsvp && rsvp.attending ? famKids(f) : "",
                             date,
                         ]);
                     });
