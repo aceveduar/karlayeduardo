@@ -3156,7 +3156,7 @@
             .venue__label--pista { display: flex; align-items: center; justify-content: center; border: 1px dashed rgba(201,169,110,0.3); border-radius: 8px; }
             .venue__label--pista span { writing-mode: vertical-rl; font-family: var(--f-serif); font-size: 1rem; color: rgba(201,169,110,0.55); letter-spacing: 0.2em; }
             .venue__tag { font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-mid); white-space: nowrap; }
-            .venue__tag--entrada { transform: translate(2px, -125%); color: var(--gold); font-weight: 700; }
+            .venue__tag--entrada { transform: translate(6px, 6px); color: var(--gold); font-weight: 700; }
             .venue__tag--side { transform: translate(-100%, -50%) rotate(-90deg); transform-origin: right center; }
             .venue__table { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0; padding: 0; border-radius: 6px; cursor: pointer; font-family: var(--f-sans); line-height: 1.05; border: 1.5px solid rgba(201,169,110,0.35); background: var(--surface); color: var(--text); transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s; }
             .venue__table:hover, .venue__table:focus-visible { transform: scale(1.08); z-index: 2; box-shadow: 0 0 0 2px var(--gold); }
@@ -3171,6 +3171,38 @@
             .venue__table.is-dim { opacity: 0.3; }
             @media (max-width: 520px) { .venue__k { display: none; } }
             .plan-tools { margin: 0 0 0.6rem; }
+            .mesas-view__btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.45rem; }
+            .venue-side { display: flex; flex-direction: column; gap: 0.6rem; margin-bottom: 0.75rem; }
+            .venue-side .plan-tools { margin: 0; }
+            .venue-stage { display: flex; justify-content: center; }
+            .plan-sum { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.4rem; }
+            .plan-sum > div { border: 1px solid rgba(201,169,110,0.22); border-radius: 10px; padding: 0.5rem 0.4rem; text-align: center; background: rgba(201,169,110,0.04); }
+            .plan-sum b { display: block; font-family: var(--f-serif); font-size: 1.35rem; font-weight: 500; color: var(--text); line-height: 1.1; }
+            .plan-sum b small { font-size: 0.75rem; color: var(--text-mid); }
+            .plan-sum span { font-size: 0.66rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-mid); }
+            .plan-sum__warn { grid-column: 1 / -1; min-height: 40px; border-radius: 10px; border: 1px solid rgba(224,136,136,0.45); background: rgba(224,136,136,0.08); color: #c05050; font-family: var(--f-sans); font-size: 0.82rem; font-weight: 600; cursor: pointer; }
+            [data-theme="dark"] .plan-sum__warn { color: #e08888; }
+            .plan-btn--edit { width: 100%; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 0.2rem 0.5rem; min-height: 52px; border-color: var(--gold); color: var(--gold); }
+            .plan-btn--edit small { flex-basis: 100%; font-size: 0.72rem; font-weight: 400; color: var(--text-mid); }
+            .plan-bar__title em { font-style: normal; color: #e0a050; }
+            .plan-legend { display: flex; flex-wrap: wrap; gap: 0.35rem 0.9rem; font-size: 0.74rem; color: var(--text-mid); }
+            .plan-legend span { display: inline-flex; align-items: center; gap: 0.35rem; }
+            .pl-dot { width: 12px; height: 12px; border-radius: 3px; display: inline-block; border: 1.5px solid; }
+            .pl-dot--empty { border-style: dashed; border-color: rgba(201,169,110,0.5); }
+            .pl-dot--partial { background: rgba(201,169,110,0.35); border-color: var(--gold); }
+            .pl-dot--full { background: rgba(126,200,160,0.4); border-color: #3a9468; }
+            .pl-dot--over { background: rgba(224,136,136,0.45); border-color: #c97070; }
+            .venue-side .venue-hint { margin: 0; text-align: left; }
+            @media (max-width: 1099px) { .venue-side .venue-hint { display: none; } .venue.is-editing ~ * { } }
+            /* PC: plano a la izquierda (cabe completo en la pantalla), panel a la derecha */
+            @media (min-width: 1100px) {
+                .venue-wrap:not([hidden]) { display: grid; grid-template-columns: auto 300px; justify-content: center; gap: 1.75rem; align-items: start; }
+                .venue-side { order: 2; position: sticky; top: 0; margin: 0; }
+                .venue-stage { order: 1; }
+                .venue { width: min(calc(100vw - 220px - 300px - 6rem), calc((100dvh - 150px) * 894 / 1164)); max-width: none; }
+                .plan-tools:has(.plan-bar) { position: static; padding: 0; background: none; }
+                .plan-sel .plan-btn--danger { margin-left: 0; }
+            }
             .plan-tools:has(.plan-bar) { position: sticky; top: -1rem; z-index: 6; padding: 0.6rem 0; background: var(--bg); }
             .kids-step { display: inline-flex; align-items: center; border: 1px solid rgba(201,169,110,0.4); border-radius: 10px; overflow: hidden; flex-shrink: 0; }
             .kids-step__btn { width: 44px; height: 44px; border: none; background: rgba(201,169,110,0.1); color: var(--gold); font-size: 1.35rem; line-height: 1; cursor: pointer; }
@@ -3566,7 +3598,7 @@
                     <!-- Alerta capacidad excedida -->
                     <div class="mesas-over-banner" id="mesas-over-banner">⚠️ Hay mesas con capacidad excedida</div>
                     <!-- Leyenda -->
-                    <div class="mesas-legend">
+                    <div class="mesas-legend" id="mesas-legend">
                         <div class="mesas-legend__item"><div class="mesas-legend__dot mesas-legend__dot--empty"></div>Vacía</div>
                         <div class="mesas-legend__item"><div class="mesas-legend__dot" style="background:rgba(201,169,110,0.7);"></div>Parcial</div>
                         <div class="mesas-legend__item"><div class="mesas-legend__dot" style="background:#7ec8a0;"></div>Llena</div>
@@ -3574,13 +3606,20 @@
                     </div>
                     <!-- Plano real del salón / lista de tarjetas -->
                     <div class="mesas-view" role="tablist" aria-label="Vista de mesas">
-                        <button type="button" class="mesas-view__btn" data-view="plano" onclick="setMesasView('plano')">🗺 Plano del salón</button>
-                        <button type="button" class="mesas-view__btn" data-view="lista" onclick="setMesasView('lista')">☰ Lista</button>
+                        <button type="button" class="mesas-view__btn" data-view="plano" onclick="setMesasView('plano')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><rect x="6.5" y="6.5" width="3.5" height="3.5"/><rect x="14" y="6.5" width="3.5" height="3.5"/><rect x="6.5" y="14" width="3.5" height="3.5"/><rect x="14" y="14" width="3.5" height="3.5"/></svg> Plano del salón</button>
+                        <button type="button" class="mesas-view__btn" data-view="lista" onclick="setMesasView('lista')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" d="M4 6h16M4 12h16M4 18h16"/></svg> Lista</button>
                     </div>
                     <div class="venue-wrap" id="venue-wrap">
-                        <div class="plan-tools" id="plan-tools"></div>
-                        <div class="venue" id="venue-plan" aria-label="Plano del salón: toca una mesa"></div>
-                        <p class="venue-hint">Toca una mesa para ver quién está y acomodar familias.</p>
+                        <aside class="venue-side">
+                            <div class="plan-sum" id="plan-sum"></div>
+                            <div class="plan-tools" id="plan-tools"></div>
+                            <div class="plan-legend" aria-label="Colores de las mesas">
+                                <span><i class="pl-dot pl-dot--empty"></i>Vacía</span><span><i class="pl-dot pl-dot--partial"></i>Parcial</span>
+                                <span><i class="pl-dot pl-dot--full"></i>Llena</span><span><i class="pl-dot pl-dot--over"></i>Excedida</span>
+                            </div>
+                            <p class="venue-hint" id="venue-hint">Toca una mesa para ver quién está y acomodar familias.</p>
+                        </aside>
+                        <div class="venue-stage"><div class="venue" id="venue-plan" aria-label="Plano del salón: toca una mesa"></div></div>
                     </div>
                     <div id="mesas-section" style="display:block;">
                         <div class="mesas-grid" id="mesas-grid"></div>
@@ -5462,10 +5501,25 @@
             function renderPlanTools() {
                 var t = document.getElementById("plan-tools");
                 if (!t) return;
+                var sum = document.getElementById("plan-sum");
+                if (sum) {
+                    var mm = buildMesaMap(), occ = 0, sat = 0;
+                    curMesas().forEach(function (x) { var i = mm[x.n]; if (i && i.fams.length) occ++; sat += (i && i.pax) || 0; });
+                    var cap = totalCap(), sinMesa = platosTotales().sinMesaPax;
+                    sum.innerHTML =
+                        '<div><b>' + curMesas().length + '</b><span>mesas</span></div>' +
+                        '<div><b>' + occ + '</b><span>con familias</span></div>' +
+                        '<div><b>' + sat + '<small>/' + cap + '</small></b><span>sillas ocupadas</span></div>' +
+                        (sinMesa ? '<button type="button" class="plan-sum__warn" data-go="sinmesa">' + sinMesa + (sinMesa === 1 ? ' persona' : ' personas') + ' sin mesa ›</button>' : '');
+                }
+                var hint = document.getElementById("venue-hint");
+                if (hint) hint.textContent = _planDraft
+                    ? "Arrastra las mesas con el cursor. Toca una para cambiar sillas o quitarla."
+                    : "Toca una mesa para ver quién está y acomodar familias.";
                 if (!_planDraft) {
                     t.innerHTML = canDragPlan()
-                        ? '<button type="button" class="plan-btn plan-btn--main" onclick="startPlanEdit()">✏️ Editar plano: mover, agregar mesas y sillas</button>'
-                        : '<p class="plan-note">💻 Para mover o agregar mesas abre el panel en una computadora. Desde aquí puedes cambiar las sillas tocando una mesa.</p>';
+                        ? '<button type="button" class="plan-btn plan-btn--edit" onclick="startPlanEdit()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M15.2 5.2l3.6 3.6M4 20l4.2-1 10.6-10.6a2.5 2.5 0 00-3.6-3.6L4.6 15.4 4 20z"/></svg> Editar plano<small>mover, agregar y quitar mesas, sillas</small></button>'
+                        : '<p class="plan-note">Toca una mesa para ver sus familias o cambiar sillas. Para mover o agregar mesas, usa una computadora.</p>';
                     return;
                 }
                 var mMap = buildMesaMap(), sel = _planSel && mesaOf(_planSel), selBox = "";
@@ -5481,12 +5535,12 @@
                 }
                 t.innerHTML =
                     '<div class="plan-bar">' +
-                        '<span class="plan-bar__title">✏️ Editando plano · ' + _planDraft.length + ' mesas · ' + totalCap() + ' sillas</span>' +
+                        '<span class="plan-bar__title">Editando plano' + (planDirty() ? ' · <em>sin guardar</em>' : '') + '</span>' +
                         '<button type="button" class="plan-btn" onclick="planAdd()">＋ Agregar mesa</button>' +
                         '<button type="button" class="plan-btn" onclick="cancelPlanEdit()">Cancelar</button>' +
                         '<button type="button" class="plan-btn plan-btn--main" onclick="savePlanEdit()"' + (planDirty() ? '' : ' disabled') + '>Guardar plano</button>' +
                     '</div>' +
-                    (selBox || '<p class="plan-note">Arrastra una mesa para moverla. Tócala para cambiar sus sillas o quitarla.</p>');
+                    (selBox || '<p class="plan-note">Selecciona una mesa para cambiar sus sillas o quitarla.</p>');
             }
             function startPlanEdit() {
                 _planDraft = JSON.parse(JSON.stringify(MESAS)); _planSel = null;
@@ -5595,6 +5649,7 @@
                 try { localStorage.setItem("ke-mesas-view", v); } catch (e) {}
                 document.getElementById("venue-wrap").hidden = v !== "plano";
                 document.getElementById("mesas-section").style.display = v === "lista" ? "block" : "none";
+                var lg = document.getElementById("mesas-legend"); if (lg) lg.style.display = v === "lista" ? "" : "none";
                 document.querySelectorAll(".mesas-view__btn").forEach(function (b) {
                     var on = b.getAttribute("data-view") === v;
                     b.classList.toggle("is-on", on); b.setAttribute("aria-selected", on ? "true" : "false");
