@@ -3212,8 +3212,10 @@
             .venue__table:hover, .venue__table:focus-visible { transform: scale(1.08); z-index: 2; box-shadow: 0 0 0 2px var(--gold); }
             .venue__n { font-family: var(--f-serif); font-size: clamp(0.8rem, 3.4vw, 1.2rem); font-weight: 600; line-height: 1; }
             .venue__p { font-size: clamp(0.5rem, 2.1vw, 0.7rem); color: var(--text-mid); margin-top: 0.12rem; white-space: nowrap; }
-            .venue__k { font-style: normal; color: #4f8fbf; font-weight: 700; }
-            [data-theme="dark"] .venue__k { color: #8fc1e3; }
+            /* Niños: insignia en la esquina (antes dentro del texto y se salía de la mesa) */
+            .venue__k { position: absolute; top: 0; right: 0; transform: translate(38%, -45%); z-index: 2; font-style: normal; font-size: clamp(0.5rem, 1.9vw, 0.62rem); font-weight: 700; line-height: 1; padding: 0.15em 0.35em; border-radius: 999px; background: #4f8fbf; color: #fff; white-space: nowrap; pointer-events: none; }
+            [data-theme="dark"] .venue__k { background: #5d9cc9; }
+            .venue__table.is-here .venue__k { background: #1e1410; }
             .venue__table--empty { border-style: dashed; color: var(--text-mid); }
             .venue__table--empty .venue__chair { opacity: 0.6; }
             .venue__table--partial { background: rgba(201,169,110,0.2); border-color: var(--gold); }
@@ -3295,7 +3297,7 @@
                 .venue-stage { order: 5; } .venue-side .mesas-platos { order: 6; margin-top: 0.4rem; }
                 .venue-stage.is-zoom { display: block; overflow: auto; max-height: 72dvh; border: 1px solid rgba(201,169,110,0.25); border-radius: 8px; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
                 .venue-stage.is-zoom .venue { width: 185%; max-width: none; margin: 0; }
-                .venue-stage.is-zoom .venue__k { display: inline; }
+                .venue-stage.is-zoom .venue__k { display: block; font-size: 0.66rem; }
                 .venue-stage.is-zoom .venue__n { font-size: 1.15rem; }
                 .venue-stage.is-zoom .venue__p { font-size: 0.72rem; }
                 .venue-stage.is-zoom .venue__zone, .venue-stage.is-zoom .venue__tag { font-size: 0.72rem; }
@@ -3304,10 +3306,17 @@
             }
             /* PC: plano a la izquierda (cabe completo en la pantalla), panel a la derecha */
             @media (min-width: 1100px) {
-                .venue-wrap:not([hidden]) { display: grid; grid-template-columns: auto 300px; justify-content: center; gap: 1.75rem; align-items: start; }
+                .venue-wrap:not([hidden]) { display: grid; grid-template-columns: auto 300px; justify-content: start; gap: 1.75rem; align-items: start; }
                 .venue-side { order: 2; position: sticky; top: 0; margin: 0; }
                 .venue-stage { order: 1; }
-                .venue { width: min(calc(100vw - 220px - 300px - 6rem), calc((100dvh - 150px) * 894 / 1164)); max-width: none; }
+                .venue { width: min(calc(100vw - 220px - 300px - 6rem), calc((100dvh - 245px) * 894 / 1164)); min-width: 360px; max-width: none; }
+                /* Vista plano en PC: buscador y Plano/Lista en una fila; el plano gana altura */
+                #tab-mesas.is-plano.is-active { display: grid; grid-template-columns: minmax(0, 1fr) 340px; column-gap: 0.75rem; align-items: center; align-content: start; }
+                #tab-mesas.is-plano > * { grid-column: 1 / -1; }
+                #tab-mesas.is-plano > .mesas-tab-header { margin-bottom: 0.6rem; }
+                #tab-mesas.is-plano > .mesas-search { grid-column: 1; margin: 0 0 0.9rem; position: relative; }
+                #tab-mesas.is-plano > .mesas-view { grid-column: 2; margin: 0 0 0.9rem; }
+                #tab-mesas.is-plano .mesas-search-results:not(:empty) { position: absolute; left: 0; right: 0; top: 100%; z-index: 20; background: var(--surface); border: 1px solid rgba(201,169,110,0.3); border-radius: 10px; padding: 0.4rem; box-shadow: 0 12px 30px rgba(0,0,0,0.4); }
                 .plan-tools:has(.plan-bar) { position: static; padding: 0; background: none; }
                 .plan-sel .plan-btn--danger { margin-left: 0; }
             }
@@ -5662,7 +5671,8 @@
                         'style="' + vp(mt.x - V.tableW / 2, mt.y - V.tableH / 2, V.tableW, V.tableH) + '" ' +
                         'aria-label="Mesa ' + n + ': ' + m.pax + ' de ' + cap + ' personas' + (m.kids ? ', ' + kidsTxt(m.kids) : '') + '">' +
                         chairsHtml(cap, m.pax) +
-                        '<span class="venue__n">' + n + '</span><span class="venue__p">' + m.pax + '/' + cap + (m.kids ? ' <i class="venue__k">👶' + m.kids + '</i>' : '') + '</span>' +
+                        '<span class="venue__n">' + n + '</span><span class="venue__p">' + m.pax + '/' + cap + '</span>' +
+                        (m.kids ? '<i class="venue__k" title="' + kidsTxt(m.kids) + '">👶' + m.kids + '</i>' : '') +
                         '</button>';
                 });
                 if (here) { var hm = mesaOf(here); if (hm) html += '<div class="venue__pin" style="' + vp(hm.x, hm.y - V.tableH / 2) + '">▼ Mesa ' + here + '</div>'; }
