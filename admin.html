@@ -3170,6 +3170,29 @@
             .ci-item__who { font-size: 0.86rem; color: var(--text); line-height: 1.45; margin-top: 0.2rem; }
             .ci-item__who-no { color: var(--text-soft); font-size: 0.78rem; }
             .qr-card__guest--dot { color: var(--text); }
+            .qr-register { width: 100%; min-height: 56px; margin-top: 0.25rem; border: none; border-radius: 12px; background: #2f9e6a; color: #fff; font-family: var(--f-sans); font-size: 1.05rem; font-weight: 700; letter-spacing: 0.04em; cursor: pointer; box-shadow: 0 6px 18px rgba(47,158,106,0.35); }
+            .qr-register:active { transform: scale(0.98); }
+            .qr-banner { margin: -0.15rem 0 0.75rem; padding: 0.65rem 0.8rem; border-radius: 10px; font-family: var(--f-sans); font-size: 0.95rem; font-weight: 700; line-height: 1.35; }
+            .qr-banner span { display: block; margin-top: 0.2rem; font-size: 0.8rem; font-weight: 400; }
+            .qr-banner--ok { background: rgba(47,158,106,0.18); border: 1px solid #2f9e6a; color: #2f9e6a; }
+            [data-theme="dark"] .qr-banner--ok { color: #7ec8a0; }
+            .qr-banner--warn { background: rgba(224,160,80,0.16); border: 1px solid #e0a050; color: #b8741e; }
+            [data-theme="dark"] .qr-banner--warn { color: #f0b860; }
+            .qr-banner--err { background: rgba(224,136,136,0.16); border: 1px solid #c97070; color: #b04848; }
+            [data-theme="dark"] .qr-banner--err { color: #f0a0a0; }
+            .qr-scan-next--main { min-height: 52px; font-size: 0.85rem; border-color: var(--gold) !important; color: var(--gold) !important; }
+            .ci-header__btns { display: flex; align-items: center; gap: 0.5rem; }
+            .ci-help { width: 40px; height: 40px; border-radius: 50%; border: 1px solid rgba(201,169,110,0.45); background: transparent; color: var(--gold); font-family: var(--f-serif); font-size: 1.1rem; cursor: pointer; }
+            .door-guide { position: fixed; inset: 0; z-index: 10060; background: rgba(0,0,0,0.65); display: none; align-items: center; justify-content: center; padding: 1rem; }
+            .door-guide.is-open { display: flex; }
+            .door-guide__card { width: 100%; max-width: 420px; background: var(--surface); border: 1px solid var(--gold); border-radius: 16px; padding: 1.25rem 1.2rem 1.1rem; color: var(--text); }
+            .door-guide__title { font-family: var(--f-serif); font-size: 1.35rem; color: var(--gold); margin-bottom: 0.75rem; }
+            .door-guide__steps { margin: 0 0 0.75rem 1.2rem; padding: 0; display: flex; flex-direction: column; gap: 0.6rem; font-size: 0.95rem; line-height: 1.45; }
+            .door-guide__steps b.g { color: #2f9e6a; }
+            [data-theme="dark"] .door-guide__steps b.g { color: #7ec8a0; }
+            .door-guide__note { font-size: 0.85rem; color: var(--text-mid); line-height: 1.45; margin-bottom: 1rem; }
+            .door-guide__note b.w { color: #e0a050; } .door-guide__note b.r { color: #e08888; }
+            .door-guide__ok { width: 100%; min-height: 50px; border: none; border-radius: 12px; background: var(--gold); color: #1e1410; font-family: var(--f-sans); font-size: 1rem; font-weight: 700; cursor: pointer; }
             .ci-mesa-btn { background: none; border: none; padding: 0 0.15rem; font: inherit; font-weight: 700; color: var(--gold); cursor: pointer; text-decoration: underline; text-underline-offset: 3px; min-height: 32px; }
             .qr-plan-btn { display: block; margin: 0.35rem auto 0.6rem; min-height: 44px; padding: 0.5rem 1.1rem; border-radius: 22px; border: 1px solid var(--gold); background: rgba(201,169,110,0.12); color: var(--gold); font-family: var(--f-sans); font-size: 0.9rem; font-weight: 600; cursor: pointer; }
             .ci-plan-overlay { position: fixed; inset: 0; z-index: 10050; background: rgba(0,0,0,0.6); display: none; align-items: flex-end; justify-content: center; }
@@ -4103,7 +4126,10 @@
         <div class="checkin-overlay" id="checkin-overlay">
             <div class="ci-header">
                 <p class="ci-title">Modo Entrada · K&amp;E</p>
-                <button class="ci-close" onclick="closeCheckin()">✕ Salir</button>
+                <div class="ci-header__btns">
+                    <button type="button" class="ci-help" onclick="showDoorGuide(true)" aria-label="Cómo usar el modo entrada">?</button>
+                    <button class="ci-close" onclick="closeCheckin()">✕ Salir</button>
+                </div>
             </div>
             <div class="ci-stats">
                 <div class="ci-stat"><p class="ci-stat__num" id="ci-n-checked">0</p><p class="ci-stat__lbl">Llegaron</p></div>
@@ -4142,6 +4168,18 @@
                 <button class="ci-search-clear" id="ci-search-clear" type="button" aria-label="Borrar búsqueda" onclick="clearCiSearch()">✕</button>
             </div>
             <div class="ci-list" id="ci-list"></div>
+        </div>
+        <div class="door-guide" id="door-guide" role="dialog" aria-modal="true" aria-labelledby="door-guide-title">
+            <div class="door-guide__card">
+                <p class="door-guide__title" id="door-guide-title">Cómo recibir a cada invitado</p>
+                <ol class="door-guide__steps">
+                    <li><b>Escanea su QR</b> con el botón dorado. ¿No trae QR? Pregunta su nombre y búscalo abajo.</li>
+                    <li><b>Confirma en voz alta:</b> “¿Familia Acevedo: Eduardo, María y Amelia?”</li>
+                    <li>Toca <b class="g">✓ Registrar llegada</b> y dile su <b>mesa</b>. Con <b>📍 Ver en el plano</b> le señalas dónde está.</li>
+                </ol>
+                <p class="door-guide__note">Si sale <b class="w">⚠ YA ENTRÓ</b> o <b class="r">✕</b>, revisa con la coordinadora antes de dejar pasar.</p>
+                <button type="button" class="door-guide__ok" onclick="closeDoorGuide()">Entendido</button>
+            </div>
         </div>
         <div class="ci-plan-overlay" id="ci-plan-overlay" onclick="if(event.target===this)closeCiPlan()" role="dialog" aria-modal="true" aria-labelledby="ci-plan-title">
             <div class="ci-plan-sheet">
@@ -6704,9 +6742,32 @@
                 ciSyncNow();
                 clearInterval(_ciSync);
                 _ciSync = setInterval(ciSyncNow, 15000);
+                ciWakeOn();
+                if (isDoor()) showDoorGuide(false);
+            }
+
+            /* Pantalla encendida mientras se registra la entrada (se pierde al cambiar de app: se reactiva al volver) */
+            var _ciWake = null;
+            async function ciWakeOn() {
+                try { if ("wakeLock" in navigator && !_ciWake) { _ciWake = await navigator.wakeLock.request("screen"); _ciWake.addEventListener("release", function () { _ciWake = null; }); } } catch (e) {}
+            }
+            function ciWakeOff() { try { if (_ciWake) _ciWake.release(); } catch (e) {} _ciWake = null; }
+            document.addEventListener("visibilitychange", function () {
+                if (document.visibilityState === "visible" && document.getElementById("checkin-overlay").style.display === "block") ciWakeOn();
+            });
+            /* Guía rápida para edecanes (la primera vez, o con el botón "?") */
+            function showDoorGuide(force) {
+                var seen = false; try { seen = localStorage.getItem("ke-door-guide") === "1"; } catch (e) {}
+                if (seen && !force) return;
+                document.getElementById("door-guide").classList.add("is-open");
+            }
+            function closeDoorGuide() {
+                try { localStorage.setItem("ke-door-guide", "1"); } catch (e) {}
+                document.getElementById("door-guide").classList.remove("is-open");
             }
 
             function closeCheckin() {
+                ciWakeOff();
                 if (isDoor()) {
                     if (!confirm("¿Cerrar la sesión de entrada?")) return;
                     clearInterval(_ciSync); _ciSync = null;
@@ -6833,7 +6894,7 @@
                     var rsvp   = f.rsvps && f.rsvps[0];
                     var detail = (rsvp ? rsvp.guest_count + (rsvp.guest_count === 1 ? " persona" : " personas") : "?") +
                         (f.table_number ? " · <button type=\"button\" class=\"ci-mesa ci-mesa-btn\" onclick=\"showOnPlan(" + f.table_number + ")\" aria-label=\"Ver la Mesa " + f.table_number + " en el plano\">Mesa " + f.table_number + " 📍</button>" : " · <span class=\"ci-nomesa\">Sin mesa</span>") +
-                        " · " + esc(f.code);
+                        (isDoor() ? "" : " · " + esc(f.code));
                     if (f.checked_in) {
                         var t = f.checked_in_at ? new Date(f.checked_in_at).toLocaleTimeString("es-MX", { hour: "2-digit", minute: "2-digit", hour12: false }) : "";
                         return '<div class="ci-item ci-item--done" id="ci-row-' + f.id + '"><div><p class="ci-item__name">' + esc(f.family_name) + '</p>' + ciWhoLine(f) + '<p class="ci-item__detail">' + detail + '</p></div>' +
@@ -7109,7 +7170,7 @@
                 _qrFrame = requestAnimationFrame(tickQrScan);
             }
 
-            function onQrDetected(code) {
+            function onQrDetected(code, justDone) {
                 stopQrScanner();
                 var hint   = document.getElementById("qr-hint");
                 var result = document.getElementById("qr-result");
@@ -7121,11 +7182,12 @@
                     var anyF = allData.find(function(x) { return x.code === code; });
                     result.innerHTML =
                         '<div class="qr-result-card qr-result-card--error">' +
-                            '<div><p class="qr-found__name">' + (anyF ? esc(anyF.family_name) : "Código no reconocido") + '</p>' +
+                            '<p class="qr-banner qr-banner--err">' + (anyF ? (anyF.confirmed ? "✕ Esta familia avisó que NO asistiría" : "✕ Esta familia nunca confirmó") : "✕ Código no reconocido") + '</p>' +
+                            '<div><p class="qr-found__name">' + (anyF ? esc(anyF.family_name) : "Búscalo por nombre") + '</p>' +
                             '<p class="qr-found__detail">' + (anyF
                                 ? (anyF.confirmed ? "Registró que NO asistiría." : "Nunca confirmó asistencia.") +
-                                  "<br>Si los novios aprueban que pase, regístralo después en Familias → Detalle → Cambiar asistencia."
-                                : "Leído: " + esc(code) + "<br>Intenta de nuevo o búscalo por nombre abajo.") + '</p></div>' +
+                                  (isDoor() ? "<br>Pide a los novios o a la coordinadora que autoricen su entrada." : "<br>Si los novios aprueban que pase, regístralo después en Familias → Detalle → Cambiar asistencia.")
+                                : "Pregunta su nombre y búscalo en el buscador de abajo.<br><small>Leído: " + esc(code) + "</small>") + '</p></div>' +
                         '</div>' +
                         '<button class="qr-scan-next" onclick="startQrScanner()">↩ Escanear otro</button>';
                     if (hint) hint.textContent = "";
@@ -7194,19 +7256,18 @@
                     var t = f.checked_in_at ? new Date(f.checked_in_at).toLocaleTimeString("es-MX", { hour: "2-digit", minute: "2-digit" }) : "";
                     result.innerHTML =
                         '<div class="qr-result-card qr-result-card--done">' +
+                            (justDone
+                                ? '<p class="qr-banner qr-banner--ok">✓ Llegada registrada · indícales la Mesa ' + (f.table_number || "—") + '</p>'
+                                : '<p class="qr-banner qr-banner--warn">⚠ Esta familia YA ENTRÓ a las ' + (t || "—") + '<span>Confirma los nombres: puede ser un QR reenviado o que otra compañera ya los registró.</span></p>') +
                             cardBase +
-                            '<div class="qr-card__divider"></div>' +
-                            '<div style="display:flex;align-items:center;justify-content:space-between">' +
-                                '<span class="ci-done-badge" style="font-size:0.75rem;">✓ Llegó a las ' + (t || "—") + '</span>' +
-                            '</div>' +
                         '</div>' +
-                        '<button class="qr-scan-next" onclick="startQrScanner()">↩ Escanear otro</button>';
+                        '<button class="qr-scan-next qr-scan-next--main" onclick="startQrScanner()">↩ Escanear siguiente</button>';
                 } else {
                     result.innerHTML =
                         '<div class="qr-result-card qr-result-card--found">' +
                             cardBase +
                             '<div class="qr-card__divider"></div>' +
-                            '<button class="ci-btn" style="width:100%;padding:0.75rem;" onclick="qrCheckIn(\'' + esc(f.id) + '\',\'' + esc(f.code) + '\')">✓ Registrar llegada</button>' +
+                            '<button class="qr-register" onclick="qrCheckIn(\'' + esc(f.id) + '\',\'' + esc(f.code) + '\')">✓ Registrar llegada</button>' +
                         '</div>';
                 }
 
@@ -7215,11 +7276,8 @@
 
             async function qrCheckIn(id, code) {
                 await checkIn(id);
-                /* Refresca el resultado */
-                onQrDetected(code);
-                /* Botón para seguir escaneando */
-                var result = document.getElementById("qr-result");
-                if (result) result.innerHTML += '<button class="qr-scan-next" onclick="startQrScanner()">↩ Escanear siguiente</button>';
+                /* Refresca el resultado como "recién registrada" (no como "ya entró") */
+                onQrDetected(code, true);
             }
 
             /* ── Libro de Visitas (mensajes) ──────────── */
