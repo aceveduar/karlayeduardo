@@ -3222,6 +3222,22 @@
             .pl-dot--full { background: rgba(126,200,160,0.4); border-color: #3a9468; }
             .pl-dot--over { background: rgba(224,136,136,0.45); border-color: #c97070; }
             .venue-side .venue-hint { margin: 0; text-align: left; }
+            .plan-unseated:empty { display: none; }
+            .plan-unseated__lbl { font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: #c05050; font-weight: 600; margin-bottom: 0.4rem; }
+            [data-theme="dark"] .plan-unseated__lbl { color: #e08888; }
+            .plan-unseated__list { display: flex; flex-direction: column; gap: 0.35rem; max-height: 40dvh; overflow-y: auto; padding-right: 2px; }
+            .fam-chip { display: flex; align-items: center; gap: 0.5rem; min-height: 40px; padding: 0.4rem 0.65rem; border-radius: 8px; border: 1px solid rgba(201,169,110,0.35); background: var(--surface); color: var(--text); font-size: 0.86rem; cursor: grab; user-select: none; touch-action: none; }
+            .fam-chip:hover, .fam-chip:focus-visible { border-color: var(--gold); outline: none; }
+            .fam-chip.is-dragging { opacity: 0.35; }
+            .fam-chip__grip { color: var(--text-soft); font-size: 0.9rem; }
+            .fam-chip__name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+            .fam-chip__pax { font-family: var(--f-serif); color: var(--gold); }
+            .fam-chip__pax i { font-style: normal; font-family: var(--f-sans); font-size: 0.75rem; color: #4f8fbf; }
+            .fam-chip--ghost { position: fixed; z-index: 10000; pointer-events: none; transform: translate(18px, 14px) rotate(-2deg); width: 230px; box-shadow: 0 10px 28px rgba(0,0,0,0.45); border-color: var(--gold); cursor: grabbing; }
+            .fam-chip--ghost[data-msg]::after { content: attr(data-msg); position: absolute; left: 0; top: calc(100% + 6px); background: #1e1410; color: #f5e8b8; font-size: 0.75rem; padding: 0.2rem 0.5rem; border-radius: 6px; white-space: nowrap; }
+            body.is-fam-dragging, body.is-fam-dragging * { cursor: grabbing !important; user-select: none; }
+            .venue__table.is-drop-ok { box-shadow: 0 0 0 3px #3a9468, 0 0 18px rgba(58,148,104,0.6); transform: scale(1.12); z-index: 4; }
+            .venue__table.is-drop-over { box-shadow: 0 0 0 3px #c97070, 0 0 18px rgba(201,112,112,0.6); transform: scale(1.12); z-index: 4; }
             @media (max-width: 1099px) {
                 .venue-side .venue-hint { display: none; }
                 /* Celular: resumen y leyenda antes del plano; platos después */
@@ -3651,6 +3667,7 @@
                         <aside class="venue-side">
                             <div class="plan-sum" id="plan-sum"></div>
                             <div class="plan-tools" id="plan-tools"></div>
+                            <div class="plan-unseated" id="plan-unseated"></div>
                             <div class="plan-legend" aria-label="Colores de las mesas">
                                 <span><i class="pl-dot pl-dot--empty"></i>Vacía</span><span><i class="pl-dot pl-dot--partial"></i>Parcial</span>
                                 <span><i class="pl-dot pl-dot--full"></i>Llena</span><span><i class="pl-dot pl-dot--over"></i>Excedida</span>
@@ -5608,6 +5625,7 @@
                         '<div><b>' + sat + '<small>/' + cap + '</small></b><span>sillas ocupadas</span></div>' +
                         (sinMesa ? '<button type="button" class="plan-sum__warn" data-go="sinmesa">' + sinMesa + (sinMesa === 1 ? ' persona' : ' personas') + ' sin mesa ›</button>' : '');
                 }
+                renderUnseated();
                 var hint = document.getElementById("venue-hint");
                 if (hint) hint.textContent = _planDraft
                     ? "Arrastra las mesas con el cursor. Toca una para cambiar sillas o quitarla."
@@ -5638,6 +5656,89 @@
                     '</div>' +
                     (selBox || '<p class="plan-note">Selecciona una mesa para cambiar sus sillas o quitarla.</p>');
             }
+            /* ── Familias sin mesa → arrastrar a una mesa (PC) ── */
+            function unseatedFams() {
+                return allData.filter(function (f) { return famPax(f) > 0 && !f.table_number; })
+                    .sort(function (a, b) { return famPax(b) - famPax(a) || a.family_name.localeCompare(b.family_name, "es"); });
+            }
+            function renderUnseated() {
+                var box = document.getElementById("plan-unseated");
+                if (!box) return;
+                var list = unseatedFams();
+                if (_planDraft || !canDragPlan() || !list.length) { box.innerHTML = ""; return; }
+                box.innerHTML = '<p class="plan-unseated__lbl">Sin mesa · arrastra cada familia a su mesa</p>' +
+                    '<div class="plan-unseated__list">' + list.map(function (f) {
+                        var k = famKids(f);
+                        return '<div class="fam-chip" role="button" tabindex="0" data-fam="' + esc(f.id) + '" title="Arrástrala a una mesa · clic para ver la familia">' +
+                            '<span class="fam-chip__grip" aria-hidden="true">⠿</span>' +
+                            '<span class="fam-chip__name">' + esc(f.family_name.replace(/^Familia\s+/i, "")) + '</span>' +
+                            '<b class="fam-chip__pax">' + famPax(f) + (k ? ' <i>👶' + k + '</i>' : '') + '</b></div>';
+                    }).join("") + '</div>';
+            }
+            var _famDrag = null;
+            document.addEventListener("pointerdown", function (e) {
+                var c = e.target.closest && e.target.closest(".fam-chip");
+                if (!c || e.button !== 0) return;
+                e.preventDefault();
+                _famDrag = { id: c.getAttribute("data-fam"), chip: c, sx: e.clientX, sy: e.clientY, ghost: null, target: null };
+            });
+            document.addEventListener("pointermove", function (e) {
+                var d = _famDrag; if (!d) return;
+                if (!d.ghost) {
+                    if (Math.abs(e.clientX - d.sx) + Math.abs(e.clientY - d.sy) < 5) return;
+                    d.ghost = d.chip.cloneNode(true);
+                    d.ghost.classList.add("fam-chip--ghost");
+                    document.body.appendChild(d.ghost);
+                    d.chip.classList.add("is-dragging");
+                    document.body.classList.add("is-fam-dragging");
+                }
+                d.ghost.style.left = e.clientX + "px"; d.ghost.style.top = e.clientY + "px";
+                var under = document.elementFromPoint(e.clientX, e.clientY);
+                var t = under && under.closest && under.closest("#venue-plan .venue__table");
+                if (d.target && d.target !== t) d.target.classList.remove("is-drop-ok", "is-drop-over");
+                d.target = t || null;
+                if (t) {
+                    var n = +t.getAttribute("data-mesa"), f = allData.find(function (x) { return x.id === d.id; });
+                    var used = (buildMesaMap()[n] || { pax: 0 }).pax || 0, fits = used + famPax(f) <= capOf(n);
+                    t.classList.toggle("is-drop-ok", fits); t.classList.toggle("is-drop-over", !fits);
+                    d.ghost.setAttribute("data-msg", fits ? "Mesa " + n + " · caben" : "Mesa " + n + " · no caben (" + (used + famPax(f)) + "/" + capOf(n) + ")");
+                } else d.ghost.removeAttribute("data-msg");
+            });
+            document.addEventListener("pointerup", function () {
+                var d = _famDrag; if (!d) return;
+                _famDrag = null;
+                document.body.classList.remove("is-fam-dragging");
+                d.chip.classList.remove("is-dragging");
+                if (d.ghost) d.ghost.remove();
+                if (d.target) d.target.classList.remove("is-drop-ok", "is-drop-over");
+                if (!d.ghost) { openFamSheet(d.id); return; }          /* clic sin arrastrar → ver la familia */
+                if (d.target) assignFamToMesa(d.id, +d.target.getAttribute("data-mesa"));
+            });
+            document.addEventListener("keydown", function (e) {
+                var c = e.target.closest && e.target.closest(".fam-chip");
+                if (c && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); openFamSheet(c.getAttribute("data-fam")); }
+            });
+            async function assignFamToMesa(id, n) {
+                var f = allData.find(function (x) { return x.id === id; });
+                if (!f || !mesaOf(n)) return;
+                var pax = famPax(f), used = (buildMesaMap()[n] || { pax: 0 }).pax || 0;
+                if (used + pax > capOf(n) &&
+                    !confirm("⚠ La Mesa " + n + " quedaría con " + (used + pax) + "/" + capOf(n) + " personas.\n¿Asignar de todas formas?")) return;
+                try {
+                    var r = await fetch(SUPABASE_URL + "/rest/v1/families?id=eq." + id, {
+                        method: "PATCH",
+                        headers: { apikey: SUPABASE_ANON_KEY, Authorization: "Bearer " + SUPABASE_ANON_KEY, "Content-Type": "application/json", Prefer: "return=representation" },
+                        body: JSON.stringify({ table_number: n })
+                    });
+                    if (!r.ok) throw new Error("HTTP " + r.status);
+                    var rows = await r.json();
+                    if (!rows.length) throw new Error("rls");
+                    f.table_number = n;
+                    renderStats(allData); renderProgress(allData); applyFilters(); renderMesasGrid();
+                    showToast("✓ " + f.family_name + " → Mesa " + n);
+                } catch (e) { showToast("⚠ No se pudo asignar. Intenta nuevamente."); }
+            }
+
             function startPlanEdit() {
                 _planDraft = JSON.parse(JSON.stringify(MESAS)); _planSel = null;
                 renderMesasGrid();
