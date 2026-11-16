@@ -4355,6 +4355,19 @@
                 };
                 var phase = 0, animId = null;
 
+                /* Plano guardado por los novios (settings.venue_layout); si no hay, el croquis */
+                window._venueTables = null;
+                try {
+                    fetch("https://kdpgdgulrekryxqtewtr.supabase.co/rest/v1/settings?key=eq.venue_layout&select=value", {
+                        headers: { apikey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtkcGdkZ3VscmVrcnl4cXRld3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgzNTI0NDEsImV4cCI6MjA5MzkyODQ0MX0.T6_iQjxOWX82QQHPuBI5cewOoT3UWsOQ7bvjX9GP82E",
+                                   Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtkcGdkZ3VscmVrcnl4cXRld3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgzNTI0NDEsImV4cCI6MjA5MzkyODQ0MX0.T6_iQjxOWX82QQHPuBI5cewOoT3UWsOQ7bvjX9GP82E" }
+                    }).then(function (r) { return r.ok ? r.json() : []; }).then(function (rows) {
+                        var v = rows.length && rows[0].value ? JSON.parse(rows[0].value) : null;
+                        var L = v && v.tables && v.tables.filter(function (t) { return t && +t.n > 0 && isFinite(+t.x) && isFinite(+t.y); });
+                        if (L && L.length) window._venueTables = L.map(function (t) { return { n: +t.n, x: +t.x, y: +t.y }; });
+                    }).catch(function () {});
+                } catch (e) {}
+
                 window.drawVenueMap = function (el, highlight) {
                     if (!el) return;
                     if (animId) cancelAnimationFrame(animId);
@@ -4419,8 +4432,8 @@
                         label("BAÑOS", X(V.banos.x), Y(V.banos.y), "500 " + Math.max(7, 16 * s) + "px " + SANS, "rgba(255,255,255,0.35)", Math.PI / 2);
 
                         /* Mesas */
-                        V.tables.forEach(function (p, i) {
-                            var num = i + 1, isHL = num === highlight;
+                        (window._venueTables || V.tables.map(function (p, i) { return { n: i + 1, x: p[0], y: p[1] }; })).forEach(function (t) {
+                            var p = [t.x, t.y], num = t.n, isHL = num === highlight;
                             var glow = isHL ? (Math.sin(phase) * 0.5 + 0.5) : 0;
                             var w = V.tableW * s, h = V.tableH * s, x = X(p[0]) - w / 2, y = Y(p[1]) - h / 2;
                             if (isHL) {

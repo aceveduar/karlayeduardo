@@ -3170,6 +3170,36 @@
             .venue__table.is-match { box-shadow: 0 0 0 3px var(--gold); z-index: 2; }
             .venue__table.is-dim { opacity: 0.3; }
             @media (max-width: 520px) { .venue__k { display: none; } }
+            .plan-tools { margin: 0 0 0.6rem; }
+            .plan-tools:has(.plan-bar) { position: sticky; top: -1rem; z-index: 6; padding: 0.6rem 0; background: var(--bg); }
+            .kids-step { display: inline-flex; align-items: center; border: 1px solid rgba(201,169,110,0.4); border-radius: 10px; overflow: hidden; flex-shrink: 0; }
+            .kids-step__btn { width: 44px; height: 44px; border: none; background: rgba(201,169,110,0.1); color: var(--gold); font-size: 1.35rem; line-height: 1; cursor: pointer; }
+            .kids-step__btn:hover:not(:disabled) { background: rgba(201,169,110,0.22); }
+            .kids-step__btn:disabled { opacity: 0.3; cursor: default; }
+            .kids-step__val { min-width: 46px; text-align: center; font-family: var(--f-serif); font-size: 1.3rem; color: var(--text); }
+            .plan-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; padding: 0.6rem 0.75rem; border: 1px solid var(--gold); border-radius: 10px; background: rgba(201,169,110,0.1); }
+            .plan-bar__title { flex: 1 1 100%; font-size: 0.85rem; font-weight: 600; color: var(--gold); }
+            .plan-btn { min-height: 40px; padding: 0.45rem 0.9rem; border-radius: 8px; border: 1px solid rgba(201,169,110,0.4); background: transparent; color: var(--text); font-family: var(--f-sans); font-size: 0.82rem; font-weight: 600; cursor: pointer; }
+            .plan-btn:hover:not(:disabled) { border-color: var(--gold); }
+            .plan-btn:disabled { opacity: 0.45; cursor: default; }
+            .plan-btn--main { background: var(--gold); border-color: var(--gold); color: #1e1410; }
+            .plan-tools > .plan-btn--main { width: 100%; }
+            .plan-btn--danger { color: #c05050; border-color: rgba(224,136,136,0.55); }
+            [data-theme="dark"] .plan-btn--danger { color: #e08888; }
+            .plan-note { font-size: 0.8rem; color: var(--text-mid); margin: 0.5rem 0 0; line-height: 1.45; }
+            .plan-tools > .plan-note { margin: 0; }
+            .plan-sel { display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem 0.9rem; margin-top: 0.5rem; padding: 0.6rem 0.75rem; border: 1px solid rgba(201,169,110,0.3); border-radius: 10px; }
+            .plan-sel b { font-family: var(--f-serif); font-size: 1.1rem; color: var(--gold); }
+            .plan-sel__lbl { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-mid); }
+            .plan-sel__info { font-size: 0.8rem; color: var(--text-mid); }
+            .plan-sel .plan-btn--danger { margin-left: auto; }
+            .venue.is-editing { outline: 2px dashed var(--gold); outline-offset: 4px; }
+            .venue.is-editing .venue__table { cursor: grab; touch-action: none; }
+            .venue__table.is-dragging { cursor: grabbing; transform: scale(1.12); z-index: 5; box-shadow: 0 6px 18px rgba(0,0,0,0.45); transition: none; }
+            .venue__table.is-sel { box-shadow: 0 0 0 3px var(--gold); z-index: 3; }
+            .mdd-seats { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; padding: 0 1.25rem 0.75rem; }
+            .mdd-seats:empty { display: none; }
+            .mdd-seats__lbl { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-mid); }
             .venue-hint { font-size: 0.78rem; color: var(--text-mid); text-align: center; margin: 0.5rem 0 1rem; }
             .rec-hint.is-auto { color: var(--gold); background: rgba(201,169,110,0.08); border-color: rgba(201,169,110,0.3); }
             .rec-mode { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.4rem; margin: 0 0 0.6rem; }
@@ -3548,6 +3578,7 @@
                         <button type="button" class="mesas-view__btn" data-view="lista" onclick="setMesasView('lista')">☰ Lista</button>
                     </div>
                     <div class="venue-wrap" id="venue-wrap">
+                        <div class="plan-tools" id="plan-tools"></div>
                         <div class="venue" id="venue-plan" aria-label="Plano del salón: toca una mesa"></div>
                         <p class="venue-hint">Toca una mesa para ver quién está y acomodar familias.</p>
                     </div>
@@ -3647,6 +3678,7 @@
                         </div>
                         <button class="mesa-detail-close" onclick="closeMesaDetail()" aria-label="Cerrar">✕</button>
                     </div>
+                    <div class="mdd-seats" id="mdd-seats"></div>
                     <div class="mesa-detail-bar-wrap">
                         <div class="mesa-cap-bar" style="height:5px;margin:0;"><div class="mesa-cap-fill" id="mdd-bar" style="width:0%"></div></div>
                     </div>
@@ -4080,6 +4112,7 @@
                        pero no tocar la lista (se redibuja en el siguiente ciclo libre) */
                     allData = fresh;
                     await refreshRecStatus();   /* para el aviso "Recuerdos desactivado" del Resumen */
+                    if (!_planDraft) await loadLayout();   /* plano de mesas guardado por los novios */
                     refreshMsgsBadge();         /* contador de mensajes nuevos en el menú */
                     lastConfirmedCount = allData.filter(function(f) { return f.confirmed; }).length;
                     renderStats(allData);
@@ -4129,7 +4162,7 @@
                             : 0)
                     );
                 }, 0);
-                var VENUE_CAP = TOTAL_MESAS * CAP_POR_MESA; /* 240 */
+                var VENUE_CAP = totalCap();   /* suma de sillas del plano */
                 document.getElementById("stat-total").textContent = data.length;
                 document.getElementById("stat-confirmed").textContent = confirmed;
                 document.getElementById("stat-pending").textContent = pending;
@@ -4467,9 +4500,9 @@
                 var mesaBlock = "";
                 if (attending) {
                     var mMap = buildMesaMap(), opts = '<option value="">' + (f.table_number ? 'Mover a otra mesa…' : 'Elegir mesa…') + '</option>';
-                    for (var n = 1; n <= TOTAL_MESAS; n++) {
+                    for (var n = 1; n <= maxMesa(); n++) { if (!mesaOf(n)) continue;
                         if (n === f.table_number) continue;
-                        var used = (mMap[n] && mMap[n].pax) || 0, libres = CAP_POR_MESA - used;
+                        var used = (mMap[n] && mMap[n].pax) || 0, libres = capOf(n) - used;
                         opts += '<option value="' + n + '">Mesa ' + n + ' · ' + (libres <= 0 ? 'llena' : libres + (libres === 1 ? ' libre' : ' libres')) +
                             (libres > 0 && libres < rsvp.guest_count ? ' (no caben ' + rsvp.guest_count + ')' : '') + '</option>';
                     }
@@ -4572,8 +4605,8 @@
                 if (!n && !confirm("¿Quitar a " + f.family_name + " de la Mesa " + prev + "?\nQuedará sin mesa asignada.")) return;
                 if (n) {
                     var used = (buildMesaMap()[n] || { pax: 0 }).pax || 0;
-                    if (used + pax > CAP_POR_MESA &&
-                        !confirm("⚠ La Mesa " + n + " quedaría con " + (used + pax) + "/" + CAP_POR_MESA + " personas.\n¿Asignar de todas formas?")) return;
+                    if (used + pax > capOf(n) &&
+                        !confirm("⚠ La Mesa " + n + " quedaría con " + (used + pax) + "/" + capOf(n) + " personas.\n¿Asignar de todas formas?")) return;
                 }
                 try {
                     var r = await fetch(SUPABASE_URL + "/rest/v1/families?id=eq." + id, {
@@ -5147,7 +5180,58 @@
                     cocina:    { x: 900, y: 550 },
                     banos:     { x: 905, y: 1080 }
                 };
-            var CAP_POR_MESA = 12;
+            var CAP_POR_MESA = 12;   /* sillas por defecto de una mesa nueva */
+            /* Mesas reales: [{n, x, y, seats}] en coordenadas del croquis. Se guardan en settings.venue_layout;
+               si no hay plano guardado se usa el croquis (25 mesas × 12). */
+            function defaultMesas() { return VENUE.tables.map(function (p, i) { return { n: i + 1, x: p[0], y: p[1], seats: CAP_POR_MESA }; }); }
+            var MESAS = defaultMesas();
+            var _layoutRow = null;      /* null = aún no se sabe · false = no existe la fila · true = existe */
+            var _planDraft = null;      /* copia editable mientras se edita el plano */
+            function curMesas() { return _planDraft || MESAS; }
+            function mesaOf(n) { n = +n; var L = curMesas(); for (var i = 0; i < L.length; i++) if (L[i].n === n) return L[i]; return null; }
+            function maxMesa() { return curMesas().reduce(function (a, m) { return Math.max(a, m.n); }, 0); }
+            function capOf(n) { var m = mesaOf(n); return m ? m.seats : CAP_POR_MESA; }
+            function totalCap() { return curMesas().reduce(function (a, m) { return a + m.seats; }, 0); }
+            function cleanLayout(arr) {
+                var seen = {};
+                return (arr || []).filter(function (m) {
+                    var ok = m && +m.n > 0 && !seen[+m.n] && isFinite(+m.x) && isFinite(+m.y);
+                    if (ok) seen[+m.n] = true; return ok;
+                }).map(function (m) { return { n: +m.n, x: Math.round(+m.x), y: Math.round(+m.y), seats: Math.max(1, Math.min(30, parseInt(m.seats, 10) || CAP_POR_MESA)) }; })
+                  .sort(function (a, b) { return a.n - b.n; });
+            }
+            async function loadLayout() {
+                try {
+                    var r = await fetch(SUPABASE_URL + "/rest/v1/settings?key=eq.venue_layout&select=value", {
+                        headers: { apikey: SUPABASE_ANON_KEY, Authorization: "Bearer " + SUPABASE_ANON_KEY }
+                    });
+                    if (!r.ok) return;
+                    var rows = await r.json();
+                    _layoutRow = rows.length > 0;
+                    if (rows.length && rows[0].value) {
+                        var v = JSON.parse(rows[0].value);
+                        var L = cleanLayout(v && v.tables);
+                        if (L.length) MESAS = L;
+                    }
+                } catch (e) {}
+            }
+            async function saveLayout(list) {
+                var value = JSON.stringify({ v: 1, updated: new Date().toISOString(), tables: cleanLayout(list) });
+                var r = await fetch(SUPABASE_URL + "/rest/v1/settings?key=eq.venue_layout", {
+                    method: "PATCH",
+                    headers: { apikey: SUPABASE_ANON_KEY, Authorization: "Bearer " + SUPABASE_ANON_KEY, "Content-Type": "application/json", Prefer: "return=representation" },
+                    body: JSON.stringify({ value: value })
+                });
+                if (!r.ok) throw new Error("HTTP " + r.status);
+                var rows = await r.json();
+                if (!rows.length) throw new Error("norow");
+                MESAS = cleanLayout(list); _layoutRow = true;
+            }
+            function layoutErrorMsg(e) {
+                return e && e.message === "norow"
+                    ? "⚠ No se guardó: falta preparar Supabase para el plano (una línea SQL). Pídesela a Eduardo."
+                    : "⚠ No se pudo guardar el plano — revisa la conexión";
+            }
 
             /* Mapa de capacidad actual por mesa */
             /* ── Niños (platos infantiles) ──────────────────
@@ -5194,7 +5278,7 @@
 
             function buildMesaMap() {
                 var map = {};
-                for (var i = 1; i <= TOTAL_MESAS; i++) {
+                for (var i = 1; i <= maxMesa(); i++) { if (!mesaOf(i)) continue;
                     map[i] = { pax: 0, kids: 0, names: [], fams: [], over: false };
                 }
                 allData.forEach(function (f) {
@@ -5208,7 +5292,7 @@
                     map[f.table_number].fams.push({ id: f.id, name: f.family_name.replace(/^Familia\s+/i, ""), pax: pax, kids: famKids(f), attending: attending });
                 });
                 Object.keys(map).forEach(function (k) {
-                    map[k].over = map[k].pax > CAP_POR_MESA;
+                    map[k].over = map[k].pax > capOf(k);
                 });
                 return map;
             }
@@ -5216,10 +5300,10 @@
             function buildMesaSelect(id, current) {
                 var mMap = buildMesaMap();
                 var opts = '<option value="">— Sin mesa</option>';
-                for (var i = 1; i <= TOTAL_MESAS; i++) {
+                for (var i = 1; i <= maxMesa(); i++) { if (!mesaOf(i)) continue;
                     var m    = mMap[i];
-                    var cap  = m.pax + "/" + CAP_POR_MESA;
-                    var warn = m.over ? " ⚠" : m.pax === CAP_POR_MESA ? " ✓" : "";
+                    var cap  = m.pax + "/" + capOf(i);
+                    var warn = m.over ? " ⚠" : m.pax === capOf(i) ? " ✓" : "";
                     opts += '<option value="' + i + '"' + (current == i ? " selected" : "") + ">" +
                         "M" + i + "  (" + cap + ")" + warn + "</option>";
                 }
@@ -5232,8 +5316,8 @@
                     var mesa = mMap[parseInt(val)];
                     var fam  = allData.find(function(x) { return x.id === id; });
                     var famPax = fam && fam.rsvps && fam.rsvps[0] && fam.rsvps[0].attending ? fam.rsvps[0].guest_count : 0;
-                    if (mesa && (mesa.pax + famPax) > CAP_POR_MESA) {
-                        if (!confirm("⚠ La Mesa " + val + " quedaría con " + (mesa.pax + famPax) + "/" + CAP_POR_MESA + " pax (excede capacidad).\n¿Asignar de todas formas?")) {
+                    if (mesa && (mesa.pax + famPax) > capOf(val)) {
+                        if (!confirm("⚠ La Mesa " + val + " quedaría con " + (mesa.pax + famPax) + "/" + capOf(val) + " pax (excede capacidad).\n¿Asignar de todas formas?")) {
                             applyFilters();
                             return;
                         }
@@ -5269,10 +5353,11 @@
                 var totalOccupied = 0;
                 grid.innerHTML = "";
 
-                for (var n = 1; n <= TOTAL_MESAS; n++) {
+                for (var n = 1; n <= maxMesa(); n++) { if (!mesaOf(n)) continue;
                     var m    = mMap[n];
-                    var over = m.pax > CAP_POR_MESA;
-                    var full = m.pax === CAP_POR_MESA;
+                    var CAPN = capOf(n);
+                    var over = m.pax > CAPN;
+                    var full = m.pax === CAPN;
                     if (over) hasOver = true;
                     totalPax += m.pax;
                     if (m.names.length > 0) totalOccupied++;
@@ -5284,7 +5369,7 @@
 
                     /* Indicadores de asientos: 10 barras */
                     var seatsHtml = "";
-                    for (var s = 1; s <= CAP_POR_MESA; s++) {
+                    for (var s = 1; s <= CAPN; s++) {
                         seatsHtml += '<div class="mesa-seat' + (s <= m.pax ? ' mesa-seat--filled' : '') + '"></div>';
                     }
 
@@ -5295,11 +5380,11 @@
                         ? '<ul class="mesa-card__list">' + m.fams.slice(0, MAXF).map(function (x) {
                               return '<li' + (x.attending ? '' : ' class="is-off"') + '><span>' + esc(x.name) + '</span><b>' + (x.attending ? x.pax + (x.kids ? '<small class="kid-tag" title="' + kidsTxt(x.kids) + '">👶' + x.kids + '</small>' : '') : 'no asiste') + '</b></li>';
                           }).join("") + (m.fams.length > MAXF ? '<li class="is-more">+' + (m.fams.length - MAXF) + ' más</li>' : '') + '</ul>'
-                        : '<span class="mesa-card__empty">Sin familias · ' + CAP_POR_MESA + ' sillas libres</span>';
+                        : '<span class="mesa-card__empty">Sin familias · ' + CAPN + ' sillas libres</span>';
 
                     grid.innerHTML +=
-                        '<div class="mesa-card mesa-card--' + cls + '" id="mesa-card-' + n + '" onclick="openMesaDetail(' + n + ')" role="button" tabindex="0" aria-label="Mesa ' + n + ', ' + m.pax + ' de ' + CAP_POR_MESA + ' personas">' +
-                        '<div class="mesa-card__header"><span class="mesa-card__num">' + n + '</span><span class="mesa-card__pax">' + m.pax + '/' + CAP_POR_MESA + '</span></div>' +
+                        '<div class="mesa-card mesa-card--' + cls + '" id="mesa-card-' + n + '" onclick="openMesaDetail(' + n + ')" role="button" tabindex="0" aria-label="Mesa ' + n + ', ' + m.pax + ' de ' + CAPN + ' personas">' +
+                        '<div class="mesa-card__header"><span class="mesa-card__num">' + n + '</span><span class="mesa-card__pax">' + m.pax + '/' + CAPN + '</span></div>' +
                         (m.pax ? '<p class="mesa-card__platos">🍽 ' + adultsTxt(m.pax - m.kids) + (m.kids ? ' · <b>👶 ' + kidsTxt(m.kids) + '</b>' : '') + '</p>' : '') +
                         '<div class="mesa-card__seats">' + seatsHtml + '</div>' +
                         '<div class="mesa-card__fams">' + famsHtml + '</div>' +
@@ -5309,18 +5394,18 @@
                 if (banner) banner.style.display = hasOver ? "block" : "none";
                 renderVenuePlan(mMap);
                 var sub = document.getElementById("mesas-tab-sub");
-                if (sub) sub.textContent = TOTAL_MESAS + " mesas · " + CAP_POR_MESA + " personas c/u";
+                if (sub) sub.textContent = curMesas().length + " mesas · " + totalCap() + " sillas";
                 /* Si hay búsqueda activa, volver a resaltar tras redibujar */
                 var ms = document.getElementById("mesas-search");
                 if (ms && ms.value) filterMesas(ms.value);
 
                 /* Stats resumen */
                 var el = document.getElementById("mstat-occupied");
-                if (el) el.textContent = totalOccupied + "/" + TOTAL_MESAS;
+                if (el) el.textContent = totalOccupied + "/" + curMesas().length;
                 el = document.getElementById("mstat-pax");
                 if (el) el.textContent = totalPax;
                 el = document.getElementById("mstat-free");
-                if (el) el.textContent = (TOTAL_MESAS * CAP_POR_MESA) - totalPax;
+                if (el) el.textContent = totalCap() - totalPax;
                 renderPlatos();
 
                 /* Banner sin mesa */
@@ -5352,23 +5437,159 @@
                 html += '<div class="venue__tag venue__tag--entrada" style="' + vp(V.entrada.x, V.entrada.y) + '">↘ Entrada</div>';
                 html += '<div class="venue__tag venue__tag--side" style="' + vp(V.cocina.x, V.cocina.y) + '">Cocina</div>';
                 html += '<div class="venue__tag venue__tag--side" style="' + vp(V.banos.x, V.banos.y) + '">Baños</div>';
-                for (var n = 1; n <= TOTAL_MESAS; n++) {
-                    var p = V.tables[n - 1];
-                    if (!p) continue;
+                curMesas().forEach(function (mt) {
+                    var n = mt.n, cap = mt.seats;
                     var m = mMap[n] || { pax: 0, kids: 0, fams: [] };
-                    var cls = !m.fams.length ? "empty" : m.pax > CAP_POR_MESA ? "over" : m.pax === CAP_POR_MESA ? "full" : "partial";
-                    html += '<button type="button" class="venue__table venue__table--' + cls + '" id="venue-t-' + n + '" data-mesa="' + n + '" ' +
-                        'style="' + vp(p[0] - V.tableW / 2, p[1] - V.tableH / 2, V.tableW, V.tableH) + '" ' +
-                        'aria-label="Mesa ' + n + ': ' + m.pax + ' de ' + CAP_POR_MESA + ' personas' + (m.kids ? ', ' + kidsTxt(m.kids) : '') + '">' +
-                        '<span class="venue__n">' + n + '</span><span class="venue__p">' + m.pax + '/' + CAP_POR_MESA + '</span>' +
+                    var cls = !m.fams.length ? "empty" : m.pax > cap ? "over" : m.pax === cap ? "full" : "partial";
+                    html += '<button type="button" class="venue__table venue__table--' + cls + (_planSel === n && _planDraft ? ' is-sel' : '') + '" id="venue-t-' + n + '" data-mesa="' + n + '" ' +
+                        'style="' + vp(mt.x - V.tableW / 2, mt.y - V.tableH / 2, V.tableW, V.tableH) + '" ' +
+                        'aria-label="Mesa ' + n + ': ' + m.pax + ' de ' + cap + ' personas' + (m.kids ? ', ' + kidsTxt(m.kids) : '') + '">' +
+                        '<span class="venue__n">' + n + '</span><span class="venue__p">' + m.pax + '/' + cap + '</span>' +
                         (m.kids ? '<span class="venue__k">👶' + m.kids + '</span>' : '') + '</button>';
-                }
+                });
                 el.innerHTML = html;
+                el.classList.toggle("is-editing", !!_planDraft);
+                renderPlanTools();
             }
             document.addEventListener("click", function (e) {
                 var t = e.target.closest && e.target.closest(".venue__table");
-                if (t) openMesaDetail(+t.getAttribute("data-mesa"));
+                if (t && !_planDraft) openMesaDetail(+t.getAttribute("data-mesa"));
             });
+            /* ── Editor del plano (PC: arrastrar · cualquier pantalla: sillas desde la hoja de la mesa) ── */
+            var _planSel = null, _drag = null;
+            function canDragPlan() { return window.matchMedia("(min-width: 900px) and (pointer: fine)").matches; }
+            function planDirty() { return !!_planDraft && JSON.stringify(cleanLayout(_planDraft)) !== JSON.stringify(cleanLayout(MESAS)); }
+            function renderPlanTools() {
+                var t = document.getElementById("plan-tools");
+                if (!t) return;
+                if (!_planDraft) {
+                    t.innerHTML = canDragPlan()
+                        ? '<button type="button" class="plan-btn plan-btn--main" onclick="startPlanEdit()">✏️ Editar plano: mover, agregar mesas y sillas</button>'
+                        : '<p class="plan-note">💻 Para mover o agregar mesas abre el panel en una computadora. Desde aquí puedes cambiar las sillas tocando una mesa.</p>';
+                    return;
+                }
+                var mMap = buildMesaMap(), sel = _planSel && mesaOf(_planSel), selBox = "";
+                if (sel) {
+                    var pax = (mMap[sel.n] && mMap[sel.n].pax) || 0, fams = (mMap[sel.n] && mMap[sel.n].fams.length) || 0;
+                    selBox = '<div class="plan-sel"><b>Mesa ' + sel.n + '</b>' +
+                        '<span class="plan-sel__lbl">Sillas</span>' +
+                        '<div class="kids-step"><button type="button" class="kids-step__btn" onclick="planSeats(-1)" aria-label="Una silla menos"' + (sel.seats <= 1 ? ' disabled' : '') + '>−</button>' +
+                        '<span class="kids-step__val">' + sel.seats + '</span>' +
+                        '<button type="button" class="kids-step__btn" onclick="planSeats(1)" aria-label="Una silla más"' + (sel.seats >= 30 ? ' disabled' : '') + '>+</button></div>' +
+                        '<span class="plan-sel__info">' + pax + ' sentados' + (fams ? ' · ' + fams + (fams === 1 ? ' familia' : ' familias') : '') + '</span>' +
+                        '<button type="button" class="plan-btn plan-btn--danger" onclick="planDelete()">Quitar mesa</button></div>';
+                }
+                t.innerHTML =
+                    '<div class="plan-bar">' +
+                        '<span class="plan-bar__title">✏️ Editando plano · ' + _planDraft.length + ' mesas · ' + totalCap() + ' sillas</span>' +
+                        '<button type="button" class="plan-btn" onclick="planAdd()">＋ Agregar mesa</button>' +
+                        '<button type="button" class="plan-btn" onclick="cancelPlanEdit()">Cancelar</button>' +
+                        '<button type="button" class="plan-btn plan-btn--main" onclick="savePlanEdit()"' + (planDirty() ? '' : ' disabled') + '>Guardar plano</button>' +
+                    '</div>' +
+                    (selBox || '<p class="plan-note">Arrastra una mesa para moverla. Tócala para cambiar sus sillas o quitarla.</p>');
+            }
+            function startPlanEdit() {
+                _planDraft = JSON.parse(JSON.stringify(MESAS)); _planSel = null;
+                renderMesasGrid();
+            }
+            function cancelPlanEdit() {
+                if (planDirty() && !confirm("¿Descartar los cambios del plano?")) return;
+                _planDraft = null; _planSel = null; renderMesasGrid();
+            }
+            async function savePlanEdit() {
+                if (!planDirty()) return;
+                var btn = document.querySelector(".plan-btn--main"); if (btn) btn.disabled = true;
+                try {
+                    await saveLayout(_planDraft);
+                    _planDraft = null; _planSel = null;
+                    renderMesasGrid(); renderStats(allData); renderProgress(allData);
+                    showToast("✓ Plano guardado — " + MESAS.length + " mesas · " + totalCap() + " sillas");
+                } catch (e) { showToast(layoutErrorMsg(e)); if (btn) btn.disabled = false; }
+            }
+            function planAdd() {
+                var n = 1; while (mesaOf(n)) n++;
+                /* Aparece arriba de la pista, junto a la mesa principal; se arrastra a su lugar */
+                _planDraft.push({ n: n, x: 505, y: 220 + (_planDraft.length % 5) * 18, seats: CAP_POR_MESA });
+                _planSel = n; renderMesasGrid();
+                showToast("Mesa " + n + " agregada — arrástrala a su lugar");
+            }
+            function planSeats(d) {
+                var m = mesaOf(_planSel); if (!m) return;
+                var pax = (buildMesaMap()[m.n] || { pax: 0 }).pax || 0, next = Math.max(1, Math.min(30, m.seats + d));
+                if (d < 0 && next < pax && m.seats >= pax &&
+                    !confirm("La Mesa " + m.n + " tiene " + pax + " personas sentadas.\nCon " + next + " sillas quedaría excedida. ¿Continuar?")) return;
+                m.seats = next; renderMesasGrid();
+            }
+            function planDelete() {
+                var m = mesaOf(_planSel); if (!m) return;
+                var info = buildMesaMap()[m.n];
+                if (info && info.fams.length) {
+                    alert("La Mesa " + m.n + " tiene " + info.fams.length + (info.fams.length === 1 ? " familia" : " familias") +
+                          ".\n\nMuévelas a otra mesa primero (toca la mesa fuera del modo edición). Así nadie se queda sin lugar.");
+                    return;
+                }
+                if (!confirm("¿Quitar la Mesa " + m.n + " del plano?")) return;
+                _planDraft = _planDraft.filter(function (x) { return x.n !== m.n; });
+                _planSel = null; renderMesasGrid();
+            }
+            /* Arrastre con el cursor (solo en modo edición) */
+            document.addEventListener("pointerdown", function (e) {
+                var t = e.target.closest && e.target.closest("#venue-plan .venue__table");
+                if (!t || !_planDraft || e.button !== 0) return;
+                var m = mesaOf(+t.getAttribute("data-mesa")); if (!m) return;
+                e.preventDefault();
+                var rect = document.getElementById("venue-plan").getBoundingClientRect();
+                _drag = { m: m, el: t, sx: e.clientX, sy: e.clientY, x0: m.x, y0: m.y, k: VENUE.room.w / rect.width, moved: false };
+            });
+            document.addEventListener("pointermove", function (e) {
+                if (!_drag) return;
+                var dx = e.clientX - _drag.sx, dy = e.clientY - _drag.sy;
+                if (!_drag.moved && Math.abs(dx) + Math.abs(dy) < 4) return;
+                _drag.moved = true;
+                var R = VENUE.room, hw = VENUE.tableW / 2, hh = VENUE.tableH / 2;
+                _drag.m.x = Math.round(Math.max(R.x + hw, Math.min(R.x + R.w - hw, _drag.x0 + dx * _drag.k)));
+                _drag.m.y = Math.round(Math.max(R.y + hh, Math.min(R.y + R.h - hh, _drag.y0 + dy * _drag.k)));
+                _drag.el.style.left = ((_drag.m.x - hw - R.x) / R.w * 100).toFixed(2) + "%";
+                _drag.el.style.top  = ((_drag.m.y - hh - R.y) / R.h * 100).toFixed(2) + "%";
+                _drag.el.classList.add("is-dragging");
+            });
+            document.addEventListener("pointerup", function () {
+                if (!_drag) return;
+                var d = _drag; _drag = null;
+                _planSel = d.m.n;
+                d.el.classList.remove("is-dragging");
+                renderMesasGrid();
+            });
+            /* Sillas desde la hoja de la mesa (también en celular): guarda en el momento */
+            function renderMddSeats(n, pax) {
+                var box = document.getElementById("mdd-seats"); if (!box) return;
+                if (_planDraft) { box.innerHTML = ""; return; }
+                var seats = capOf(n);
+                box.innerHTML = '<span class="mdd-seats__lbl">Sillas en esta mesa</span>' +
+                    '<div class="kids-step"><button type="button" class="kids-step__btn" aria-label="Una silla menos" onclick="setMesaSeats(' + n + ',' + (seats - 1) + ')"' + (seats <= 1 ? ' disabled' : '') + '>−</button>' +
+                    '<span class="kids-step__val">' + seats + '</span>' +
+                    '<button type="button" class="kids-step__btn" aria-label="Una silla más" onclick="setMesaSeats(' + n + ',' + (seats + 1) + ')"' + (seats >= 30 ? ' disabled' : '') + '>+</button></div>';
+            }
+            var _seatSaving = false;
+            async function setMesaSeats(n, seats) {
+                if (_seatSaving || _planDraft) return;
+                seats = Math.max(1, Math.min(30, seats));
+                var pax = (buildMesaMap()[n] || { pax: 0 }).pax || 0;
+                if (seats < pax && capOf(n) >= pax &&
+                    !confirm("La Mesa " + n + " tiene " + pax + " personas sentadas.\nCon " + seats + " sillas quedaría excedida. ¿Continuar?")) return;
+                var next = JSON.parse(JSON.stringify(MESAS));
+                next.forEach(function (m) { if (m.n === n) m.seats = seats; });
+                _seatSaving = true;
+                document.querySelectorAll("#mdd-seats .kids-step__btn").forEach(function (b) { b.disabled = true; });
+                try {
+                    await saveLayout(next);
+                    renderMesasGrid(); renderStats(allData); renderProgress(allData);
+                } catch (e) { showToast(layoutErrorMsg(e)); }
+                finally { _seatSaving = false; openMesaDetail(n); }
+            }
+            /* Avisar si salen con cambios sin guardar */
+            window.addEventListener("beforeunload", function (e) { if (planDirty()) { e.preventDefault(); e.returnValue = ""; } });
+
             function setMesasView(v) {
                 v = v === "lista" ? "lista" : "plano";
                 try { localStorage.setItem("ke-mesas-view", v); } catch (e) {}
@@ -5406,13 +5627,15 @@
                 _currentMesaDetail = n;
                 var mMap  = buildMesaMap();
                 var m     = mMap[n];
-                var over  = m.pax > CAP_POR_MESA;
-                var full  = m.pax === CAP_POR_MESA;
+                var CAPN  = capOf(n);
+                var over  = m.pax > CAPN;
+                var full  = m.pax === CAPN;
                 var barColor = over ? "#e08888" : full ? "#7ec8a0" : "#c9a96e";
-                var barPct   = Math.min(100, Math.round(m.pax / CAP_POR_MESA * 100));
+                var barPct   = Math.min(100, Math.round(m.pax / CAPN * 100));
+                renderMddSeats(n, m.pax);
 
                 document.getElementById("mdd-num").textContent = "Mesa " + n;
-                document.getElementById("mdd-pax").textContent = m.pax + " / " + CAP_POR_MESA + " personas" + (m.pax ? " · 🍽 " + adultsTxt(m.pax - m.kids) + (m.kids ? " · 👶 " + kidsTxt(m.kids) : "") : "");
+                document.getElementById("mdd-pax").textContent = m.pax + " / " + CAPN + " personas" + (m.pax ? " · 🍽 " + adultsTxt(m.pax - m.kids) + (m.kids ? " · 👶 " + kidsTxt(m.kids) : "") : "");
                 var bar = document.getElementById("mdd-bar");
                 bar.style.width = barPct + "%";
                 bar.style.background = barColor;
@@ -5522,12 +5745,12 @@
                 var mMap = buildMesaMap();
                 var conf = allData.filter(function (f) { return f.confirmed && f.rsvps && f.rsvps[0] && f.rsvps[0].attending; });
                 var byMesa = "", platosRows = "";
-                for (var n = 1; n <= TOTAL_MESAS; n++) {
+                for (var n = 1; n <= maxMesa(); n++) { if (!mesaOf(n)) continue;
                     var fams = conf.filter(function (f) { return f.table_number === n; })
                         .sort(function (a, b) { return a.family_name.localeCompare(b.family_name, "es"); });
                     var pax = mMap[n].pax, kn = mMap[n].kids;
                     if (pax) platosRows += '<tr><td>Mesa ' + n + '</td><td class="num">' + (pax - kn) + '</td><td class="num">' + kn + '</td><td class="num"><b>' + pax + '</b></td></tr>';
-                    byMesa += '<section class="mesa"><h3>Mesa ' + n + ' <small>' + pax + ' / ' + CAP_POR_MESA + (kn ? ' · ' + kidsTxt(kn) : '') + '</small></h3>' +
+                    byMesa += '<section class="mesa"><h3>Mesa ' + n + ' <small>' + pax + ' / ' + capOf(n) + (kn ? ' · ' + kidsTxt(kn) : '') + '</small></h3>' +
                         (fams.length ? '<ul>' + fams.map(function (f) {
                             var r0 = f.rsvps[0];
                             return '<li><span class="fam">' + esc(f.family_name) + '</span><span class="pax">' + r0.guest_count + (famKids(f) ? ' <i>(' + kidsTxt(famKids(f)) + ')</i>' : '') + '</span>' +
@@ -5617,8 +5840,8 @@
                 var mesa = mMap[n];
                 var fam  = allData.find(function(x) { return x.id === id; });
                 var famPax = fam && fam.rsvps && fam.rsvps[0] && fam.rsvps[0].attending ? fam.rsvps[0].guest_count : 0;
-                if (mesa && (mesa.pax + famPax) > CAP_POR_MESA) {
-                    if (!confirm("⚠ La Mesa " + n + " quedaría con " + (mesa.pax + famPax) + "/" + CAP_POR_MESA + " pax (excede capacidad).\n¿Asignar de todas formas?")) return;
+                if (mesa && (mesa.pax + famPax) > capOf(n)) {
+                    if (!confirm("⚠ La Mesa " + n + " quedaría con " + (mesa.pax + famPax) + "/" + capOf(n) + " pax (excede capacidad).\n¿Asignar de todas formas?")) return;
                 }
                 try {
                     var tr = await fetch(SUPABASE_URL + "/rest/v1/families?id=eq." + id, {
@@ -5646,7 +5869,7 @@
             function renderProgress(data) {
                 var total = data.length;
                 var confirmed = data.filter(function(f) { return f.confirmed && f.rsvps && f.rsvps[0] && f.rsvps[0].attending; }).length;
-                var VCAP       = TOTAL_MESAS * CAP_POR_MESA;
+                var VCAP       = totalCap();
                 var totalGuests = data.reduce(function(acc, f) { return acc + (f.max_guests || 0); }, 0);
                 var confGuests  = data.reduce(function(acc, f) { return acc + (f.rsvps && f.rsvps[0] && f.rsvps[0].attending ? (f.rsvps[0].guest_count || 0) : 0); }, 0);
                 /* Personas que no asisten = todos los pases de las familias que respondieron (o se marcaron)
@@ -7189,9 +7412,9 @@
                 var mMap = buildMesaMap();
                 function opts(pax) {
                     var s = '<option value="">Elegir mesa…</option>';
-                    for (var n = 1; n <= TOTAL_MESAS; n++) {
+                    for (var n = 1; n <= maxMesa(); n++) { if (!mesaOf(n)) continue;
                         var used = (mMap[n] && mMap[n].pax) || 0;
-                        var libres = CAP_POR_MESA - used;
+                        var libres = capOf(n) - used;
                         s += '<option value="' + n + '">Mesa ' + n + " · " +
                             (libres <= 0 ? "llena" : libres + (libres === 1 ? " libre" : " libres")) +
                             (libres > 0 && libres < pax ? " (no caben " + pax + ")" : "") + "</option>";
@@ -7215,8 +7438,8 @@
                 if (!f) return;
                 var pax = (f.rsvps && f.rsvps[0] && f.rsvps[0].guest_count) || 0;
                 var used = (buildMesaMap()[n] || { pax: 0 }).pax || 0;
-                if (used + pax > CAP_POR_MESA &&
-                    !confirm("⚠ La Mesa " + n + " quedaría con " + (used + pax) + "/" + CAP_POR_MESA + " personas.\n¿Asignar de todas formas?")) return;
+                if (used + pax > capOf(n) &&
+                    !confirm("⚠ La Mesa " + n + " quedaría con " + (used + pax) + "/" + capOf(n) + " personas.\n¿Asignar de todas formas?")) return;
                 try {
                     var r = await fetch(SUPABASE_URL + "/rest/v1/families?id=eq." + id, {
                         method: "PATCH",
