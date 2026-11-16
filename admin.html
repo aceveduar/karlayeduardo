@@ -3307,6 +3307,7 @@
             /* PC: plano a la izquierda (cabe completo en la pantalla), panel a la derecha */
             @media (min-width: 1100px) {
                 .venue-wrap:not([hidden]) { display: grid; grid-template-columns: auto 300px; justify-content: start; gap: 1.75rem; align-items: start; }
+                .venue-dock { display: none; }
                 .venue-side { order: 2; position: sticky; top: 0; margin: 0; }
                 .venue-stage { order: 1; }
                 .venue { width: min(calc(100vw - 220px - 300px - 6rem), calc((100dvh - 178px) * 894 / 1164)); min-width: 400px; max-width: none; }
@@ -3388,6 +3389,21 @@
             :root:not([data-theme="dark"]) .ci-btn   { color: #6e5018; border-color: rgba(122,90,30,0.55); background: rgba(201,169,110,0.14); }
             :root:not([data-theme="dark"]) .ci-undo  { color: #b03a3a; border-color: rgba(176,58,58,0.4); }
             @keyframes ci-banner-in { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: none; } }
+            /* Detalle de mesa a la derecha (PC ancho) */
+            .venue-dock { display: none; }
+            @media (min-width: 1400px) {
+                #tab-mesas.is-plano .venue-wrap:not([hidden]) { grid-template-columns: auto 280px minmax(320px, 1fr); gap: 1.25rem; }
+                #tab-mesas.is-plano .venue-dock { display: block; order: 3; position: sticky; top: 0; max-height: calc(100dvh - 140px); overflow-y: auto; border: 1px solid rgba(201,169,110,0.25); border-radius: 12px; background: var(--surface); }
+                #tab-mesas.is-plano .venue { width: min(calc(100vw - 220px - 280px - 340px - 7rem), calc((100dvh - 178px) * 894 / 1164)); }
+            }
+            .venue-dock__empty { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.75rem; min-height: 260px; padding: 2rem 1.5rem; text-align: center; color: var(--text-mid); font-size: 0.9rem; line-height: 1.5; }
+            .venue-dock__empty svg { color: var(--gold); opacity: 0.7; }
+            .venue-dock__empty b { color: var(--text); }
+            .venue-dock__empty[hidden] { display: none; }
+            .venue-dock .mesa-detail-sheet { max-width: none; max-height: none; border: none; border-top: 3px solid var(--gold); border-radius: 12px 12px 0 0; padding-bottom: 0.75rem; overflow: visible; }
+            .venue-dock .mesa-detail-num { font-size: 1.8rem; }
+            .venue__table.is-active { box-shadow: 0 0 0 3px var(--gold), 0 0 18px rgba(201,169,110,0.55); z-index: 3; }
+
             /* Plano: textos proporcionales al tamaño del plano (antes fijos → se encimaban con escala 125%) */
             @supports (container-type: inline-size) {
                 .venue { container-type: inline-size; }
@@ -3757,6 +3773,12 @@
                             </button>
                         </div>
                         <div class="venue-stage" id="venue-stage"><div class="venue" id="venue-plan" aria-label="Plano del salón: toca una mesa"></div></div>
+                        <aside class="venue-dock" id="venue-dock" aria-live="polite">
+                            <div class="venue-dock__empty" id="venue-dock-empty">
+                                <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><rect x="4" y="7" width="16" height="10" rx="2"/><circle cx="7" cy="4.5" r="1.2"/><circle cx="12" cy="4.5" r="1.2"/><circle cx="17" cy="4.5" r="1.2"/><circle cx="7" cy="19.5" r="1.2"/><circle cx="12" cy="19.5" r="1.2"/><circle cx="17" cy="19.5" r="1.2"/></svg>
+                                <p><b>Elige una mesa</b> en el plano para ver quién está, cambiar sus sillas o acomodar familias.</p>
+                            </div>
+                        </aside>
                     </div>
                     <div id="mesas-section" style="display:block;">
                         <div class="mesas-grid" id="mesas-grid"></div>
@@ -5664,6 +5686,7 @@
                 el.innerHTML = buildPlanHtml(mMap, null);
                 el.classList.toggle("is-editing", !!_planDraft);
                 renderPlanTools();
+                if (typeof markDockTable === "function") markDockTable();
             }
             /* here = mesa a resaltar (modo entrada) */
             function buildPlanHtml(mMap, here) {
@@ -5889,6 +5912,7 @@
 
             function startPlanEdit() {
                 if (planLocked()) { renderMesasGrid(); return; }
+                if (_dockMesa) undockMesa();
                 hideMesaTip();
                 _planDraft = JSON.parse(JSON.stringify(MESAS)); _planSel = null;
                 renderMesasGrid();
@@ -6015,6 +6039,7 @@
                 document.getElementById("mesas-section").style.display = v === "lista" ? "block" : "none";
                 var lg = document.getElementById("mesas-legend"); if (lg) lg.style.display = v === "lista" ? "" : "none";
                 var tab = document.getElementById("tab-mesas"); if (tab) tab.classList.toggle("is-plano", v === "plano");
+                if (v !== "plano" && typeof undockMesa === "function" && _dockMesa) undockMesa();
                 /* Platos para el banquete: junto al plano (panel lateral) o arriba de la lista */
                 var pl = document.getElementById("mesas-platos"), side = document.querySelector(".venue-side"), anchor = document.getElementById("mesas-sinmesa-banner");
                 if (pl && side && anchor) {
@@ -6110,17 +6135,50 @@
                         ? '<optgroup label="Mover desde otra mesa">' + enOtra.map(function(f){ return opt(f, " · ahora Mesa " + f.table_number); }).join("") + '</optgroup>'
                         : '');
 
+                if (dockMode()) { dockMesa(n); return; }
+                undockMesa();
                 /* openSheet no duplica el historial si ya está abierta (se re-llama tras asignar) */
                 openSheet("mesa-detail-overlay");
             }
 
+            /* ── Detalle de mesa acoplado a la derecha (PC ancho + vista plano) ── */
+            var _dockMesa = null;
+            function dockMode() {
+                var tab = document.getElementById("tab-mesas");
+                return window.matchMedia("(min-width: 1400px)").matches && !_planDraft &&
+                       tab && tab.classList.contains("is-plano") && tab.classList.contains("is-active");
+            }
+            function dockMesa(n) {
+                var sheet = document.getElementById("mesa-detail-sheet"), dock = document.getElementById("venue-dock");
+                if (sheet.parentNode !== dock) dock.appendChild(sheet);
+                document.getElementById("venue-dock-empty").hidden = true;
+                dock.classList.add("has-mesa");
+                _dockMesa = n; _currentMesaDetail = n;
+                markDockTable();
+            }
+            function undockMesa() {
+                var sheet = document.getElementById("mesa-detail-sheet"), ov = document.getElementById("mesa-detail-overlay");
+                if (sheet && ov && sheet.parentNode !== ov) ov.appendChild(sheet);
+                var dock = document.getElementById("venue-dock");
+                if (dock) dock.classList.remove("has-mesa");
+                var em = document.getElementById("venue-dock-empty"); if (em) em.hidden = false;
+                _dockMesa = null; markDockTable();
+            }
+            function markDockTable() {
+                document.querySelectorAll("#venue-plan .venue__table.is-active").forEach(function (t) { t.classList.remove("is-active"); });
+                if (_dockMesa) { var t = document.getElementById("venue-t-" + _dockMesa); if (t) t.classList.add("is-active"); }
+            }
+            /* Al cambiar el tamaño de la ventana o de vista, regresar la hoja a su lugar si ya no aplica */
+            window.addEventListener("resize", function () { if (_dockMesa && !dockMode()) undockMesa(); });
+
             function closeMesaDetail() {
+                if (_dockMesa) { undockMesa(); _currentMesaDetail = null; return; }
                 closeSheet("mesa-detail-overlay");
             }
 
             /* Desde una mesa → hoja de la familia (closeSheet + openSheet ya manejan el historial) */
             function openFamFromMesa(id) {
-                closeSheet("mesa-detail-overlay");
+                if (!_dockMesa) closeSheet("mesa-detail-overlay");
                 openFamSheet(id);
             }
 
