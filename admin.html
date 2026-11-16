@@ -3158,12 +3158,22 @@
             .venue__tag { font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-mid); white-space: nowrap; }
             .venue__tag--entrada { transform: translate(6px, 6px); color: var(--gold); font-weight: 700; }
             .venue__tag--side { transform: translate(-100%, -50%) rotate(-90deg); transform-origin: right center; }
+            #tab-mesas.is-plano .mesas-stats-row, #tab-mesas.is-plano #mesas-sinmesa-banner { display: none !important; }
+            .venue-side .mesas-platos { margin: 0; }
+            .venue-side .platos__n { font-size: 1.45rem; }
+            .venue__chair { position: absolute; width: 9%; aspect-ratio: 1; border-radius: 50%; transform: translate(-50%, -50%); background: rgba(201,169,110,0.16); border: 1px solid rgba(201,169,110,0.35); pointer-events: none; }
+            .venue__chair.is-on { background: var(--gold); border-color: var(--gold); }
+            .venue__chair.is-over { background: #e08888; border-color: #c97070; }
+            .venue__table--full .venue__chair.is-on { background: #5fb98a; border-color: #3a9468; }
+            .venue__table { overflow: visible; }
             .venue__table { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0; padding: 0; border-radius: 6px; cursor: pointer; font-family: var(--f-sans); line-height: 1.05; border: 1.5px solid rgba(201,169,110,0.35); background: var(--surface); color: var(--text); transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s; }
             .venue__table:hover, .venue__table:focus-visible { transform: scale(1.08); z-index: 2; box-shadow: 0 0 0 2px var(--gold); }
-            .venue__n { font-family: var(--f-serif); font-size: clamp(0.8rem, 3.4vw, 1.15rem); font-weight: 600; }
-            .venue__p { font-size: clamp(0.5rem, 2.1vw, 0.68rem); color: var(--text-mid); }
-            .venue__k { font-size: clamp(0.5rem, 2vw, 0.64rem); color: #4f8fbf; font-weight: 700; }
-            .venue__table--empty { opacity: 0.75; border-style: dashed; }
+            .venue__n { font-family: var(--f-serif); font-size: clamp(0.8rem, 3.4vw, 1.2rem); font-weight: 600; line-height: 1; }
+            .venue__p { font-size: clamp(0.5rem, 2.1vw, 0.7rem); color: var(--text-mid); margin-top: 0.12rem; white-space: nowrap; }
+            .venue__k { font-style: normal; color: #4f8fbf; font-weight: 700; }
+            [data-theme="dark"] .venue__k { color: #8fc1e3; }
+            .venue__table--empty { border-style: dashed; color: var(--text-mid); }
+            .venue__table--empty .venue__chair { opacity: 0.6; }
             .venue__table--partial { background: rgba(201,169,110,0.2); border-color: var(--gold); }
             .venue__table--full { background: rgba(126,200,160,0.25); border-color: #3a9468; }
             .venue__table--over { background: rgba(224,136,136,0.28); border-color: #c97070; }
@@ -3193,7 +3203,16 @@
             .pl-dot--full { background: rgba(126,200,160,0.4); border-color: #3a9468; }
             .pl-dot--over { background: rgba(224,136,136,0.45); border-color: #c97070; }
             .venue-side .venue-hint { margin: 0; text-align: left; }
-            @media (max-width: 1099px) { .venue-side .venue-hint { display: none; } .venue.is-editing ~ * { } }
+            @media (max-width: 1099px) {
+                .venue-side .venue-hint { display: none; }
+                /* Celular: resumen y leyenda antes del plano; platos después */
+                .venue-wrap:not([hidden]) { display: flex; flex-direction: column; gap: 0.6rem; }
+                .venue-side { display: contents; }
+                .plan-sum { order: 1; } .plan-tools { order: 2; } .plan-legend { order: 3; }
+                .venue-stage { order: 4; } .venue-side .mesas-platos { order: 5; margin-top: 0.4rem; }
+                .plan-sum > div { padding: 0.35rem 0.3rem; }
+                .plan-sum b { font-size: 1.15rem; }
+            }
             /* PC: plano a la izquierda (cabe completo en la pantalla), panel a la derecha */
             @media (min-width: 1100px) {
                 .venue-wrap:not([hidden]) { display: grid; grid-template-columns: auto 300px; justify-content: center; gap: 1.75rem; align-items: start; }
@@ -5464,6 +5483,20 @@
                 return 'left:' + ((x - r.x) / r.w * 100).toFixed(2) + '%;top:' + ((y - r.y) / r.h * 100).toFixed(2) + '%;' +
                        (w != null ? 'width:' + (w / r.w * 100).toFixed(2) + '%;height:' + (h / r.h * 100).toFixed(2) + '%;' : '');
             }
+            /* Sillas repartidas en el perímetro de la mesa (coordenadas en % de la mesa) */
+            function chairsHtml(cap, pax) {
+                var W = VENUE.tableW, H = VENUE.tableH, P = 2 * (W + H), OFF = 7, out = "";
+                for (var i = 0; i < cap; i++) {
+                    var d = (i + 0.5) * P / cap, x, y;
+                    if (d < W)               { x = d;                 y = -OFF; }
+                    else if (d < W + H)      { x = W + OFF;           y = d - W; }
+                    else if (d < 2 * W + H)  { x = W - (d - W - H);   y = H + OFF; }
+                    else                     { x = -OFF;              y = H - (d - 2 * W - H); }
+                    var st = i < pax ? (pax > cap ? " is-over" : " is-on") : "";
+                    out += '<i class="venue__chair' + st + '" style="left:' + (x / W * 100).toFixed(1) + '%;top:' + (y / H * 100).toFixed(1) + '%"></i>';
+                }
+                return out;
+            }
             function renderVenuePlan(mMap) {
                 var el = document.getElementById("venue-plan");
                 if (!el) return;
@@ -5483,8 +5516,9 @@
                     html += '<button type="button" class="venue__table venue__table--' + cls + (_planSel === n && _planDraft ? ' is-sel' : '') + '" id="venue-t-' + n + '" data-mesa="' + n + '" ' +
                         'style="' + vp(mt.x - V.tableW / 2, mt.y - V.tableH / 2, V.tableW, V.tableH) + '" ' +
                         'aria-label="Mesa ' + n + ': ' + m.pax + ' de ' + cap + ' personas' + (m.kids ? ', ' + kidsTxt(m.kids) : '') + '">' +
-                        '<span class="venue__n">' + n + '</span><span class="venue__p">' + m.pax + '/' + cap + '</span>' +
-                        (m.kids ? '<span class="venue__k">👶' + m.kids + '</span>' : '') + '</button>';
+                        chairsHtml(cap, m.pax) +
+                        '<span class="venue__n">' + n + '</span><span class="venue__p">' + m.pax + '/' + cap + (m.kids ? ' <i class="venue__k">👶' + m.kids + '</i>' : '') + '</span>' +
+                        '</button>';
                 });
                 el.innerHTML = html;
                 el.classList.toggle("is-editing", !!_planDraft);
@@ -5650,6 +5684,13 @@
                 document.getElementById("venue-wrap").hidden = v !== "plano";
                 document.getElementById("mesas-section").style.display = v === "lista" ? "block" : "none";
                 var lg = document.getElementById("mesas-legend"); if (lg) lg.style.display = v === "lista" ? "" : "none";
+                var tab = document.getElementById("tab-mesas"); if (tab) tab.classList.toggle("is-plano", v === "plano");
+                /* Platos para el banquete: junto al plano (panel lateral) o arriba de la lista */
+                var pl = document.getElementById("mesas-platos"), side = document.querySelector(".venue-side"), anchor = document.getElementById("mesas-sinmesa-banner");
+                if (pl && side && anchor) {
+                    if (v === "plano") side.insertBefore(pl, document.getElementById("plan-tools").nextSibling);
+                    else anchor.parentNode.insertBefore(pl, anchor);
+                }
                 document.querySelectorAll(".mesas-view__btn").forEach(function (b) {
                     var on = b.getAttribute("data-view") === v;
                     b.classList.toggle("is-on", on); b.setAttribute("aria-selected", on ? "true" : "false");
