@@ -3223,6 +3223,21 @@
             .pl-dot--over { background: rgba(224,136,136,0.45); border-color: #c97070; }
             .venue-side .venue-hint { margin: 0; text-align: left; }
             .plan-unseated:empty { display: none; }
+            .mesa-tip { position: fixed; z-index: 9990; width: 250px; pointer-events: none; background: var(--surface); border: 1px solid var(--gold); border-radius: 10px; padding: 0.65rem 0.8rem; box-shadow: 0 12px 32px rgba(0,0,0,0.45); font-size: 0.82rem; color: var(--text); }
+            .mesa-tip[hidden] { display: none; }
+            .mesa-tip__head { display: flex; justify-content: space-between; align-items: baseline; gap: 0.5rem; margin-bottom: 0.35rem; padding-bottom: 0.35rem; border-bottom: 1px solid rgba(201,169,110,0.25); }
+            .mesa-tip__head b { font-family: var(--f-serif); font-size: 1.15rem; color: var(--gold); }
+            .mesa-tip__head span { color: var(--text-mid); font-size: 0.8rem; }
+            .mesa-tip ul { list-style: none; margin: 0; padding: 0; }
+            .mesa-tip li { display: flex; justify-content: space-between; gap: 0.6rem; line-height: 1.6; }
+            .mesa-tip li span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+            .mesa-tip li b { font-weight: 600; white-space: nowrap; }
+            .mesa-tip li i { font-style: normal; color: #4f8fbf; font-size: 0.75rem; }
+            [data-theme="dark"] .mesa-tip li i { color: #8fc1e3; }
+            .mesa-tip li.is-off { color: var(--text-soft); text-decoration: line-through; }
+            .mesa-tip__empty { color: var(--text-mid); font-style: italic; }
+            .mesa-tip__foot { margin-top: 0.4rem; font-size: 0.75rem; color: var(--text-mid); }
+            .mesa-tip__foot.is-over { color: #c97070; font-weight: 600; }
             .plan-unseated__lbl { font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: #c05050; font-weight: 600; margin-bottom: 0.4rem; }
             [data-theme="dark"] .plan-unseated__lbl { color: #e08888; }
             .plan-unseated__list { display: flex; flex-direction: column; gap: 0.35rem; max-height: 40dvh; overflow-y: auto; padding-right: 2px; }
@@ -5656,6 +5671,38 @@
                     '</div>' +
                     (selBox || '<p class="plan-note">Selecciona una mesa para cambiar sus sillas o quitarla.</p>');
             }
+            /* ── Vista rápida al pasar el cursor por una mesa (PC) ── */
+            var _tipEl = null, _tipFor = null;
+            function hideMesaTip() { if (_tipEl) _tipEl.hidden = true; _tipFor = null; }
+            function showMesaTip(t) {
+                var n = +t.getAttribute("data-mesa");
+                if (_tipFor === t && _tipEl && !_tipEl.hidden) return;
+                _tipFor = t;
+                if (!_tipEl) { _tipEl = document.createElement("div"); _tipEl.className = "mesa-tip"; _tipEl.setAttribute("role", "tooltip"); document.body.appendChild(_tipEl); }
+                var m = buildMesaMap()[n] || { pax: 0, kids: 0, fams: [] }, cap = capOf(n), libres = cap - m.pax;
+                _tipEl.innerHTML =
+                    '<p class="mesa-tip__head"><b>Mesa ' + n + '</b><span>' + m.pax + '/' + cap + (m.kids ? ' · 👶 ' + m.kids : '') + '</span></p>' +
+                    (m.fams.length
+                        ? '<ul>' + m.fams.map(function (x) {
+                              return '<li' + (x.attending ? '' : ' class="is-off"') + '><span>' + esc(x.name) + '</span><b>' + (x.attending ? x.pax + (x.kids ? ' <i>👶' + x.kids + '</i>' : '') : 'no asiste') + '</b></li>';
+                          }).join("") + '</ul>'
+                        : '<p class="mesa-tip__empty">Mesa vacía</p>') +
+                    '<p class="mesa-tip__foot ' + (libres < 0 ? 'is-over' : '') + '">' + (libres < 0 ? '⚠ ' + (-libres) + ' de más' : libres + (libres === 1 ? ' silla libre' : ' sillas libres')) + '</p>';
+                _tipEl.hidden = false;
+                var r = t.getBoundingClientRect(), tw = _tipEl.offsetWidth, th = _tipEl.offsetHeight;
+                var x = r.right + 12, y = r.top + r.height / 2 - th / 2;
+                if (x + tw > window.innerWidth - 8) x = r.left - tw - 12;      /* sin espacio a la derecha → a la izquierda */
+                y = Math.max(8, Math.min(window.innerHeight - th - 8, y));
+                _tipEl.style.left = x + "px"; _tipEl.style.top = y + "px";
+            }
+            document.addEventListener("mouseover", function (e) {
+                if (_planDraft || !window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+                var t = e.target.closest && e.target.closest("#venue-plan .venue__table");
+                if (t) showMesaTip(t); else if (!_famDrag) hideMesaTip();
+            });
+            document.addEventListener("scroll", hideMesaTip, true);
+            document.addEventListener("pointerdown", function (e) { if (!(e.target.closest && e.target.closest(".fam-chip"))) hideMesaTip(); });
+
             /* ── Familias sin mesa → arrastrar a una mesa (PC) ── */
             function unseatedFams() {
                 return allData.filter(function (f) { return famPax(f) > 0 && !f.table_number; })
@@ -5697,6 +5744,7 @@
                 var t = under && under.closest && under.closest("#venue-plan .venue__table");
                 if (d.target && d.target !== t) d.target.classList.remove("is-drop-ok", "is-drop-over");
                 d.target = t || null;
+                if (t) showMesaTip(t); else hideMesaTip();
                 if (t) {
                     var n = +t.getAttribute("data-mesa"), f = allData.find(function (x) { return x.id === d.id; });
                     var used = (buildMesaMap()[n] || { pax: 0 }).pax || 0, fits = used + famPax(f) <= capOf(n);
@@ -5711,6 +5759,7 @@
                 d.chip.classList.remove("is-dragging");
                 if (d.ghost) d.ghost.remove();
                 if (d.target) d.target.classList.remove("is-drop-ok", "is-drop-over");
+                hideMesaTip();
                 if (!d.ghost) { openFamSheet(d.id); return; }          /* clic sin arrastrar → ver la familia */
                 if (d.target) assignFamToMesa(d.id, +d.target.getAttribute("data-mesa"));
             });
@@ -5740,6 +5789,7 @@
             }
 
             function startPlanEdit() {
+                hideMesaTip();
                 _planDraft = JSON.parse(JSON.stringify(MESAS)); _planSel = null;
                 renderMesasGrid();
             }
