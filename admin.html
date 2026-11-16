@@ -3140,6 +3140,37 @@
             [data-theme="dark"] .fam-meta-kids { color: #8fc1e3; }
             .fs-fact__kids { display: block; font-family: var(--f-sans); font-size: 0.74rem; font-weight: 600; color: #4f8fbf; margin-top: 0.15rem; }
             [data-theme="dark"] .fs-fact__kids { color: #8fc1e3; }
+            /* ── Plano del salón ── */
+            .mesas-view { display: grid; grid-template-columns: 1fr 1fr; gap: 0.4rem; margin: 0 0 0.75rem; }
+            .mesas-view__btn { min-height: 44px; border-radius: 10px; border: 1px solid rgba(201,169,110,0.3); background: transparent; color: var(--text-mid); font-family: var(--f-sans); font-size: 0.85rem; font-weight: 600; cursor: pointer; }
+            .mesas-view__btn.is-on { background: rgba(201,169,110,0.15); border-color: var(--gold); color: var(--gold); }
+            .venue-wrap[hidden] { display: none; }
+            .venue { position: relative; width: 100%; max-width: 640px; margin: 0 auto; aspect-ratio: 894 / 1164; border: 2px solid rgba(201,169,110,0.55); border-radius: 6px; background: rgba(201,169,110,0.04); }
+            .venue > * { position: absolute; box-sizing: border-box; }
+            .venue__zone { display: flex; align-items: center; justify-content: center; text-align: center; font-size: 0.62rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-mid); border-radius: 4px; padding: 2px; line-height: 1.15; }
+            .venue__zone--principal { background: rgba(201,169,110,0.22); border: 1px solid var(--gold); color: var(--gold); font-weight: 700; }
+            .venue__zone--cuarto { background: rgba(127,179,213,0.14); border: 1px solid rgba(127,179,213,0.4); writing-mode: vertical-rl; }
+            .venue__zone--dj { background: rgba(224,136,136,0.18); border: 1px solid rgba(224,136,136,0.5); color: #c05050; }
+            [data-theme="dark"] .venue__zone--dj { color: #e08888; }
+            .venue__zone--musica { background: rgba(150,110,70,0.22); border: 1px solid rgba(150,110,70,0.5); border-radius: 50% 50% 4px 4px / 40% 40% 4px 4px; }
+            .venue__label--pista { display: flex; align-items: center; justify-content: center; border: 1px dashed rgba(201,169,110,0.3); border-radius: 8px; }
+            .venue__label--pista span { writing-mode: vertical-rl; font-family: var(--f-serif); font-size: 1rem; color: rgba(201,169,110,0.55); letter-spacing: 0.2em; }
+            .venue__tag { font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-mid); white-space: nowrap; }
+            .venue__tag--entrada { transform: translate(2px, -125%); color: var(--gold); font-weight: 700; }
+            .venue__tag--side { transform: translate(-100%, -50%) rotate(-90deg); transform-origin: right center; }
+            .venue__table { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0; padding: 0; border-radius: 6px; cursor: pointer; font-family: var(--f-sans); line-height: 1.05; border: 1.5px solid rgba(201,169,110,0.35); background: var(--surface); color: var(--text); transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s; }
+            .venue__table:hover, .venue__table:focus-visible { transform: scale(1.08); z-index: 2; box-shadow: 0 0 0 2px var(--gold); }
+            .venue__n { font-family: var(--f-serif); font-size: clamp(0.8rem, 3.4vw, 1.15rem); font-weight: 600; }
+            .venue__p { font-size: clamp(0.5rem, 2.1vw, 0.68rem); color: var(--text-mid); }
+            .venue__k { font-size: clamp(0.5rem, 2vw, 0.64rem); color: #4f8fbf; font-weight: 700; }
+            .venue__table--empty { opacity: 0.75; border-style: dashed; }
+            .venue__table--partial { background: rgba(201,169,110,0.2); border-color: var(--gold); }
+            .venue__table--full { background: rgba(126,200,160,0.25); border-color: #3a9468; }
+            .venue__table--over { background: rgba(224,136,136,0.28); border-color: #c97070; }
+            .venue__table.is-match { box-shadow: 0 0 0 3px var(--gold); z-index: 2; }
+            .venue__table.is-dim { opacity: 0.3; }
+            @media (max-width: 520px) { .venue__k { display: none; } }
+            .venue-hint { font-size: 0.78rem; color: var(--text-mid); text-align: center; margin: 0.5rem 0 1rem; }
             .rec-hint.is-auto { color: var(--gold); background: rgba(201,169,110,0.08); border-color: rgba(201,169,110,0.3); }
             .rec-mode { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.4rem; margin: 0 0 0.6rem; }
             .rec-mode button { min-height: 52px; padding: 0.45rem 0.3rem; border-radius: 10px; border: 1px solid rgba(201,169,110,0.3); background: transparent; color: var(--text-mid); font-family: var(--f-sans); font-size: 0.78rem; font-weight: 600; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.15rem; transition: all 0.2s; }
@@ -3464,7 +3495,7 @@
                     <div class="mesas-tab-header">
                         <div>
                             <p class="mesas-tab-title">Vista de Mesas</p>
-                            <span class="mesas-tab-sub">20 mesas · 12 personas c/u</span>
+                            <span class="mesas-tab-sub" id="mesas-tab-sub">25 mesas · 12 personas c/u</span>
                         </div>
                         <button class="mesas-print-btn" type="button" onclick="printMesas()" title="Lista por mesa y lista alfabética para la entrada">
                             <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 9V3h12v6M6 18H4a1 1 0 01-1-1v-6a2 2 0 012-2h14a2 2 0 012 2v6a1 1 0 01-1 1h-2M6 14h12v7H6z"/></svg>
@@ -3510,6 +3541,15 @@
                         <div class="mesas-legend__item"><div class="mesas-legend__dot" style="background:rgba(201,169,110,0.7);"></div>Parcial</div>
                         <div class="mesas-legend__item"><div class="mesas-legend__dot" style="background:#7ec8a0;"></div>Llena</div>
                         <div class="mesas-legend__item"><div class="mesas-legend__dot" style="background:#e08888;"></div>Excedida</div>
+                    </div>
+                    <!-- Plano real del salón / lista de tarjetas -->
+                    <div class="mesas-view" role="tablist" aria-label="Vista de mesas">
+                        <button type="button" class="mesas-view__btn" data-view="plano" onclick="setMesasView('plano')">🗺 Plano del salón</button>
+                        <button type="button" class="mesas-view__btn" data-view="lista" onclick="setMesasView('lista')">☰ Lista</button>
+                    </div>
+                    <div class="venue-wrap" id="venue-wrap">
+                        <div class="venue" id="venue-plan" aria-label="Plano del salón: toca una mesa"></div>
+                        <p class="venue-hint">Toca una mesa para ver quién está y acomodar familias.</p>
                     </div>
                     <div id="mesas-section" style="display:block;">
                         <div class="mesas-grid" id="mesas-grid"></div>
@@ -5090,7 +5130,23 @@
             }
 
             /* ── Mesas ────────────────────────────────── */
-            var TOTAL_MESAS = 20;
+            var TOTAL_MESAS = 25;   /* croquis Hacienda Zerezotla (CROQUIS 25 MESAS ZEREZOTLA.pdf) */
+            var VENUE = {
+                    room:   { x: 28, y: 58, w: 894, h: 1164 },
+                    tableW: 86, tableH: 70,
+                    tables: [
+                        [198,138],[309,188],[201,308],[311,342],[203,457],[309,493],[198,607],[308,650],[199,757],[310,794],[206,877],[304,950],
+                        [719,202],[832,144],[828,253],[713,329],[828,370],[718,481],[718,628],[834,696],[717,740],[835,809],[718,852],[717,977],[845,920]
+                    ],
+                    principal: { x: 376, y: 102, w: 269, h: 55 },
+                    pista:     { x: 400, y: 260, w: 210, h: 760 },
+                    dj:        { x: 30,  y: 1100, w: 87, h: 122 },
+                    cuarto:    { x: 30,  y: 870,  w: 87, h: 230 },
+                    musica:    { x: 212, y: 1140, w: 591, h: 72 },
+                    entrada:   { x: 30,  y: 58 },
+                    cocina:    { x: 900, y: 550 },
+                    banos:     { x: 905, y: 1080 }
+                };
             var CAP_POR_MESA = 12;
 
             /* Mapa de capacidad actual por mesa */
@@ -5251,6 +5307,9 @@
                 }
 
                 if (banner) banner.style.display = hasOver ? "block" : "none";
+                renderVenuePlan(mMap);
+                var sub = document.getElementById("mesas-tab-sub");
+                if (sub) sub.textContent = TOTAL_MESAS + " mesas · " + CAP_POR_MESA + " personas c/u";
                 /* Si hay búsqueda activa, volver a resaltar tras redibujar */
                 var ms = document.getElementById("mesas-search");
                 if (ms && ms.value) filterMesas(ms.value);
@@ -5274,6 +5333,53 @@
                     else smBanner.classList.remove("is-visible");
                 }
             }
+
+            /* ── Plano del salón (croquis real). Coordenadas en % del salón → escala a cualquier ancho ── */
+            function vp(x, y, w, h) {
+                var r = VENUE.room;
+                return 'left:' + ((x - r.x) / r.w * 100).toFixed(2) + '%;top:' + ((y - r.y) / r.h * 100).toFixed(2) + '%;' +
+                       (w != null ? 'width:' + (w / r.w * 100).toFixed(2) + '%;height:' + (h / r.h * 100).toFixed(2) + '%;' : '');
+            }
+            function renderVenuePlan(mMap) {
+                var el = document.getElementById("venue-plan");
+                if (!el) return;
+                var V = VENUE, html = "";
+                html += '<div class="venue__zone venue__zone--principal" style="' + vp(V.principal.x, V.principal.y, V.principal.w, V.principal.h) + '">Mesa principal</div>';
+                html += '<div class="venue__label venue__label--pista" style="' + vp(V.pista.x, V.pista.y, V.pista.w, V.pista.h) + '"><span>P I S T A</span></div>';
+                html += '<div class="venue__zone venue__zone--cuarto" style="' + vp(V.cuarto.x, V.cuarto.y, V.cuarto.w, V.cuarto.h) + '">Cuarto</div>';
+                html += '<div class="venue__zone venue__zone--dj" style="' + vp(V.dj.x, V.dj.y, V.dj.w, V.dj.h) + '">Cabina DJ</div>';
+                html += '<div class="venue__zone venue__zone--musica" style="' + vp(V.musica.x, V.musica.y, V.musica.w, V.musica.h) + '">Grupo musical</div>';
+                html += '<div class="venue__tag venue__tag--entrada" style="' + vp(V.entrada.x, V.entrada.y) + '">↘ Entrada</div>';
+                html += '<div class="venue__tag venue__tag--side" style="' + vp(V.cocina.x, V.cocina.y) + '">Cocina</div>';
+                html += '<div class="venue__tag venue__tag--side" style="' + vp(V.banos.x, V.banos.y) + '">Baños</div>';
+                for (var n = 1; n <= TOTAL_MESAS; n++) {
+                    var p = V.tables[n - 1];
+                    if (!p) continue;
+                    var m = mMap[n] || { pax: 0, kids: 0, fams: [] };
+                    var cls = !m.fams.length ? "empty" : m.pax > CAP_POR_MESA ? "over" : m.pax === CAP_POR_MESA ? "full" : "partial";
+                    html += '<button type="button" class="venue__table venue__table--' + cls + '" id="venue-t-' + n + '" data-mesa="' + n + '" ' +
+                        'style="' + vp(p[0] - V.tableW / 2, p[1] - V.tableH / 2, V.tableW, V.tableH) + '" ' +
+                        'aria-label="Mesa ' + n + ': ' + m.pax + ' de ' + CAP_POR_MESA + ' personas' + (m.kids ? ', ' + kidsTxt(m.kids) : '') + '">' +
+                        '<span class="venue__n">' + n + '</span><span class="venue__p">' + m.pax + '/' + CAP_POR_MESA + '</span>' +
+                        (m.kids ? '<span class="venue__k">👶' + m.kids + '</span>' : '') + '</button>';
+                }
+                el.innerHTML = html;
+            }
+            document.addEventListener("click", function (e) {
+                var t = e.target.closest && e.target.closest(".venue__table");
+                if (t) openMesaDetail(+t.getAttribute("data-mesa"));
+            });
+            function setMesasView(v) {
+                v = v === "lista" ? "lista" : "plano";
+                try { localStorage.setItem("ke-mesas-view", v); } catch (e) {}
+                document.getElementById("venue-wrap").hidden = v !== "plano";
+                document.getElementById("mesas-section").style.display = v === "lista" ? "block" : "none";
+                document.querySelectorAll(".mesas-view__btn").forEach(function (b) {
+                    var on = b.getAttribute("data-view") === v;
+                    b.classList.toggle("is-on", on); b.setAttribute("aria-selected", on ? "true" : "false");
+                });
+            }
+            (function () { var v = "plano"; try { v = localStorage.getItem("ke-mesas-view") || "plano"; } catch (e) {} setMesasView(v); })();
 
             /* Indicador de platos para el banquete (todas las personas que asisten, tengan mesa o no) */
             function renderPlatos() {
@@ -5375,8 +5481,10 @@
                 var nq = _norm(q).trim();
                 var cards = document.querySelectorAll("#mesas-grid .mesa-card");
                 var out = document.getElementById("mesas-search-results");
+                var vts = document.querySelectorAll("#venue-plan .venue__table");
                 if (!nq) {
                     cards.forEach(function (c) { c.classList.remove("is-match", "is-dim"); });
+                    vts.forEach(function (c) { c.classList.remove("is-match", "is-dim"); });
                     out.innerHTML = "";
                     return;
                 }
@@ -5388,6 +5496,11 @@
                 hits.forEach(function (f) { if (f.table_number) hitMesas[f.table_number] = true; });
                 cards.forEach(function (c) {
                     var n = +c.id.replace("mesa-card-", "");
+                    c.classList.toggle("is-match", !!hitMesas[n]);
+                    c.classList.toggle("is-dim", !hitMesas[n]);
+                });
+                vts.forEach(function (c) {
+                    var n = +c.getAttribute("data-mesa");
                     c.classList.toggle("is-match", !!hitMesas[n]);
                     c.classList.toggle("is-dim", !hitMesas[n]);
                 });
