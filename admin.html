@@ -3167,6 +3167,9 @@
             .venue__table--full .venue__chair.is-on { background: #5fb98a; border-color: #3a9468; }
             .venue__table { overflow: visible; }
             body.is-door #panel { visibility: hidden; }
+            .ci-item__who { font-size: 0.86rem; color: var(--text); line-height: 1.45; margin-top: 0.2rem; }
+            .ci-item__who-no { color: var(--text-soft); font-size: 0.78rem; }
+            .qr-card__guest--dot { color: var(--text); }
             .ci-mesa-btn { background: none; border: none; padding: 0 0.15rem; font: inherit; font-weight: 700; color: var(--gold); cursor: pointer; text-decoration: underline; text-underline-offset: 3px; min-height: 32px; }
             .qr-plan-btn { display: block; margin: 0.35rem auto 0.6rem; min-height: 44px; padding: 0.5rem 1.1rem; border-radius: 22px; border: 1px solid var(--gold); background: rgba(201,169,110,0.12); color: var(--gold); font-family: var(--f-sans); font-size: 0.9rem; font-weight: 600; cursor: pointer; }
             .ci-plan-overlay { position: fixed; inset: 0; z-index: 10050; background: rgba(0,0,0,0.6); display: none; align-items: flex-end; justify-content: center; }
@@ -6576,6 +6579,34 @@
                 } catch (e) {}
             }
 
+            /* Integrantes para confirmar en la entrada.
+               real=true  → attending_names trae nombres de la lista (✓ vienen / ✗ no vienen)
+               real=false → la confirmación no guardó nombres (p. ej. "Familia X"): se muestran todos sin marcar */
+            function ciWho(f) {
+                var r = f.rsvps && f.rsvps[0];
+                var all = splitNames(f.guest_names), att = splitNames(r && r.attending_names);
+                var gl = {}; all.forEach(function (g) { gl[_norm(g)] = true; });
+                var real = att.length > 0 && att.every(function (a) { return gl[_norm(a)]; });
+                var kids = {}; famKidsMarked(f).forEach(function (k) { kids[_norm(k)] = (kids[_norm(k)] || 0) + 1; });
+                function kid(n) { var k = _norm(n); if (kids[k]) { kids[k]--; return true; } return false; }
+                if (real) {
+                    var pool = {}; att.forEach(function (a) { var k = _norm(a); pool[k] = (pool[k] || 0) + 1; });
+                    var yes = [], no = [];
+                    all.forEach(function (n) { var k = _norm(n); if (pool[k]) { pool[k]--; yes.push({ n: n, kid: kid(n) }); } else no.push({ n: n, kid: false }); });
+                    return { real: true, yes: yes, no: no };
+                }
+                if (all.length) return { real: false, yes: all.map(function (n) { return { n: n, kid: kid(n) }; }), no: [] };
+                return { real: false, yes: att.map(function (n) { return { n: n, kid: false }; }), no: [] };
+            }
+            function ciWhoLine(f) {
+                var w = ciWho(f);
+                if (!w.yes.length) return "";
+                return '<p class="ci-item__who">' + w.yes.map(function (x) { return esc(x.n) + (x.kid ? ' 👶' : ''); }).join(" · ") +
+                    (w.no.length ? ' <span class="ci-item__who-no">· no vienen: ' + w.no.map(function (x) { return esc(x.n); }).join(", ") + '</span>' : '') +
+                    (!w.real && w.yes.length !== ((f.rsvps && f.rsvps[0] && f.rsvps[0].guest_count) || 0) ? ' <span class="ci-item__who-no">(confirmaron ' + ((f.rsvps && f.rsvps[0] && f.rsvps[0].guest_count) || 0) + ')</span>' : '') +
+                    '</p>';
+            }
+
             function renderCheckin(data, keepStats) {
                 var nChecked       = ciData.filter(function(f) { return f.checked_in; }).length;
                 var nGuests        = ciData.reduce(function(acc, f) { return acc + (f.rsvps && f.rsvps[0] ? f.rsvps[0].guest_count : 0); }, 0);
@@ -6598,13 +6629,13 @@
                         " · " + esc(f.code);
                     if (f.checked_in) {
                         var t = f.checked_in_at ? new Date(f.checked_in_at).toLocaleTimeString("es-MX", { hour: "2-digit", minute: "2-digit", hour12: false }) : "";
-                        return '<div class="ci-item ci-item--done" id="ci-row-' + f.id + '"><div><p class="ci-item__name">' + esc(f.family_name) + '</p><p class="ci-item__detail">' + detail + '</p></div>' +
+                        return '<div class="ci-item ci-item--done" id="ci-row-' + f.id + '"><div><p class="ci-item__name">' + esc(f.family_name) + '</p>' + ciWhoLine(f) + '<p class="ci-item__detail">' + detail + '</p></div>' +
                             '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:0.3rem;">' +
                             '<span class="ci-done-badge">✓ ' + (t || "Registrado") + '</span>' +
                             '<button class="ci-undo" onclick="uncheckIn(\'' + esc(f.id) + '\')">Deshacer</button>' +
                             '</div></div>';
                     }
-                    return '<div class="ci-item" id="ci-row-' + f.id + '"><div><p class="ci-item__name">' + esc(f.family_name) + '</p><p class="ci-item__detail">' + detail + '</p></div><button class="ci-btn" onclick="checkIn(\'' + esc(f.id) + '\')">✓ Llegó</button></div>';
+                    return '<div class="ci-item" id="ci-row-' + f.id + '"><div><p class="ci-item__name">' + esc(f.family_name) + '</p>' + ciWhoLine(f) + '<p class="ci-item__detail">' + detail + '</p></div><button class="ci-btn" onclick="checkIn(\'' + esc(f.id) + '\')">✓ Llegó</button></div>';
                 }).join("") : '<div class="ci-empty"><p>Nadie confirmado coincide con "' + esc(_ciQuery) + '".</p><p>Prueba solo con el apellido o con otra parte del nombre.</p></div>';
             }
 
@@ -6902,8 +6933,13 @@
                 var attendingSet = {};
                 attendingArr.forEach(function(n){ attendingSet[n] = true; });
 
-                var namesHtml = "";
-                if (allNames.length) {
+                var namesHtml = "", who = ciWho(f);
+                if (who.yes.length) {
+                    namesHtml = '<p class="qr-card__names-lbl">' + (who.real ? 'Vienen' : 'Integrantes (confirmaron ' + ((rsvp && rsvp.guest_count) || 0) + ')') + '</p><div class="qr-card__names-list">' +
+                        who.yes.map(function (x) { return '<span class="qr-card__guest qr-card__guest--' + (who.real ? 'yes' : 'dot') + '">' + (who.real ? '✓ ' : '· ') + esc(x.n) + (x.kid ? ' 👶' : '') + '</span>'; }).join("") +
+                        who.no.map(function (x) { return '<span class="qr-card__guest qr-card__guest--no">✗ ' + esc(x.n) + '</span>'; }).join("") +
+                    '</div>';
+                } else if (false) {
                     namesHtml = '<p class="qr-card__names-lbl">Invitados</p><div class="qr-card__names-list">' +
                         allNames.map(function(n) {
                             var isYes = attendingSet[n];
