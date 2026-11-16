@@ -3166,6 +3166,22 @@
             .venue__chair.is-over { background: #e08888; border-color: #c97070; }
             .venue__table--full .venue__chair.is-on { background: #5fb98a; border-color: #3a9468; }
             .venue__table { overflow: visible; }
+            body.is-door #panel { visibility: hidden; }
+            .ci-mesa-btn { background: none; border: none; padding: 0 0.15rem; font: inherit; font-weight: 700; color: var(--gold); cursor: pointer; text-decoration: underline; text-underline-offset: 3px; min-height: 32px; }
+            .qr-plan-btn { display: block; margin: 0.35rem auto 0.6rem; min-height: 44px; padding: 0.5rem 1.1rem; border-radius: 22px; border: 1px solid var(--gold); background: rgba(201,169,110,0.12); color: var(--gold); font-family: var(--f-sans); font-size: 0.9rem; font-weight: 600; cursor: pointer; }
+            .ci-plan-overlay { position: fixed; inset: 0; z-index: 10050; background: rgba(0,0,0,0.6); display: none; align-items: flex-end; justify-content: center; }
+            .ci-plan-overlay.is-open { display: flex; }
+            .ci-plan-sheet { width: 100%; max-width: 560px; max-height: 96dvh; overflow-y: auto; background: var(--surface); border-top: 2px solid var(--gold); border-radius: 16px 16px 0 0; padding: 1rem 1rem 1.25rem; }
+            .ci-plan-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 0.75rem; margin-bottom: 0.75rem; }
+            .ci-plan-title { font-family: var(--f-serif); font-size: 1.8rem; color: var(--gold); line-height: 1.1; }
+            .ci-plan-sub { font-size: 0.82rem; color: var(--text-mid); margin-top: 0.2rem; }
+            .ci-plan { max-height: calc(96dvh - 110px); width: auto; aspect-ratio: 894 / 1164; margin: 0 auto; }
+            .ci-plan .venue__table { cursor: default; }
+            .venue__table.is-here { background: var(--gold); border-color: var(--gold); color: #1e1410; z-index: 4; box-shadow: 0 0 0 4px rgba(201,169,110,0.35), 0 0 22px rgba(201,169,110,0.6); animation: here-pulse 1.4s ease-in-out infinite; }
+            .venue__table.is-here .venue__p { color: #1e1410; }
+            @keyframes here-pulse { 50% { box-shadow: 0 0 0 9px rgba(201,169,110,0.18), 0 0 30px rgba(201,169,110,0.75); } }
+            .venue__pin { transform: translate(-50%, -135%); background: var(--gold); color: #1e1410; font-weight: 700; font-size: 0.78rem; padding: 0.2rem 0.55rem; border-radius: 6px; white-space: nowrap; z-index: 5; }
+            @media (prefers-reduced-motion: reduce) { .venue__table.is-here { animation: none; } }
             .venue__table { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0; padding: 0; border-radius: 6px; cursor: pointer; font-family: var(--f-sans); line-height: 1.05; border: 1.5px solid rgba(201,169,110,0.35); background: var(--surface); color: var(--text); transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s; }
             .venue__table:hover, .venue__table:focus-visible { transform: scale(1.08); z-index: 2; box-shadow: 0 0 0 2px var(--gold); }
             .venue__n { font-family: var(--f-serif); font-size: clamp(0.8rem, 3.4vw, 1.2rem); font-weight: 600; line-height: 1; }
@@ -4070,11 +4086,23 @@
             </div>
             <div class="ci-list" id="ci-list"></div>
         </div>
+        <div class="ci-plan-overlay" id="ci-plan-overlay" onclick="if(event.target===this)closeCiPlan()" role="dialog" aria-modal="true" aria-labelledby="ci-plan-title">
+            <div class="ci-plan-sheet">
+                <div class="ci-plan-head">
+                    <div><p class="ci-plan-title" id="ci-plan-title">Mesa</p><p class="ci-plan-sub" id="ci-plan-sub"></p></div>
+                    <button type="button" class="ci-close" onclick="closeCiPlan()">✕ Cerrar</button>
+                </div>
+                <div class="venue ci-plan" id="ci-plan"></div>
+            </div>
+        </div>
 
         <script>
             var SUPABASE_URL = "https://kdpgdgulrekryxqtewtr.supabase.co";
             var SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtkcGdkZ3VscmVrcnl4cXRld3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgzNTI0NDEsImV4cCI6MjA5MzkyODQ0MX0.T6_iQjxOWX82QQHPuBI5cewOoT3UWsOQ7bvjX9GP82E";
             var ADMIN_PASSWORD = "KarlaEduardo2026"; // Cambia esta contraseña
+            /* Edecanes: solo check-in (buscar, escanear, ver plano, marcar llegada). No es seguridad
+               fuerte (vive en la página), pero evita que un error de dedo borre o mueva algo el día de la boda. */
+            var ENTRADA_PASSWORD = "Entrada2026";
 
             var allData = [];
             var _tabRestored = false;
@@ -4114,8 +4142,19 @@
                 loadData();
             }
 
+            async function enterDoor() {
+                localStorage.setItem("ke-admin", "door");
+                document.body.classList.add("is-door");
+                document.getElementById("gate").style.display = "none";
+                document.getElementById("panel").classList.add("is-visible");
+                await loadData();
+                openCheckin();
+            }
+            function isDoor() { return localStorage.getItem("ke-admin") === "door"; }
+
             function exitPanel() {
                 localStorage.removeItem("ke-admin");
+                document.body.classList.remove("is-door");
                 _tabRestored = false;
                 if (_refreshInterval) { clearInterval(_refreshInterval); _refreshInterval = null; }
                 document.getElementById("panel").classList.remove("is-visible");
@@ -4127,11 +4166,16 @@
             /* Auto-login persistente con localStorage */
             if (localStorage.getItem("ke-admin") === "1") {
                 enterPanel();
+            } else if (localStorage.getItem("ke-admin") === "door") {
+                enterDoor();
             }
 
             document.getElementById("gate-btn").addEventListener("click", function () {
-                if (document.getElementById("gate-input").value === ADMIN_PASSWORD) {
+                var pw = document.getElementById("gate-input").value;
+                if (pw === ADMIN_PASSWORD) {
                     enterPanel();
+                } else if (pw === ENTRADA_PASSWORD) {
+                    enterDoor();
                 } else {
                     document.getElementById("gate-error").textContent = "Contraseña incorrecta.";
                 }
@@ -5500,6 +5544,12 @@
             function renderVenuePlan(mMap) {
                 var el = document.getElementById("venue-plan");
                 if (!el) return;
+                el.innerHTML = buildPlanHtml(mMap, null);
+                el.classList.toggle("is-editing", !!_planDraft);
+                renderPlanTools();
+            }
+            /* here = mesa a resaltar (modo entrada) */
+            function buildPlanHtml(mMap, here) {
                 var V = VENUE, html = "";
                 html += '<div class="venue__zone venue__zone--principal" style="' + vp(V.principal.x, V.principal.y, V.principal.w, V.principal.h) + '">Mesa principal</div>';
                 html += '<div class="venue__label venue__label--pista" style="' + vp(V.pista.x, V.pista.y, V.pista.w, V.pista.h) + '"><span>P I S T A</span></div>';
@@ -5513,21 +5563,30 @@
                     var n = mt.n, cap = mt.seats;
                     var m = mMap[n] || { pax: 0, kids: 0, fams: [] };
                     var cls = !m.fams.length ? "empty" : m.pax > cap ? "over" : m.pax === cap ? "full" : "partial";
-                    html += '<button type="button" class="venue__table venue__table--' + cls + (_planSel === n && _planDraft ? ' is-sel' : '') + '" id="venue-t-' + n + '" data-mesa="' + n + '" ' +
+                    html += '<button type="button" class="venue__table venue__table--' + cls + (_planSel === n && _planDraft ? ' is-sel' : '') + (here === n ? ' is-here' : (here ? ' is-dim' : '')) + '"' + (here ? '' : ' id="venue-t-' + n + '"') + ' data-mesa="' + n + '" ' +
                         'style="' + vp(mt.x - V.tableW / 2, mt.y - V.tableH / 2, V.tableW, V.tableH) + '" ' +
                         'aria-label="Mesa ' + n + ': ' + m.pax + ' de ' + cap + ' personas' + (m.kids ? ', ' + kidsTxt(m.kids) : '') + '">' +
                         chairsHtml(cap, m.pax) +
                         '<span class="venue__n">' + n + '</span><span class="venue__p">' + m.pax + '/' + cap + (m.kids ? ' <i class="venue__k">👶' + m.kids + '</i>' : '') + '</span>' +
                         '</button>';
                 });
-                el.innerHTML = html;
-                el.classList.toggle("is-editing", !!_planDraft);
-                renderPlanTools();
+                if (here) { var hm = mesaOf(here); if (hm) html += '<div class="venue__pin" style="' + vp(hm.x, hm.y - V.tableH / 2) + '">▼ Mesa ' + here + '</div>'; }
+                return html;
             }
             document.addEventListener("click", function (e) {
-                var t = e.target.closest && e.target.closest(".venue__table");
+                var t = e.target.closest && e.target.closest("#venue-plan .venue__table");
                 if (t && !_planDraft) openMesaDetail(+t.getAttribute("data-mesa"));
             });
+            /* Entrada: mostrar al invitado dónde está su mesa */
+            function showOnPlan(n) {
+                var o = document.getElementById("ci-plan-overlay");
+                document.getElementById("ci-plan-title").textContent = "Mesa " + n;
+                var f = (buildMesaMap()[n] || { fams: [] }).fams;
+                document.getElementById("ci-plan-sub").textContent = f.length ? f.map(function (x) { return x.name; }).join(" · ") : "";
+                document.getElementById("ci-plan").innerHTML = buildPlanHtml(buildMesaMap(), +n);
+                o.classList.add("is-open");
+            }
+            function closeCiPlan() { document.getElementById("ci-plan-overlay").classList.remove("is-open"); }
             /* ── Editor del plano (PC: arrastrar · cualquier pantalla: sillas desde la hoja de la mesa) ── */
             var _planSel = null, _drag = null;
             function canDragPlan() { return window.matchMedia("(min-width: 900px) and (pointer: fine)").matches; }
@@ -5837,6 +5896,29 @@
 
             /* ── Imprimir: lista por mesa + lista alfabética para la entrada ──
                También es el "plan B" si el internet falla en la puerta. */
+            /* Plano para papel: posiciones reales, número de mesa y ocupación */
+            function printPlanHtml(mMap) {
+                var V = VENUE, r = V.room;
+                function pos(x, y, w, h) {
+                    return "left:" + ((x - r.x) / r.w * 100).toFixed(2) + "%;top:" + ((y - r.y) / r.h * 100).toFixed(2) + "%;" +
+                        (w != null ? "width:" + (w / r.w * 100).toFixed(2) + "%;height:" + (h / r.h * 100).toFixed(2) + "%;" : "");
+                }
+                var h = '<h2>Plano del salón</h2><div class="plano">';
+                h += '<div class="z" style="' + pos(V.principal.x, V.principal.y, V.principal.w, V.principal.h) + 'background:#eee;font-weight:700">MESA PRINCIPAL</div>';
+                h += '<div class="z" style="' + pos(V.pista.x, V.pista.y, V.pista.w, V.pista.h) + 'border-style:dashed;writing-mode:vertical-rl;letter-spacing:6px;color:#999">PISTA</div>';
+                h += '<div class="z" style="' + pos(V.cuarto.x, V.cuarto.y, V.cuarto.w, V.cuarto.h) + 'writing-mode:vertical-rl">CUARTO</div>';
+                h += '<div class="z" style="' + pos(V.dj.x, V.dj.y, V.dj.w, V.dj.h) + '">DJ</div>';
+                h += '<div class="z" style="' + pos(V.musica.x, V.musica.y, V.musica.w, V.musica.h) + 'border-radius:50% 50% 4px 4px">GRUPO MUSICAL</div>';
+                h += '<div class="t" style="' + pos(V.entrada.x + 10, V.entrada.y + 10) + '">↘ ENTRADA</div>';
+                h += '<div class="t" style="' + pos(V.cocina.x - 2, V.cocina.y - 40) + 'writing-mode:vertical-rl">COCINA</div>';
+                h += '<div class="t" style="' + pos(V.banos.x - 2, V.banos.y - 35) + 'writing-mode:vertical-rl">BAÑOS</div>';
+                curMesas().forEach(function (mt) {
+                    var m = mMap[mt.n] || { pax: 0 };
+                    h += '<div class="m" style="' + pos(mt.x - V.tableW / 2, mt.y - V.tableH / 2, V.tableW, V.tableH) + '"><b>' + mt.n + '</b><small>' + m.pax + '/' + mt.seats + '</small></div>';
+                });
+                return h + '</div>';
+            }
+
             function printMesas() {
                 var mMap = buildMesaMap();
                 var conf = allData.filter(function (f) { return f.confirmed && f.rsvps && f.rsvps[0] && f.rsvps[0].attending; });
@@ -5883,6 +5965,11 @@
                     'th{font:700 10px Arial,sans-serif;text-transform:uppercase;letter-spacing:.05em;color:#333}' +
                     '.chk{width:24px;font-size:16px}.num{text-align:center;width:52px}.code{font:10px monospace;color:#555;width:90px}' +
                     '.warn{border:1px solid #c33;color:#c33;padding:8px;border-radius:6px;margin:8px 0;font-family:Arial,sans-serif}' +
+                    '.plano{position:relative;width:100%;max-width:560px;aspect-ratio:894/1164;margin:0 auto;border:2px solid #111}.plano>div{position:absolute;box-sizing:border-box}' +
+                    '.plano .z{border:1px solid #888;display:flex;align-items:center;justify-content:center;font:600 9px Arial,sans-serif;color:#444;text-align:center}' +
+                    '.plano .t{font:700 9px Arial,sans-serif;color:#444;white-space:nowrap}' +
+                    '.plano .m{border:1.5px solid #111;border-radius:4px;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#fff;line-height:1}' +
+                    '.plano .m b{font:700 15px Georgia,serif}.plano .m small{font:9px Arial,sans-serif;color:#555}' +
                     '.platos{max-width:480px}.platos tfoot td{font-weight:700;border-top:2px solid #111;border-bottom:none}.mesa li .pax i{font-weight:400;font-style:normal;color:#555}' +
                     '.pb{break-before:page}@media print{.bar{display:none}body{padding:0}}' +
                     '@media (max-width:600px){.grid{grid-template-columns:1fr}}' +
@@ -5891,7 +5978,8 @@
                     '<h1>Karla & Eduardo · 21 de noviembre de 2026</h1>' +
                     '<p class="meta">Hacienda Zerezotla · ' + conf.length + ' familias · ' + totalPax + ' personas confirmadas (' + adultsTxt(pt.adult) + ' · ' + kidsTxt(pt.kids) + ') · generado ' + hoy + '</p>' +
                     (sinMesa.length ? '<p class="warn">⚠ ' + sinMesa.length + ' familia(s) confirmadas SIN mesa: ' + sinMesa.map(function (f) { return esc(f.family_name); }).join(", ") + '</p>' : '') +
-                    platosHtml +
+                    printPlanHtml(mMap) +
+                    '<h2 class="pb">Platos</h2>' + platosHtml.replace('<h2>Platos para el banquete</h2>', '') +
                     '<h2 class="pb">Distribución por mesa</h2><div class="grid">' + byMesa + '</div>' +
                     '<h2 class="pb">Lista alfabética para la entrada</h2>' +
                     '<table><thead><tr><th></th><th>Familia</th><th class="num">Pers.</th><th class="num">Mesa</th><th>Código</th></tr></thead><tbody>' + alfa + '</tbody></table>' +
@@ -6217,8 +6305,9 @@
                 var msg = saludo + "\n\n" + intro + "\n\n" +
                     "📅 *Sábado 21 de noviembre · 5:30 PM*\n" +
                     "📍 Hacienda Zerezotla, San Andrés Cholula\n" +
-                    "👥 " + pax + (pax === 1 ? " lugar" : " lugares") + (f.table_number ? " · 🪑 Mesa " + f.table_number : "") + "\n\n" +
+                    "👥 " + pax + (pax === 1 ? " lugar" : " lugares") + "\n\n" +
                     "🎫 Su pase de entrada (QR):\n" + link + "\n\n" +
+                    "🪑 Al llegar, muestren su QR en la entrada y ahí les indicaremos su mesa.\n\n" +
                     "👉 Ábranlo una vez antes del día: así queda guardado en su celular aunque no haya señal en la hacienda.\n\n" +
                     "Con cariño,\nKarla & Eduardo";
                 /* Sin teléfono → wa.me sin número: WhatsApp deja elegir el chat */
@@ -6399,6 +6488,8 @@
                 document.getElementById("ci-search").value = "";
                 filterCheckin("");
                 document.getElementById("checkin-overlay").style.display = "block";
+                var cb = document.querySelector("#checkin-overlay .ci-header .ci-close");
+                if (cb) cb.textContent = isDoor() ? "Cerrar sesión" : "✕ Salir";
                 document.body.style.overflow = "hidden";
                 ciSyncNow();
                 clearInterval(_ciSync);
@@ -6406,6 +6497,15 @@
             }
 
             function closeCheckin() {
+                if (isDoor()) {
+                    if (!confirm("¿Cerrar la sesión de entrada?")) return;
+                    clearInterval(_ciSync); _ciSync = null;
+                    stopQrScanner();
+                    document.getElementById("checkin-overlay").style.display = "none";
+                    document.body.style.overflow = "";
+                    exitPanel();
+                    return;
+                }
                 clearInterval(_ciSync); _ciSync = null;
                 stopQrScanner();
                 document.getElementById("checkin-overlay").style.display = "none";
@@ -6494,7 +6594,7 @@
                 document.getElementById("ci-list").innerHTML = sorted.length ? sorted.map(function(f) {
                     var rsvp   = f.rsvps && f.rsvps[0];
                     var detail = (rsvp ? rsvp.guest_count + (rsvp.guest_count === 1 ? " persona" : " personas") : "?") +
-                        (f.table_number ? " · <strong class=\"ci-mesa\">Mesa " + f.table_number + "</strong>" : " · <span class=\"ci-nomesa\">Sin mesa</span>") +
+                        (f.table_number ? " · <button type=\"button\" class=\"ci-mesa ci-mesa-btn\" onclick=\"showOnPlan(" + f.table_number + ")\" aria-label=\"Ver la Mesa " + f.table_number + " en el plano\">Mesa " + f.table_number + " 📍</button>" : " · <span class=\"ci-nomesa\">Sin mesa</span>") +
                         " · " + esc(f.code);
                     if (f.checked_in) {
                         var t = f.checked_in_at ? new Date(f.checked_in_at).toLocaleTimeString("es-MX", { hour: "2-digit", minute: "2-digit", hour12: false }) : "";
@@ -6842,7 +6942,7 @@
                     '</div>' +
                     /* La mesa es lo que se le dice al invitado → en grande */
                     (f.table_number
-                        ? '<p class="qr-card__mesa">Mesa ' + f.table_number + '</p>'
+                        ? '<p class="qr-card__mesa">Mesa ' + f.table_number + '</p><button type="button" class="qr-plan-btn" onclick="showOnPlan(' + f.table_number + ')">📍 Ver en el plano</button>'
                         : '<p class="qr-card__mesa qr-card__mesa--none">Sin mesa asignada</p>') +
                     statsHtml +
                     (namesHtml ? '<div class="qr-card__divider"></div>' + namesHtml : '');
