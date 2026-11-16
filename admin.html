@@ -3223,6 +3223,10 @@
             .pl-dot--over { background: rgba(224,136,136,0.45); border-color: #c97070; }
             .venue-side .venue-hint { margin: 0; text-align: left; }
             .plan-unseated:empty { display: none; }
+            .venue-zoom-bar { display: none; }
+            @media (max-width: 1099px) { .venue-zoom-bar { display: flex; } }
+            .venue-zoom-btn { display: inline-flex; align-items: center; gap: 0.4rem; min-height: 40px; padding: 0.4rem 0.9rem; border-radius: 20px; border: 1px solid rgba(201,169,110,0.4); background: transparent; color: var(--gold); font-family: var(--f-sans); font-size: 0.82rem; font-weight: 600; cursor: pointer; }
+            .venue-zoom-btn[aria-pressed="true"] { background: rgba(201,169,110,0.14); border-color: var(--gold); }
             .plan-lock { border: 1px solid rgba(201,169,110,0.35); border-radius: 10px; padding: 0.65rem 0.8rem; background: rgba(201,169,110,0.06); font-size: 0.82rem; color: var(--text-mid); line-height: 1.45; }
             .plan-lock b { color: var(--gold); }
             .plan-lock p + p { margin-top: 0.2rem; }
@@ -3264,7 +3268,14 @@
                 .venue-wrap:not([hidden]) { display: flex; flex-direction: column; gap: 0.6rem; }
                 .venue-side { display: contents; }
                 .plan-sum { order: 1; } .plan-tools { order: 2; } .plan-legend { order: 3; }
-                .venue-stage { order: 4; } .venue-side .mesas-platos { order: 5; margin-top: 0.4rem; }
+                .venue-zoom-bar { order: 4; display: flex; justify-content: flex-end; }
+                .venue-stage { order: 5; } .venue-side .mesas-platos { order: 6; margin-top: 0.4rem; }
+                .venue-stage.is-zoom { display: block; overflow: auto; max-height: 72dvh; border: 1px solid rgba(201,169,110,0.25); border-radius: 8px; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
+                .venue-stage.is-zoom .venue { width: 185%; max-width: none; margin: 0; }
+                .venue-stage.is-zoom .venue__k { display: inline; }
+                .venue-stage.is-zoom .venue__n { font-size: 1.15rem; }
+                .venue-stage.is-zoom .venue__p { font-size: 0.72rem; }
+                .venue-stage.is-zoom .venue__zone, .venue-stage.is-zoom .venue__tag { font-size: 0.72rem; }
                 .plan-sum > div { padding: 0.35rem 0.3rem; }
                 .plan-sum b { font-size: 1.15rem; }
             }
@@ -3694,7 +3705,13 @@
                             </div>
                             <p class="venue-hint" id="venue-hint">Toca una mesa para ver quién está y acomodar familias.</p>
                         </aside>
-                        <div class="venue-stage"><div class="venue" id="venue-plan" aria-label="Plano del salón: toca una mesa"></div></div>
+                        <div class="venue-zoom-bar">
+                            <button type="button" class="venue-zoom-btn" id="venue-zoom-btn" aria-pressed="false" onclick="toggleVenueZoom()">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path stroke-linecap="round" d="M21 21l-4.3-4.3M11 8v6M8 11h6"/></svg>
+                                <span id="venue-zoom-lbl">Ampliar plano</span>
+                            </button>
+                        </div>
+                        <div class="venue-stage" id="venue-stage"><div class="venue" id="venue-plan" aria-label="Plano del salón: toca una mesa"></div></div>
                     </div>
                     <div id="mesas-section" style="display:block;">
                         <div class="mesas-grid" id="mesas-grid"></div>
@@ -5913,6 +5930,22 @@
             }
             /* Avisar si salen con cambios sin guardar */
             window.addEventListener("beforeunload", function (e) { if (planDirty()) { e.preventDefault(); e.returnValue = ""; } });
+
+            /* Celular: plano ampliado (mesas ~60px) con desplazamiento; se recuerda en este dispositivo */
+            function applyVenueZoom(on) {
+                var st = document.getElementById("venue-stage"), b = document.getElementById("venue-zoom-btn"), l = document.getElementById("venue-zoom-lbl");
+                if (!st) return;
+                st.classList.toggle("is-zoom", on);
+                if (b) b.setAttribute("aria-pressed", on ? "true" : "false");
+                if (l) l.textContent = on ? "Ver plano completo" : "Ampliar plano";
+                if (on) requestAnimationFrame(function () { st.scrollLeft = (st.scrollWidth - st.clientWidth) / 2; st.scrollTop = 0; });
+            }
+            function toggleVenueZoom() {
+                var on = !document.getElementById("venue-stage").classList.contains("is-zoom");
+                try { localStorage.setItem("ke-venue-zoom", on ? "1" : ""); } catch (e) {}
+                applyVenueZoom(on);
+            }
+            (function () { var z = false; try { z = localStorage.getItem("ke-venue-zoom") === "1"; } catch (e) {} applyVenueZoom(z); })();
 
             function setMesasView(v) {
                 v = v === "lista" ? "lista" : "plano";
