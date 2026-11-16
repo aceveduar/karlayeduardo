@@ -3309,13 +3309,15 @@
                 .venue-wrap:not([hidden]) { display: grid; grid-template-columns: auto 300px; justify-content: start; gap: 1.75rem; align-items: start; }
                 .venue-side { order: 2; position: sticky; top: 0; margin: 0; }
                 .venue-stage { order: 1; }
-                .venue { width: min(calc(100vw - 220px - 300px - 6rem), calc((100dvh - 245px) * 894 / 1164)); min-width: 360px; max-width: none; }
+                .venue { width: min(calc(100vw - 220px - 300px - 6rem), calc((100dvh - 178px) * 894 / 1164)); min-width: 400px; max-width: none; }
                 /* Vista plano en PC: buscador y Plano/Lista en una fila; el plano gana altura */
-                #tab-mesas.is-plano.is-active { display: grid; grid-template-columns: minmax(0, 1fr) 340px; column-gap: 0.75rem; align-items: center; align-content: start; }
+                /* Título, buscador y Plano/Lista en UNA fila: el plano gana altura */
+                #tab-mesas.is-plano.is-active { display: grid; grid-template-columns: auto minmax(0, 1fr) 300px; column-gap: 0.9rem; align-items: center; align-content: start; }
                 #tab-mesas.is-plano > * { grid-column: 1 / -1; }
-                #tab-mesas.is-plano > .mesas-tab-header { margin-bottom: 0.6rem; }
-                #tab-mesas.is-plano > .mesas-search { grid-column: 1; margin: 0 0 0.9rem; position: relative; }
-                #tab-mesas.is-plano > .mesas-view { grid-column: 2; margin: 0 0 0.9rem; }
+                #tab-mesas.is-plano > .mesas-tab-header { grid-column: 1; margin: 0 0 0.9rem; gap: 0.9rem; flex-wrap: nowrap; }
+                #tab-mesas.is-plano > .mesas-search { grid-column: 2; margin: 0 0 0.9rem; position: relative; }
+                #tab-mesas.is-plano > .mesas-view { grid-column: 3; margin: 0 0 0.9rem; }
+                #tab-mesas.is-plano .mesas-tab-title { font-size: 1.5rem; white-space: nowrap; }
                 #tab-mesas.is-plano .mesas-search-results:not(:empty) { position: absolute; left: 0; right: 0; top: 100%; z-index: 20; background: var(--surface); border: 1px solid rgba(201,169,110,0.3); border-radius: 10px; padding: 0.4rem; box-shadow: 0 12px 30px rgba(0,0,0,0.4); }
                 .plan-tools:has(.plan-bar) { position: static; padding: 0; background: none; }
                 .plan-sel .plan-btn--danger { margin-left: 0; }
@@ -3386,6 +3388,17 @@
             :root:not([data-theme="dark"]) .ci-btn   { color: #6e5018; border-color: rgba(122,90,30,0.55); background: rgba(201,169,110,0.14); }
             :root:not([data-theme="dark"]) .ci-undo  { color: #b03a3a; border-color: rgba(176,58,58,0.4); }
             @keyframes ci-banner-in { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: none; } }
+            /* Plano: textos proporcionales al tamaño del plano (antes fijos → se encimaban con escala 125%) */
+            @supports (container-type: inline-size) {
+                .venue { container-type: inline-size; }
+                .venue__n { font-size: clamp(10px, 3.9cqw, 22px); }
+                .venue__p { font-size: clamp(7px, 2.45cqw, 13px); margin-top: 0.1em; }
+                .venue__k { font-size: clamp(6.5px, 2.05cqw, 11px); }
+                .venue__zone { font-size: clamp(6.5px, 2cqw, 12px); letter-spacing: 0.05em; }
+                .venue__tag { font-size: clamp(6.5px, 1.9cqw, 12px); }
+                .venue__label--pista span { font-size: clamp(9px, 3.2cqw, 20px); }
+                .venue__pin { font-size: clamp(8px, 2.4cqw, 13px); }
+            }
         </style>
 
         <!-- Aplica tema antes del render para evitar flash -->
