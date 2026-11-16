@@ -3223,6 +3223,11 @@
             .pl-dot--over { background: rgba(224,136,136,0.45); border-color: #c97070; }
             .venue-side .venue-hint { margin: 0; text-align: left; }
             .plan-unseated:empty { display: none; }
+            .plan-lock { border: 1px solid rgba(201,169,110,0.35); border-radius: 10px; padding: 0.65rem 0.8rem; background: rgba(201,169,110,0.06); font-size: 0.82rem; color: var(--text-mid); line-height: 1.45; }
+            .plan-lock b { color: var(--gold); }
+            .plan-lock p + p { margin-top: 0.2rem; }
+            .plan-lock__btn { margin-top: 0.5rem; background: none; border: none; padding: 0; color: var(--text-soft); font-family: var(--f-sans); font-size: 0.76rem; text-decoration: underline; cursor: pointer; }
+            .mdd-seats__fixed { font-family: var(--f-serif); font-size: 1.2rem; color: var(--text); }
             .mesa-tip { position: fixed; z-index: 9990; width: 250px; pointer-events: none; background: var(--surface); border: 1px solid var(--gold); border-radius: 10px; padding: 0.65rem 0.8rem; box-shadow: 0 12px 32px rgba(0,0,0,0.45); font-size: 0.82rem; color: var(--text); }
             .mesa-tip[hidden] { display: none; }
             .mesa-tip__head { display: flex; justify-content: space-between; align-items: baseline; gap: 0.5rem; margin-bottom: 0.35rem; padding-bottom: 0.35rem; border-bottom: 1px solid rgba(201,169,110,0.25); }
@@ -5624,6 +5629,16 @@
             function closeCiPlan() { document.getElementById("ci-plan-overlay").classList.remove("is-open"); }
             /* ── Editor del plano (PC: arrastrar · cualquier pantalla: sillas desde la hoja de la mesa) ── */
             var _planSel = null, _drag = null;
+            /* Día de la boda: el plano queda fijo para que nadie mueva mesas por accidente.
+               Desbloqueo de emergencia escribiendo DESBLOQUEAR (solo para esta sesión). */
+            var PLAN_LOCK_FROM = new Date("2026-11-21T00:00:00-06:00");
+            var _planUnlocked = false;
+            function planLocked() { return !_planUnlocked && Date.now() >= PLAN_LOCK_FROM.getTime(); }
+            function unlockPlan() {
+                var t = prompt("El plano está bloqueado porque es el día de la boda.\n\nSi de verdad hay que cambiar una mesa (p. ej. la hacienda la movió), escribe DESBLOQUEAR:");
+                if ((t || "").trim().toUpperCase() !== "DESBLOQUEAR") { if (t !== null) showToast("No se desbloqueó"); return; }
+                _planUnlocked = true; renderMesasGrid(); showToast("Plano desbloqueado en este dispositivo — ten cuidado");
+            }
             function canDragPlan() { return window.matchMedia("(min-width: 900px) and (pointer: fine)").matches; }
             function planDirty() { return !!_planDraft && JSON.stringify(cleanLayout(_planDraft)) !== JSON.stringify(cleanLayout(MESAS)); }
             function renderPlanTools() {
@@ -5645,6 +5660,12 @@
                 if (hint) hint.textContent = _planDraft
                     ? "Arrastra las mesas con el cursor. Toca una para cambiar sillas o quitarla."
                     : "Toca una mesa para ver quién está y acomodar familias.";
+                if (!_planDraft && planLocked()) {
+                    t.innerHTML = '<div class="plan-lock"><p><b>🔒 Plano fijo</b> — hoy es la boda, las mesas ya no se mueven.</p>' +
+                        '<p>Puedes seguir acomodando familias en las mesas.</p>' +
+                        (canDragPlan() ? '<button type="button" class="plan-lock__btn" onclick="unlockPlan()">Desbloquear (emergencia)</button>' : '') + '</div>';
+                    return;
+                }
                 if (!_planDraft) {
                     t.innerHTML = canDragPlan()
                         ? '<button type="button" class="plan-btn plan-btn--edit" onclick="startPlanEdit()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M15.2 5.2l3.6 3.6M4 20l4.2-1 10.6-10.6a2.5 2.5 0 00-3.6-3.6L4.6 15.4 4 20z"/></svg> Editar plano<small>mover, agregar y quitar mesas, sillas</small></button>'
@@ -5789,6 +5810,7 @@
             }
 
             function startPlanEdit() {
+                if (planLocked()) { renderMesasGrid(); return; }
                 hideMesaTip();
                 _planDraft = JSON.parse(JSON.stringify(MESAS)); _planSel = null;
                 renderMesasGrid();
@@ -5866,6 +5888,7 @@
                 var box = document.getElementById("mdd-seats"); if (!box) return;
                 if (_planDraft) { box.innerHTML = ""; return; }
                 var seats = capOf(n);
+                if (planLocked()) { box.innerHTML = '<span class="mdd-seats__lbl">Sillas en esta mesa</span><span class="mdd-seats__fixed">' + seats + ' 🔒</span>'; return; }
                 box.innerHTML = '<span class="mdd-seats__lbl">Sillas en esta mesa</span>' +
                     '<div class="kids-step"><button type="button" class="kids-step__btn" aria-label="Una silla menos" onclick="setMesaSeats(' + n + ',' + (seats - 1) + ')"' + (seats <= 1 ? ' disabled' : '') + '>−</button>' +
                     '<span class="kids-step__val">' + seats + '</span>' +
@@ -5873,7 +5896,7 @@
             }
             var _seatSaving = false;
             async function setMesaSeats(n, seats) {
-                if (_seatSaving || _planDraft) return;
+                if (_seatSaving || _planDraft || planLocked()) return;
                 seats = Math.max(1, Math.min(30, seats));
                 var pax = (buildMesaMap()[n] || { pax: 0 }).pax || 0;
                 if (seats < pax && capOf(n) >= pax &&
